@@ -2,10 +2,12 @@
 import os
 import shutil
 import subprocess
+import sys
 
 import yaml
 
 MANIFEST = "conditional_files.yaml"
+FIRST_RUN_WIN = "first_run.bat"
 FIRST_RUN = "first_run.sh"
 
 
@@ -31,8 +33,13 @@ def delete_resources_for_disabled_features():
 
 
 def init_repo():
-    subprocess.run(['sh', FIRST_RUN])
+    if sys.platform == 'win32':
+        subprocess.run([FIRST_RUN_WIN])
+        return
+    else:
+        subprocess.run(['sh', FIRST_RUN])
     delete_resource(FIRST_RUN)
+    delete_resource(FIRST_RUN_WIN)
     subprocess.run(['git', 'add', '.'])
 
 

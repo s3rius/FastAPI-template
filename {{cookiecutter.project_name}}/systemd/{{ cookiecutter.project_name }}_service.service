@@ -1,5 +1,5 @@
 [Unit]
-Description=Saver service used as smart LUNAv4 proxy.
+Description={{cookiecutter.project_description}}
 After=network.target
 
 [Service]
