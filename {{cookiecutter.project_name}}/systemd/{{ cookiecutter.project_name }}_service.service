@@ -1,0 +1,15 @@
+[Unit]
+Description=Saver service used as smart LUNAv4 proxy.
+After=network.target
+
+[Service]
+Type=simple
+User=gitlab-runner
+EnvironmentFile=ENV_FILE
+WorkingDirectory=DIR
+ExecStart=/bin/bash -c 'source /opt/rh/rh-python38/enable && poetry install --no-dev && poetry run uvicorn --workers=4 --access-log --log-level debug --host 0.0.0.0 --port 8100 src.server:app'
+ExecStop=/usr/bin/kill -15 $MAINPID
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+{
+  "project_name": "new_fastapi_project",
+  "full_name": "Pavel Kirilin",
+  "email": "win10@list.ru",
+  "project_description": "",
+  "add_redis": [
+    true,
+    false
+  ],
+  "add_systemd": [
+    true,
+    false
+  ],
+  "add_dummy_model": [
+    true,
+    false
+  ],
+  "_extensions": [
+    "cookiecutter.extensions.RandomStringExtension"
+  ]
+}
