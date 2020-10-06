@@ -35,6 +35,7 @@ repos:
           - "--pretty"
           - "--show-error-codes"
           - "--no-warn-return-any"
+          - "--implicit-reexport"
           - "--allow-untyped-decorators"
         exclude: >
           (?x)^(

@@ -13,18 +13,15 @@ from src.services.redis import redis
 {% endif %}
 from src.settings import Settings, settings
 
-config = {
-    "handlers": [
-        {
-            "sink": sys.stderr,
-            "backtrace": False,
-            "diagnose": settings.is_dev,
-            "catch": False,
-            "colorize": settings.is_dev,
-        },
-    ]
-}
-logger.configure(**config)
+logger.configure(
+    handlers=[{
+        "sink": sys.stderr,
+        "backtrace": False,
+        "diagnose": settings.is_dev,
+        "catch": False,
+        "colorize": settings.is_dev,
+    }]
+)
 
 app = FastAPI(
     title="{{cookiecutter.project_name}}",

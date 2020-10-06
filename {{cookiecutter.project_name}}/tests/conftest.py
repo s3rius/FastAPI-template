@@ -5,7 +5,7 @@ import alembic.config
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.engine import Connection
+from sqlalchemy.engine import Connection, Engine
 from sqlalchemy.engine.url import URL, make_url
 from sqlalchemy.exc import ProgrammingError
 
@@ -15,7 +15,7 @@ from src.settings import settings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
-def get_engine():
+def get_engine() -> Engine:
     pg_db_url = make_url(
         URL(
             drivername=settings.db_driver,
@@ -30,7 +30,7 @@ def get_engine():
     return engine
 
 
-def run_psql_without_transaction(command: str):
+def run_psql_without_transaction(command: str) -> None:
     engine = get_engine()
     connection = engine.connect()
     connection.connection.set_isolation_level(0)
@@ -40,7 +40,7 @@ def run_psql_without_transaction(command: str):
 
 
 @pytest.fixture(scope="session")
-def create_database():
+def create_database() -> None:
     try:
         run_psql_without_transaction(f"CREATE DATABASE {settings.postgres_db}")
     except ProgrammingError:

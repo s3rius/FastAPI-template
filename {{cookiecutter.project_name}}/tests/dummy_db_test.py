@@ -25,7 +25,7 @@ def test_delete_dummy_obj(
 ) -> None:
     with app_fixture as client:
         put_result = client.put(
-            f"/dummy_db_obj/",
+            "/dummy_db_obj/",
             json=test_conf.request_data["json"],
         )
         assert put_result.status_code == 200

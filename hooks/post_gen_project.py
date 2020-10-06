@@ -4,9 +4,9 @@ import shutil
 import subprocess
 import sys
 
-import yaml
+import json
 
-MANIFEST = "conditional_files.yaml"
+MANIFEST = "conditional_files.json"
 FIRST_RUN_WIN = "first_run.bat"
 FIRST_RUN = "first_run.sh"
 
@@ -22,7 +22,7 @@ def delete_resource(resource):
 
 def delete_resources_for_disabled_features():
     with open(MANIFEST) as manifest_file:
-        manifest = yaml.safe_load(manifest_file)
+        manifest = json.load(manifest_file)
         for feature in manifest['features']:
             if not feature['enabled']:
                 print("removing resources for disabled feature {}...".format(feature['name']))
