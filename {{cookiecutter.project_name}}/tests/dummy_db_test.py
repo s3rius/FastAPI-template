@@ -20,16 +20,19 @@ test_data = [
 
 
 @pytest.mark.parametrize("test_conf", test_data)
-def test_delete_monitor(
+def test_delete_dummy_obj(
         pg_conn: Connection, test_conf: TestSettings, app_fixture: TestClient
 ) -> None:
     with app_fixture as client:
         put_result = client.put(
-            f"/dummy_db/{test_conf.request_data['dummy_id']}",
+            f"/dummy_db_obj/",
             json=test_conf.request_data["json"],
         )
         assert put_result.status_code == 200
-        result = client.delete(f"/dummy_db/{test_conf.request_data['dummy_id']}")
+        with pg_conn.begin():
+            result = pg_conn.execute(DummyDBModel.select_query(DummyDBModel.id)).first()
+            assert len(result) == 1
+        result = client.delete(f"/dummy_db_obj/{result[0]}")
         assert result.status_code == 200
         with pg_conn.begin():
             result = pg_conn.execute(sa.func.count(DummyDBModel.id)).first()
