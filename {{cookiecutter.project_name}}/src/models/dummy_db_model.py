@@ -10,7 +10,7 @@ from src.services.db import Base, db_engine
 class DummyDBModel(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String, nullable=False, index=True)
-    surname = Column(String, nullable=False, unique=True)
+    surname = Column(String, nullable=False, index=True)
 
     @classmethod
     async def create(
@@ -37,8 +37,8 @@ class DummyDBModel(Base):
     async def update(cls,
                      dummy_id: uuid.UUID,
                      *,
-                     name: Optional[str],
-                     surname: Optional[str]
+                     name: Optional[str] = None,
+                     surname: Optional[str] = None
                      ) -> None:
         new_values = {}
         if name:
@@ -51,9 +51,9 @@ class DummyDBModel(Base):
 
     @classmethod
     async def filter(cls, *,
-                     dummy_id: Optional[uuid.UUID],
-                     name: Optional[str],
-                     surname: Optional[str]
+                     dummy_id: Optional[uuid.UUID] = None,
+                     name: Optional[str] = None,
+                     surname: Optional[str] = None
                      ) -> List["DummyDBModel"]:
         query = cls.select_query()
         if dummy_id:

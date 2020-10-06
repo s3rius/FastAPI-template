@@ -16,3 +16,4 @@ features:
       - src/models/dummy_db_model.py
       - migrations/versions/7ae297ab5ac1_created_dummy_model.py
       - tests/dummy_db_test.py
+      - src/api/dummy_db

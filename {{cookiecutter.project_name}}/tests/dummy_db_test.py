@@ -28,7 +28,7 @@ def test_delete_monitor(
             f"/dummy_db/{test_conf.request_data['dummy_id']}",
             json=test_conf.request_data["json"],
         )
-        assert put_result.status_code == 201
+        assert put_result.status_code == 200
         result = client.delete(f"/dummy_db/{test_conf.request_data['dummy_id']}")
         assert result.status_code == 200
         with pg_conn.begin():
