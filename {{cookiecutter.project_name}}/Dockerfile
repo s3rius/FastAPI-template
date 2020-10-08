@@ -85,6 +85,19 @@ ENV LOG_LEVEL=DEBUG
 
 CMD [ "uvicorn", "--reload", "--access-log", "--log-level", "debug", "--host", "0.0.0.0", "--port", "8000", "src.server:app" ]
 
+{% if cookiecutter.add_scheduler == "True" -%}
+FROM python-base as scheduler
+WORKDIR $PYSETUP_PATH
+
+# copy in our built poetry + venv
+COPY --from=builder-base $POETRY_HOME $POETRY_HOME
+COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
+
+VOLUME /app
+WORKDIR /app
+
+CMD ["python", "scheduler.py"]
+{% endif %}
 # `production` image used for runtime
 FROM python-base as production
 ENV FASTAPI_ENV=production

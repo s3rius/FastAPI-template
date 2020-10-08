@@ -1,6 +1,5 @@
 variables:
   GIT_STRATEGY: clone
-  APP_ENV_FILE: /path/to/production/env.file # Can be injected using gitlab CI variables
 
 stages:
   - test

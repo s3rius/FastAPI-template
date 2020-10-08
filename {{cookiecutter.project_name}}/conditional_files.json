@@ -9,6 +9,14 @@
       ]
     },
     {
+      "name": "Task scheduler",
+      "enabled": {{cookiecutter.add_scheduler|lower}},
+      "resources": [
+        "scheduler.py",
+        "systemd/{{ cookiecutter.project_name }}_scheduler.service"
+      ]
+    },
+    {
       "name": "Systemd support",
       "enabled": {{cookiecutter.add_systemd|lower}},
       "resources": [

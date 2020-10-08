@@ -1,0 +1,15 @@
+[Unit]
+Description={{cookiecutter.project_description}}
+After=network.target
+
+[Service]
+Type=simple
+User=gitlab-runner
+EnvironmentFile=ENV_FILE
+WorkingDirectory=DIR
+ExecStart=/bin/bash -c 'source /opt/rh/rh-python38/enable && poetry install --no-dev && poetry run python scheduler.py'
+ExecStop=/usr/bin/kill -15 $MAINPID
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

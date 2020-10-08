@@ -6,6 +6,10 @@
 
 Для локального запуска достаточно выполнить команду "docker-compose up"
 
+### Требуемые переменные среды для CI\CD
+* APP_DIR - путь до проекта на сервере
+* ENV_FILE_PATH - путь до файла с переменными среды
+
 ## Инсутрукция по развертыванию системы
 
 Сначала потребуется установить все зависимости
@@ -47,7 +51,24 @@ pytest
 uvicorn --access-log --log-level debug --host 0.0.0.0 --port 8100 src.server:app
 ```
 
-Пример сконфигурированного systemd-модуля представлен в файле `systemd/{{cookiecutter.project_name}}_service.service`
+Пример сконфигурированного systemd-модуля представлен в файле [systemd/{{cookiecutter.project_name}}_service.service](systemd/{{ cookiecutter.project_name }}_service.service)
+
+
+## Запуск планировщика задач
+Планировщик сделан чтобы некоторые задачи могли выполнятся на фоне системы.
+
+```bash
+# Для запуска с выставленными переменными среды:
+python scheduler.py
+ 
+# Для запуска через dotenv
+dotenv -f envs/.env run python scheduler.py
+```
+
+Пример сконфигурированного systemd-модуля представлен в файле [systemd/{{cookiecutter.project_name}}_scheduler.service](systemd/{{ cookiecutter.project_name }}_scheduler.service)
+
+## Немного про systemd файлы
+
 Для применения на другой машине, скорее всего потребуется поменять следующие параметры в файле:
 * EnvironmentFile - файл с описанием переменных среды (Полный путь до файла в системе);
 * WorkingDirectory путь до папки с проектом;

@@ -45,6 +45,24 @@ services:
     networks:
       - {{ cookiecutter.project_name }}_network
 
+  {% if cookiecutter.add_scheduler == "True" -%}
+  scheduler:
+    container_name: {{ cookiecutter.project_name }}_scheduler
+    build:
+      context: .
+      target: scheduler
+      labels:
+        scheduler.description: "{{ cookiecutter.project_name }} scheduler image"
+    env_file:
+      - envs/.env
+    volumes:
+    - ./:/app
+    depends_on:
+      - db
+    networks:
+      - {{ cookiecutter.project_name }}_network
+  {% endif %}
+
 volumes:
   {{ cookiecutter.project_name }}_db_data:
   {{ cookiecutter.project_name }}_redis_data:

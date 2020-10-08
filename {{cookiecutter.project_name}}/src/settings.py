@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     redis_port: int = Field(default=6379)
     redis_password: str = Field(...)
     {% endif %}
+    {% if cookiecutter.add_scheduler == "True" -%}
+    schedule_timer: int = Field(default=20)
+    {% endif %}
     # httpbin client settings
     httpbin_host: str = Field(default="https://httpbin.org/")
 
