@@ -1,5 +1,4 @@
 import asyncio
-import time
 
 import aioschedule as schedule
 from loguru import logger

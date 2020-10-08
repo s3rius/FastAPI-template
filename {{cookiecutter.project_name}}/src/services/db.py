@@ -1,7 +1,10 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 import sqlalchemy as sa
+{% if cookiecutter.pg_driver == "aiopg" -%}
+from typing import Optional
 from aiopg.sa import Engine, create_engine
+{% endif %}
 from sqlalchemy import MetaData, Table
 from sqlalchemy.engine.url import URL, make_url
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
@@ -21,30 +24,6 @@ db_url = make_url(
 )
 
 meta = MetaData()
-
-
-class DBEngine:
-    def __init__(self, connection_url: str) -> None:
-        self.dsn = connection_url
-        self.engine: Optional[Engine] = None
-
-    async def connect(self) -> None:
-        self.engine = await create_engine(dsn=self.dsn, maxsize=100)
-
-    @property
-    def client(self) -> Engine:
-        if self.engine:
-            return self.engine
-        raise Exception("Not connected to database")
-
-    async def close(self) -> None:
-        if self.engine:
-            self.engine.close()
-            await self.engine.wait_closed()
-
-
-db_engine = DBEngine(str(db_url))
-
 
 @as_declarative(metadata=meta)
 class Base:
@@ -92,3 +71,27 @@ class Base:
 
     def as_dict(self) -> Dict[str, Any]:
         return {c.name: getattr(self, c.key) for c in self.__table__.columns}
+
+{% if cookiecutter.pg_driver == "aiopg" -%}
+class DBEngine:
+    def __init__(self, connection_url: str) -> None:
+        self.dsn = connection_url
+        self.engine: Optional[Engine] = None
+
+    async def connect(self) -> None:
+        self.engine = await create_engine(dsn=self.dsn, maxsize=100)
+
+    @property
+    def client(self) -> Engine:
+        if self.engine:
+            return self.engine
+        raise Exception("Not connected to database")
+
+    async def close(self) -> None:
+        if self.engine:
+            self.engine.close()
+            await self.engine.wait_closed()
+
+
+db_engine = DBEngine(str(db_url))
+{% endif %}

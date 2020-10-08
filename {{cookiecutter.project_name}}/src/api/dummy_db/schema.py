@@ -1,7 +1,10 @@
 import uuid
 from typing import Optional
 
-from pydantic import Field, BaseConfig
+from pydantic import Field
+{% if cookiecutter.pg_driver == "aiopg" -%}
+from pydantic import BaseConfig
+{% endif %}
 from pydantic.main import BaseModel
 
 
@@ -13,8 +16,10 @@ class BaseDummyModel(BaseModel):
 class ReturnDummyModel(BaseDummyModel):
     id: uuid.UUID
 
+    {% if cookiecutter.pg_driver == "aiopg" -%}
     class Config(BaseConfig):
         orm_mode = True
+    {% endif %}
 
 
 class UpdateDummyModel(BaseModel):

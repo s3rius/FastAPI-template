@@ -15,9 +15,13 @@
     true,
     false
   ],
-  "add_scheduler":[
+  "add_scheduler": [
     true,
     false
+  ],
+  "pg_driver": [
+    "aiopg",
+    "asyncpgsa"
   ],
   "_extensions": [
     "cookiecutter.extensions.RandomStringExtension"
