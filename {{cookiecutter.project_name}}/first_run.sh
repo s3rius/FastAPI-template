@@ -1,4 +1,4 @@
-pip install --user pre-commit
+python3 -m pip install --user pre-commit
 git init
 git add .
 pre-commit install
