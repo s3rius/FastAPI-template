@@ -5,6 +5,7 @@ import alembic.config
 from fastapi import FastAPI
 from loguru import logger
 from starlette.requests import Request
+from starlette.responses import UJSONResponse
 
 from src.api import api_router
 {% if cookiecutter.pg_driver == "aiopg" -%}
@@ -31,6 +32,7 @@ logger.configure(
 app = FastAPI(
     title="{{cookiecutter.project_name}}",
     description="{{cookiecutter.project_description}}",
+    default_response_class=UJSONResponse
 )
 
 app.include_router(prefix="", router=api_router)

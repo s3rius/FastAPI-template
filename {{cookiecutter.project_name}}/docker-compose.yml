@@ -4,12 +4,12 @@ version: '3.7'
 
 services:
   back:
-    container_name: {{ cookiecutter.project_name }}_backend
+    container_name: {{ cookiecutter.project_name }}_backend_dev
     build:
       context: .
       target: development
       labels:
-        detector.description: {{ cookiecutter.project_description }}
+        {{ cookiecutter.project_name }}.description: {{ cookiecutter.project_description }}
     env_file:
       - envs/.env
     ports:
@@ -19,35 +19,37 @@ services:
     depends_on:
       - db
     networks:
-      - {{ cookiecutter.project_name }}_network
+      - {{ cookiecutter.project_name }}_network_dev
 
   db:
-    container_name: {{ cookiecutter.project_name }}_db
+    container_name: {{ cookiecutter.project_name }}_db_dev
     image: postgres:12.4
     volumes:
-      - {{ cookiecutter.project_name }}_db_data:/var/lib/postgresql/data
+      - {{ cookiecutter.project_name }}_db_data_dev:/var/lib/postgresql/data
     ports:
       - 5432:5432
     networks:
-      - {{ cookiecutter.project_name }}_network
+      - {{ cookiecutter.project_name }}_network_dev
     env_file:
       - envs/.env
 
+  {% if cookiecutter.add_redis == "True" -%}
   redis:
-    container_name: {{ cookiecutter.project_name }}_redis
+    container_name: {{ cookiecutter.project_name }}_redis_dev
     image: bitnami/redis:6.0.7
     volumes:
-      - {{ cookiecutter.project_name }}_redis_data:/bitnami/redis/data
+      - {{ cookiecutter.project_name }}_redis_data_dev:/bitnami/redis/data
     env_file:
       - envs/.env
     ports:
       - 6379:6379
     networks:
-      - {{ cookiecutter.project_name }}_network
+      - {{ cookiecutter.project_name }}_network_dev
+  {% endif %}
 
   {% if cookiecutter.add_scheduler == "True" -%}
   scheduler:
-    container_name: {{ cookiecutter.project_name }}_scheduler
+    container_name: {{ cookiecutter.project_name }}_scheduler_dev
     build:
       context: .
       target: scheduler
@@ -60,13 +62,13 @@ services:
     depends_on:
       - db
     networks:
-      - {{ cookiecutter.project_name }}_network
+      - {{ cookiecutter.project_name }}_network_dev
   {% endif %}
 
 volumes:
-  {{ cookiecutter.project_name }}_db_data:
-  {{ cookiecutter.project_name }}_redis_data:
+  {{ cookiecutter.project_name }}_db_data_dev:
+  {{ cookiecutter.project_name }}_redis_data_dev:
 
 networks:
-  {{ cookiecutter.project_name }}_network:
-    name: {{ cookiecutter.project_name }}_network
+  {{ cookiecutter.project_name }}_network_dev:
+    name: {{ cookiecutter.project_name }}_network_dev

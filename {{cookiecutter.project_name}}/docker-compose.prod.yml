@@ -1,0 +1,68 @@
+# Local docker-compose configuration
+
+version: '3.7'
+
+services:
+  back:
+    container_name: {{ cookiecutter.project_name }}_backend
+    build:
+      context: .
+      target: production
+      labels:
+        {{ cookiecutter.project_name }}.description: {{ cookiecutter.project_description }}
+    env_file:
+      - envs/.env
+    ports:
+      - 8402:8000
+    depends_on:
+      - db
+    networks:
+      - {{ cookiecutter.project_name }}_network
+
+  db:
+    container_name: {{ cookiecutter.project_name }}_db
+    image: postgres:12.4
+    volumes:
+      - {{ cookiecutter.project_name }}_db_data:/var/lib/postgresql/data
+    networks:
+      - {{ cookiecutter.project_name }}_network
+    env_file:
+      - envs/.env
+
+  {% if cookiecutter.add_redis == "True" -%}
+  redis:
+    container_name: {{ cookiecutter.project_name }}_redis
+    image: bitnami/redis:6.0.7
+    volumes:
+      - {{ cookiecutter.project_name }}_redis_data:/bitnami/redis/data
+    env_file:
+      - envs/.env
+    networks:
+      - {{ cookiecutter.project_name }}_network
+  {% endif %}
+
+  {% if cookiecutter.add_scheduler == "True" -%}
+  scheduler:
+    container_name: {{ cookiecutter.project_name }}_scheduler
+    build:
+      context: .
+      target: scheduler
+      labels:
+        scheduler.description: "{{ cookiecutter.project_name }} scheduler image"
+    env_file:
+      - envs/.env
+    volumes:
+    - ./:/app
+    depends_on:
+      - db
+    networks:
+      - {{ cookiecutter.project_name }}_network
+  {% endif %}
+
+volumes:
+  {{ cookiecutter.project_name }}_db_data:
+  {{ cookiecutter.project_name }}_redis_data:
+
+networks:
+  {{ cookiecutter.project_name }}_network:
+    name: {{ cookiecutter.project_name }}_network
