@@ -13,7 +13,7 @@ services:
     env_file:
       - envs/.env
     ports:
-      - 8401:8000
+      - {{ cookiecutter.default_port }}:8000
     volumes:
       - ./:/app
     depends_on:
@@ -65,9 +65,25 @@ services:
       - {{ cookiecutter.project_name }}_network_dev
   {% endif %}
 
+  {% if cookiecutter.add_elastic == "True" -%}
+  es:
+    restart: always
+    container_name: {{ cookiecutter.project_name }}_es_dev
+    image: elasticsearch:7.3.0
+    volumes:
+      - {{ cookiecutter.project_name }}_es_data_dev:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    networks:
+      - {{ cookiecutter.project_name }}_network_dev
+  {% endif %}
+
 volumes:
   {{ cookiecutter.project_name }}_db_data_dev:
   {{ cookiecutter.project_name }}_redis_data_dev:
+  {{ cookiecutter.project_name }}_es_data_dev:
 
 networks:
   {{ cookiecutter.project_name }}_network_dev:

@@ -2,7 +2,7 @@
   "features": [
     {
       "name": "Redis support",
-      "enabled": {{cookiecutter.add_redis|lower}},
+      "enabled": "{{cookiecutter.add_redis|lower}}",
       "resources": [
         "src/services/redis.py",
         "src/api/redis_api"
@@ -10,7 +10,7 @@
     },
     {
       "name": "Task scheduler",
-      "enabled": {{cookiecutter.add_scheduler|lower}},
+      "enabled": "{{cookiecutter.add_scheduler|lower}}",
       "resources": [
         "scheduler.py",
         "systemd/{{ cookiecutter.project_name }}_scheduler.service"
@@ -18,19 +18,26 @@
     },
     {
       "name": "Systemd support",
-      "enabled": {{cookiecutter.add_systemd|lower}},
+      "enabled": "{{cookiecutter.add_systemd|lower}}",
       "resources": [
         "systemd"
       ]
     },
     {
       "name": "Dummy DB model",
-      "enabled": {{cookiecutter.add_dummy_model|lower}},
+      "enabled": "{{cookiecutter.add_dummy_model|lower}}",
       "resources": [
         "src/models/dummy_db_model.py",
         "migrations/versions/7ae297ab5ac1_created_dummy_model.py",
         "tests/dummy_db_test.py",
         "src/api/dummy_db"
+      ]
+    },
+    {
+      "name": "Elastic search",
+      "enabled": "{{cookiecutter.add_elastic|lower}}",
+      "resources": [
+        "src/services/elastic"
       ]
     }
   ]

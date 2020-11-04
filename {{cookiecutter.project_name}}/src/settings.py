@@ -32,6 +32,9 @@ class Settings(BaseSettings):
     {% endif %}
     # httpbin client settings
     httpbin_host: str = Field(default="https://httpbin.org/")
+    {% if cookiecutter.add_elastic == "True" -%}
+    elastic_host: str = Field(...)
+    {% endif %}
 
     @property
     def is_dev(self) -> bool:

@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from typing import Optional, List
-
+from src.models.dummy_db_model import DummyElasticFilter
 from pydantic import Field, BaseConfig
 from pydantic.main import BaseModel
 
@@ -23,11 +23,20 @@ class ReturnDummyModel(BaseDummyModel):
 class GetDummyResponse(BaseModel):
     results: List[ReturnDummyModel]
 
+{% if cookiecutter.add_elastic == "True" -%}
+class DummyElasticResponse(BaseModel):
+    results: List[DummyElasticFilter]
+
+class ElasticAdd(BaseDummyModel):
+    tags: str = Field(default="")
+{% endif %}
 
 class UpdateDummyModel(BaseModel):
     name: Optional[str] = Field(default=None, example="New name")
     surname: Optional[str] = Field(default=None, example="New surname")
-
+    {% if cookiecutter.add_elastic == "True" -%}
+    tags: Optional[str] = Field(default=None, example="tag1,tag2")
+    {% endif %}
 
 class DummyFiltersModel(BaseModel):
     dummy_id: Optional[uuid.UUID] = Field(default=None)

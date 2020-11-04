@@ -2,15 +2,28 @@ import uuid
 from typing import Optional
 
 from sqlalchemy import Column, String, sql
-from sqlalchemy.dialects.postgresql import UUID
-
+{% if cookiecutter.add_elastic == "True" -%}
+from src.services.elastic import ElasticModelMixin
+from src.services.elastic.schema import ESReturnModel
+{% endif %}
 from src.services.db import Base
 
+{% if cookiecutter.add_elastic == "True" -%}
+class DummyElasticFilter(ESReturnModel):
+    name: str
+    surname: str
+{% endif %}
 
-class DummyDBModel(Base):
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+class DummyDBModel(Base{% if cookiecutter.add_elastic == "True" -%}, ElasticModelMixin[DummyElasticFilter]{% endif %}):
     name = Column(String, nullable=False, index=True)
     surname = Column(String, nullable=False, index=True)
+    {% if cookiecutter.add_elastic == "True" -%}
+    tags = Column(String, nullable=False, default="")
+
+    __es_index_name = "dummy_elastic_index"
+    __es_search_fields = ["name", "surname"]
+    __es_search_type = DummyElasticFilter
+    {% endif %}
 
     @classmethod
     def create(
@@ -18,10 +31,12 @@ class DummyDBModel(Base):
             *,
             name: str,
             surname: str,
+            {% if cookiecutter.add_elastic == "True" -%}tags: str = "",{% endif %}
     ) -> sql.Insert:
         return cls.insert_query(
             name=name,
             surname=surname,
+            {% if cookiecutter.add_elastic == "True" -%}tags=tags,{% endif %}
         )
 
     @classmethod
@@ -33,13 +48,16 @@ class DummyDBModel(Base):
                dummy_id: uuid.UUID,
                *,
                name: Optional[str] = None,
-               surname: Optional[str] = None
+               surname: Optional[str] = None,
+               {% if cookiecutter.add_elastic == "True" -%}tags: Optional[str] = None,{% endif %}
                ) -> sql.Update:
         new_values = {}
         if name:
             new_values[cls.name] = name
         if surname:
             new_values[cls.surname] = surname
+        if tags is not None:
+            new_values[cls.tags] = tags
         return cls.update_query().where(cls.id == dummy_id).values(new_values)
 
     @classmethod

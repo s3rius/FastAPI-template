@@ -68,11 +68,3 @@ if settings.is_dev:
             "head",
         ]
     )
-
-    @app.get("/conf")
-    def reveal_current_configuration() -> Settings:
-        """
-        Show current application settings
-        ## Available only under development
-        """
-        return settings
