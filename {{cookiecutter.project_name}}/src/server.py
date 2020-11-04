@@ -8,12 +8,7 @@ from starlette.requests import Request
 from starlette.responses import UJSONResponse
 
 from src.api import api_router
-{% if cookiecutter.pg_driver == "aiopg" -%}
 from src.services.db import db_engine
-{% else %}
-from src.services.db import db_url
-from asyncpgsa import pg
-{% endif %}
 {% if cookiecutter.add_redis == "True" -%}
 from src.services.redis import redis
 {% endif %}
@@ -43,11 +38,7 @@ async def startup() -> None:
     {% if cookiecutter.add_redis == "True" -%}
     await redis.create_pool()
     {% endif %}
-    {% if cookiecutter.pg_driver == "aiopg" -%}
     await db_engine.connect()
-    {% else %}
-    await pg.init(str(db_url))
-    {% endif %}
 
 
 @app.on_event("shutdown")
@@ -55,11 +46,7 @@ async def shutdown() -> None:
     {% if cookiecutter.add_redis == "True" -%}
     await redis.shutdown()
     {% endif %}
-    {% if cookiecutter.pg_driver == "aiopg" -%}
     await db_engine.close()
-    {% else %}
-    await pg.pool.close()
-    {% endif %}
 
 
 

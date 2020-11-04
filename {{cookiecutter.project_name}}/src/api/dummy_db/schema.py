@@ -1,30 +1,32 @@
 import uuid
-from typing import Optional
+from datetime import datetime
+from typing import Optional, List
 
-from pydantic import Field
-{% if cookiecutter.pg_driver == "aiopg" -%}
-from pydantic import BaseConfig
-{% endif %}
+from pydantic import Field, BaseConfig
 from pydantic.main import BaseModel
 
 
 class BaseDummyModel(BaseModel):
-    name: str
-    surname: str
+    name: str = Field(example="Dummy name")
+    surname: str = Field(example="Dummy surname")
 
 
 class ReturnDummyModel(BaseDummyModel):
     id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
 
-    {% if cookiecutter.pg_driver == "aiopg" -%}
     class Config(BaseConfig):
         orm_mode = True
-    {% endif %}
+
+
+class GetDummyResponse(BaseModel):
+    results: List[ReturnDummyModel]
 
 
 class UpdateDummyModel(BaseModel):
-    name: Optional[str] = Field(default=None)
-    surname: Optional[str] = Field(default=None)
+    name: Optional[str] = Field(default=None, example="New name")
+    surname: Optional[str] = Field(default=None, example="New surname")
 
 
 class DummyFiltersModel(BaseModel):

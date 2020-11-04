@@ -23,7 +23,7 @@ fileConfig(config.config_file_name)
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 # noqa
-from src.services.db import meta as target_metadata
+from src.services.db import db_meta as target_metadata
 from src.models import *  # isort:skip
 
 

@@ -19,10 +19,6 @@
     true,
     false
   ],
-  "pg_driver": [
-    "aiopg",
-    "asyncpgsa"
-  ],
   "_extensions": [
     "cookiecutter.extensions.RandomStringExtension"
   ]
