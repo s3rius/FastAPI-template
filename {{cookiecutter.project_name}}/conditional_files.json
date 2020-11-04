@@ -35,7 +35,7 @@
     },
     {
       "name": "Elastic search",
-      "enabled": "{{cookiecutter.add_elastic|lower}}",
+      "enabled": "{{cookiecutter.add_elastic_search|lower}}",
       "resources": [
         "src/services/elastic"
       ]

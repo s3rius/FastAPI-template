@@ -16,7 +16,7 @@
     true,
     false
   ],
-  "add_elastic": [
+  "add_elastic_search": [
     true,
     false
   ],

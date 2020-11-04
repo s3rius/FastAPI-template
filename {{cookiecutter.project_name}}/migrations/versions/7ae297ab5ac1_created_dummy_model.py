@@ -22,7 +22,7 @@ def upgrade():
                     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
                     sa.Column('name', sa.String(), nullable=False),
                     sa.Column('surname', sa.String(), nullable=False),
-                    {% if cookiecutter.add_elastic == "True" -%}sa.Column('tags', sa.String(), nullable=False, default=""),{% endif %}
+                    {% if cookiecutter.add_elastic_search == "True" -%}sa.Column('tags', sa.String(), nullable=False, default=""),{% endif %}
                     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('clock_timestamp()'),
                               nullable=False),
                     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('clock_timestamp()'),

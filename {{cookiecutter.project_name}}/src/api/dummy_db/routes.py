@@ -7,7 +7,7 @@ from src.api.dummy_db.schema import (
     UpdateDummyModel,
     GetDummyResponse,
 )
-{% if cookiecutter.add_elastic == "True" -%}
+{% if cookiecutter.add_elastic_search == "True" -%}
 from src.api.dummy_db.schema import DummyElasticResponse, ElasticAdd
 from src.services.elastic.schema import ElasticFilterModel
 {%else%}
@@ -22,8 +22,8 @@ URL_PREFIX = "/dummy_db_obj"
 
 
 @router.put("/")
-async def create_dummy(dummy_obj: {% if cookiecutter.add_elastic == "True" -%}ElasticAdd{% else %}BaseDummyModel{% endif %}, session: Session = Depends(db_session)) -> None:
-    {% if cookiecutter.add_elastic == "True" -%}
+async def create_dummy(dummy_obj: {% if cookiecutter.add_elastic_search == "True" -%}ElasticAdd{% else %}BaseDummyModel{% endif %}, session: Session = Depends(db_session)) -> None:
+    {% if cookiecutter.add_elastic_search == "True" -%}
     insert_query = DummyDBModel.create(**dummy_obj.dict()).returning(DummyDBModel.id)
     model_id = await session.scalar(insert_query)
     await DummyDBModel.elastic_add(
@@ -41,7 +41,7 @@ async def update_dummy_model(
         session: Session = Depends(db_session)
 ) -> None:
     await session.execute(DummyDBModel.update(dummy_id, **new_values.dict()))
-    {% if cookiecutter.add_elastic == "True" -%}
+    {% if cookiecutter.add_elastic_search == "True" -%}
     await DummyDBModel.elastic_update(
         model_id=dummy_id,
         **new_values.dict(exclude_unset=True)
@@ -52,7 +52,7 @@ async def update_dummy_model(
 @router.delete("/{dummy_id}")
 async def delete_dummy_model(dummy_id: uuid.UUID, session: Session = Depends(db_session)) -> None:
     await session.execute(DummyDBModel.delete(dummy_id))
-    {% if cookiecutter.add_elastic == "True" -%}
+    {% if cookiecutter.add_elastic_search == "True" -%}
     await DummyDBModel.elastic_delete(model_id=dummy_id)
     {% endif %}
 
@@ -74,7 +74,7 @@ async def filter_dummy_models(
         results=results
     )
 
-{% if cookiecutter.add_elastic == "True" -%}
+{% if cookiecutter.add_elastic_search == "True" -%}
 @router.get("/elastic", response_model=DummyElasticResponse)
 async def dummy_elastic_filter(query: ElasticFilterModel = Depends(ElasticFilterModel)) -> DummyElasticResponse:
     results = await DummyDBModel.elastic_filter(**query.dict())

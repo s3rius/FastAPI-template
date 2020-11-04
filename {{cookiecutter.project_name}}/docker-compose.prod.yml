@@ -57,7 +57,7 @@ services:
       - {{ cookiecutter.project_name }}_network
   {% endif %}
 
-  {% if cookiecutter.add_elastic == "True" -%}
+  {% if cookiecutter.add_elastic_search == "True" -%}
   es:
     restart: always
     container_name: {{ cookiecutter.project_name }}_es_dev
