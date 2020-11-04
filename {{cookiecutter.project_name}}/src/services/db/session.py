@@ -14,7 +14,7 @@ class Session:
 
     async def fetchone(self, query: Any) -> Any:
         cursor = await self.connection.execute(query)
-        return cursor.fetchone()
+        return await cursor.fetchone()
 
     async def scalar(self, query: Any) -> Any:
         result = await self.fetchone(query)

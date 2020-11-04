@@ -24,7 +24,7 @@ def delete_resources_for_disabled_features():
     with open(MANIFEST) as manifest_file:
         manifest = json.load(manifest_file)
         for feature in manifest['features']:
-            if not feature['enabled']:
+            if not feature['enabled'] == "true":
                 print("removing resources for disabled feature {}...".format(feature['name']))
                 for resource in feature['resources']:
                     delete_resource(resource)

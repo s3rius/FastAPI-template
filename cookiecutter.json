@@ -3,6 +3,7 @@
   "full_name": "Pavel Kirilin",
   "email": "win10@list.ru",
   "project_description": "",
+  "default_port": 8401,
   "add_redis": [
     true,
     false
@@ -12,6 +13,10 @@
     false
   ],
   "add_dummy_model": [
+    true,
+    false
+  ],
+  "add_elastic": [
     true,
     false
   ],
