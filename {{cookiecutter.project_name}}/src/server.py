@@ -12,7 +12,7 @@ from src.services.db import db_engine
 {% if cookiecutter.add_redis == "True" -%}
 from src.services.redis import redis
 {% endif %}
-from src.settings import Settings, settings
+from src.settings import settings
 
 logger.configure(
     handlers=[{
