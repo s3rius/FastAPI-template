@@ -3,7 +3,7 @@
 version: '3.7'
 
 services:
-  back:
+  back: &back
     container_name: {{ cookiecutter.project_name }}_backend_dev
     build:
       context: .
@@ -25,7 +25,7 @@ services:
     container_name: {{ cookiecutter.project_name }}_db_dev
     image: postgres:12.4
     volumes:
-      - {{ cookiecutter.project_name }}_db_data_dev:/var/lib/postgresql/data
+      - db_data_dev:/var/lib/postgresql/data
     ports:
       - 5432:5432
     networks:
@@ -38,7 +38,7 @@ services:
     container_name: {{ cookiecutter.project_name }}_redis_dev
     image: bitnami/redis:6.0.7
     volumes:
-      - {{ cookiecutter.project_name }}_redis_data_dev:/bitnami/redis/data
+      - redis_data_dev:/bitnami/redis/data
     env_file:
       - envs/.env
     ports:
@@ -71,7 +71,7 @@ services:
     container_name: {{ cookiecutter.project_name }}_es_dev
     image: elasticsearch:7.3.0
     volumes:
-      - {{ cookiecutter.project_name }}_es_data_dev:/usr/share/elasticsearch/data
+      - es_data_dev:/usr/share/elasticsearch/data
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
@@ -81,9 +81,9 @@ services:
   {% endif %}
 
 volumes:
-  {{ cookiecutter.project_name }}_db_data_dev:
-  {{ cookiecutter.project_name }}_redis_data_dev:
-  {{ cookiecutter.project_name }}_es_data_dev:
+  db_data_dev:
+  redis_data_dev:
+  es_data_dev:
 
 networks:
   {{ cookiecutter.project_name }}_network_dev:
