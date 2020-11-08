@@ -22,7 +22,7 @@ class Base:
         return self.__name__.lower()
 
     @declared_attr
-    def id(self) -> sa.Column:
+    def id(self) -> sa.Column[Any]:
         return Column(
             UUID(as_uuid=True),
             primary_key=True,
@@ -30,7 +30,7 @@ class Base:
         )
 
     @declared_attr
-    def created_at(self) -> sa.Column:
+    def created_at(self) -> sa.Column[Any]:
         return sa.Column(
             sa.DateTime(timezone=True),
             server_default=sa.text("clock_timestamp()"),
@@ -38,7 +38,7 @@ class Base:
         )
 
     @declared_attr
-    def updated_at(self) -> sa.Column:
+    def updated_at(self) -> sa.Column[Any]:
         return sa.Column(
             sa.DateTime(timezone=True),
             server_default=sa.text("clock_timestamp()"),
@@ -47,17 +47,17 @@ class Base:
         )
 
     @classmethod
-    async def get(
+    def get(
         cls, pk: Union[uuid.UUID, str], *fields: InstrumentedAttribute
     ) -> Optional[Any]:
         return cls.select_query(*fields).where(cls.id == pk)
 
     @classmethod
-    async def exists(cls, pk: Union[uuid.UUID, str]) -> sa.sql.Select:
+    def exists(cls, pk: Union[uuid.UUID, str]) -> sa.sql.expression.Exists:
         return sa.exists().where(cls.id == pk)
 
     @classmethod
-    async def delete(cls, pk: uuid.UUID) -> sa.sql.Delete:
+    def delete(cls, pk: uuid.UUID) -> sa.sql.Delete:
         return cls.delete_query().where(cls.id == pk)
 
     @classmethod
@@ -66,7 +66,7 @@ class Base:
         *columns: Union[InstrumentedAttribute, Type["Base"]],
         use_labels: bool = False,
     ) -> sa.sql.Select:
-        return sa.select(columns or [cls], use_labels=use_labels)
+        return sa.select(columns or [cls], use_labels=use_labels)  # type: ignore
 
     @classmethod
     def insert_query(cls, **values: Any) -> sa.sql.Insert:

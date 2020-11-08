@@ -6,14 +6,14 @@ from sqlalchemy.engine.url import URL, make_url
 from src.settings import settings
 
 db_url = make_url(
-    URL(
+    str(URL(
         drivername=settings.db_driver,
         username=settings.postgres_user,
         password=settings.postgres_password,
         host=settings.postgres_host,
         port=settings.postgres_port,
         database=settings.postgres_db,
-    )
+    ))
 )
 
 

@@ -32,6 +32,7 @@ repos:
           - "--strict"
           - "--ignore-missing-imports"
           - "--allow-subclassing-any"
+          - "--allow-untyped-calls"
           - "--pretty"
           - "--show-error-codes"
           - "--no-warn-return-any"

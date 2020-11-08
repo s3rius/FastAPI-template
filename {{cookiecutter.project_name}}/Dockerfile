@@ -30,8 +30,8 @@ ENV PYTHONUNBUFFERED=1 \
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         # deps for installing poetry
-        postgresql=11+200+deb10u3 \
-        libpq-dev=11.7-0+deb10u1 \
+        postgresql=11+200+deb10u4 \
+        libpq-dev=11.9-0+deb10u1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -45,8 +45,6 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         # deps for installing poetry
         curl=7.64.0-4+deb10u1 \
-        postgresql=11+200+deb10u3 \
-        libpq-dev=11.7-0+deb10u1 \
         # deps for building python deps
         build-essential=12.6 \
     && apt-get clean \

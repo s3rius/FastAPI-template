@@ -17,14 +17,14 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 def get_engine() -> Engine:
     pg_db_url = make_url(
-        URL(
+        str(URL(
             drivername=settings.db_driver,
             username=settings.postgres_user,
             password=settings.postgres_password,
             host=settings.postgres_host,
             port=settings.postgres_port,
             database="postgres",
-        )
+        ))
     )
     engine = create_engine(str(pg_db_url))
     return engine
@@ -84,7 +84,7 @@ def app_fixture(create_db: None) -> TestClient:
 
 
 @pytest.fixture(scope="function")
-def pg_conn() -> Connection:
+def pg_conn() -> Generator[Connection, None, None]:
     engine = create_engine(str(db_url), pool_size=0, echo=True)
     conn = engine.connect()
 
