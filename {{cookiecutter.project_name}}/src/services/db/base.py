@@ -2,7 +2,6 @@ import uuid
 from typing import Any, Dict, Optional, Tuple, Type, Union
 
 import sqlalchemy as sa
-from sqlalchemy import Column, Table
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
 from sqlalchemy.orm.attributes import InstrumentedAttribute
@@ -14,7 +13,7 @@ class Base:
     """Base class for all models"""
 
     __name__: str
-    __table__: Table
+    __table__: sa.Table
     __table_args__: Tuple[Any, ...]
 
     @declared_attr
@@ -22,15 +21,15 @@ class Base:
         return self.__name__.lower()
 
     @declared_attr
-    def id(self) -> sa.Column[Any]:
-        return Column(
+    def id(self) -> Any:
+        return sa.Column(
             UUID(as_uuid=True),
             primary_key=True,
             default=uuid.uuid4
         )
 
     @declared_attr
-    def created_at(self) -> sa.Column[Any]:
+    def created_at(self) -> Any:
         return sa.Column(
             sa.DateTime(timezone=True),
             server_default=sa.text("clock_timestamp()"),
@@ -38,7 +37,7 @@ class Base:
         )
 
     @declared_attr
-    def updated_at(self) -> sa.Column[Any]:
+    def updated_at(self) -> Any:
         return sa.Column(
             sa.DateTime(timezone=True),
             server_default=sa.text("clock_timestamp()"),
