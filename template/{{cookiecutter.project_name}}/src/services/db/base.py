@@ -10,7 +10,29 @@ from src.services.db.db_meta import meta
 
 @as_declarative(metadata=meta)
 class Base:
-    """Base class for all models"""
+    """
+    Base class for all models
+
+    It has some very cool methods which allows you
+    to ship autocompletion and type verification to SQLAlchemy models.
+
+    >>> class Model(Base):
+    >>>     name = sa.Column(sa.String())
+    >>>
+    >>>     @classmethod
+    >>>     def get_by_name(cls, name: str) -> sa.sql.Select:
+    >>>         return Model.select_query(cls.id).where(cls.name == name)
+    ...
+    >>> session.fetchall(Model.get_by_name("random_name"))
+
+    `id`, `created_at` and `updated_at` columns are created
+    automatically for all models.
+
+    Basic settings form models such as `__name__`, `__table__` and `__table_args__`
+    defined with types to allow mypy verify this data.
+
+    `__tablename__` generated automatically based on class name.
+    """
 
     __name__: str
     __table__: sa.Table

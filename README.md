@@ -7,8 +7,8 @@
 ⚠️ [Git](https://git-scm.com/downloads), [Python](https://www.python.org/), and [Docker-compose](https://docs.docker.com/compose/install/) must be installed and accessible ⚠️
 
 ```bash
-python3 -m pip install cookiecutter
-cookiecutter gh:s3rius/FastAPI-template
+python3 -m pip install fastapi_template
+fastapi_template
 # Answer prompts questions
 # ???
 # 🍪 Enjoy your new project 🍪
@@ -23,6 +23,3 @@ Currently supported features:
 - Example (dummy) SQLAlchemy model
 - Elastic Search support
 - Scheduler support
-
-Planned features:
-- Add Makefile support

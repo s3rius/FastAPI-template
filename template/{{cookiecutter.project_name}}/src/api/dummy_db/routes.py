@@ -23,6 +23,10 @@ URL_PREFIX = "/dummy_db_obj"
 
 @router.put("/")
 async def create_dummy(dummy_obj: {% if cookiecutter.add_elastic_search == "True" -%}ElasticAdd{% else %}BaseDummyModel{% endif %}, session: Session = Depends(db_session)) -> None:
+    """
+    Add dummy object in database.
+    If you have elastic search feature enabled it will be added in your index.
+    """
     {% if cookiecutter.add_elastic_search == "True" -%}
     insert_query = DummyDBModel.create(**dummy_obj.dict()).returning(DummyDBModel.id)
     model_id = await session.scalar(insert_query)

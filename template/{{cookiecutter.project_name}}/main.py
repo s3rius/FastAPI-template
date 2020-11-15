@@ -30,7 +30,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", type=str, default="0.0.0.0")
     parser.add_argument("--port", type=int, default=8000)
-    parser.add_argument("--pid-file", type=str, default="/tmp/fastapi_service.pid")
+    parser.add_argument("--pid-file", type=str, default="/tmp/{{cookiecutter.project_name}}.pid")
     return parser.parse_args()
 
 
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     args = parse_args()
     options = {
         "bind": f"{args.host}:{args.port}",
-        "workers": 1,
+        "workers": 4,
         "worker_class": "uvicorn.workers.UvicornWorker",
         "pidfile": args.pid_file,
     }

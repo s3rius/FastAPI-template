@@ -7,6 +7,9 @@ from src.settings import settings
 
 
 class RedisClient:
+    """
+    Super simple redis client.
+    """
     def __init__(self, address: Union[str, Tuple[str, int]], password: str):
         self.address = address
         self.password = password
