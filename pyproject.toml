@@ -1,11 +1,20 @@
 [tool.poetry]
 name = "fastapi_template"
-version = "1.1.4"
+version = "1.1.5"
 description = "Feature-rich robust FastAPI template"
 authors = ["Pavel Kirilin <win10@list.ru>"]
 packages = [
     { include = "template" },
 ]
+repository = "https://github.com/s3rius/FastAPI-template"
+homepage = "https://github.com/s3rius/FastAPI-template"
+readme = "README.md"
+keywords = [
+    "FastAPI",
+    "Cookiecutter",
+    "Template"
+]
+
 
 [tool.poetry.dependencies]
 python = "^3.8"
