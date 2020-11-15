@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastapi_template"
-version = "1.1.8"
+version = "1.2.0"
 description = "Feature-rich robust FastAPI template"
 authors = ["Pavel Kirilin <win10@list.ru>"]
 packages = [
@@ -26,7 +26,7 @@ pygit2 = "^1.4.0"
 [tool.poetry.dev-dependencies]
 
 [tool.poetry.scripts]
-fastapi_template = "fastapi_template:main"
+fastapi_template = "fastapi_template.main:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
