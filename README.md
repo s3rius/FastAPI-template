@@ -1,5 +1,5 @@
 <div align="center">
-<img src="images/logo.png" width=700>
+<img src="https://raw.githubusercontent.com/s3rius/FastAPI-template/master/images/logo.png" width=700>
 <div><i>Fast and flexible general-purpose template for your API.</i></div>
 </div>
 
