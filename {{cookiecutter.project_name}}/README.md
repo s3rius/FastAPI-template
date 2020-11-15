@@ -2,74 +2,68 @@
 
 {{cookiecutter.project_description}}
 
-## Для разработчиков
+## For developers
 
-Для локального запуска достаточно выполнить команду "docker-compose up"
+To run project locally you can just type `docker-compose up`
 
-### Требуемые переменные среды для CI\CD
-* APP_DIR - путь до проекта на сервере
-* ENV_FILE_PATH - путь до файла с переменными среды
+### Needed environment variables for CI\CD
+* APP_ENV_FILE - path to .env file on server
 
-## Инсутрукция по развертыванию системы
+## How to run the application
 
-Сначала потребуется установить все зависимости
+At first, you need to install all dependencies with poetry
 
-Это можно сделать как с помощью poetry, так и с помощью pip
 ```bash
 poetry install
 ```
 
-```bash
-python -m pip install -r requirements.txt
-```
+For tests you need to set all needed environment variables.
+All needed variables shown in `envs/.env.example`.
 
-Для запуска или проведения тестирования потребуется выставить нужные переменные среды.
-Пример переменных среды можно найти в файле `.env.example`.
+If all new environment parameters are stored in .env file, then you better to start testing/application using `dotenv` program, or set  `EnvironmentFile` in your systemd-module. 
 
-Если новые параметры запуска хранятся в .env файле, то запуск тестов/системы лучше производить через dotenv или указать `EnvironmentFile` в конфигурации systemd-модуля.
-
-### Применение миграций
-Перед запуском системы важно не забыть применить миграции. Для этого, находясь в папке с приложением
-следует выполнить следующую команду:
+### Applying migrations and startup
+Before running the application don't forget to apply pending migrations. To do so run the following command in the application directory:
 ```bash
 dotenv -f ".env.file" run alembic upgrade head;
 ```
 
-Для запуска через dotenv:
+To test and start the application with `dotenv` run following commands: 
 ```bash
-# Запуск тестирования
+# Testing
 dotenv -f envs/test.env run pytest
-# Запуск системы
-dotenv -f envs/test.env run uvicorn --access-log --log-level debug --host 0.0.0.0 --port 8100 src.server:app
+# Startup
+dotenv -f envs/.env run uvicorn --access-log --log-level debug --host 0.0.0.0 --port 8100 src.server:app
 ```
 
-Для запуска с выставленными переменными среды:
+If all environment variables already set: 
 ```bash
-# Запуск тестов
+# Testing
 pytest
-# Запуск приложения
+# Startup
 uvicorn --access-log --log-level debug --host 0.0.0.0 --port 8100 src.server:app
 ```
 
-Пример сконфигурированного systemd-модуля представлен в файле [systemd/{{cookiecutter.project_name}}_service.service](systemd/{{ cookiecutter.project_name }}_service.service)
+Example of configured systemd module for application shown in [systemd/{{cookiecutter.project_name}}_service.service](systemd/{{ cookiecutter.project_name }}_service.service) file.
 
 
-## Запуск планировщика задач
-Планировщик сделан чтобы некоторые задачи могли выполнятся на фоне системы.
+## Task scheduler startup
+Task scheduler is a script that runs background tasks periodically.
+You can read more about scheduler at [aioschedule docs](https://pypi.org/project/aioschedule/) 
 
 ```bash
-# Для запуска с выставленными переменными среды:
+# Command to run scheduler script with existing environment variables:
 python scheduler.py
  
-# Для запуска через dotenv
+# Command to run sceduler with .env file: 
 dotenv -f envs/.env run python scheduler.py
 ```
 
-Пример сконфигурированного systemd-модуля представлен в файле [systemd/{{cookiecutter.project_name}}_scheduler.service](systemd/{{ cookiecutter.project_name }}_scheduler.service)
+Example of configured systemd module for scheduler shown in [systemd/{{cookiecutter.project_name}}_scheduler.service](systemd/{{ cookiecutter.project_name }}_scheduler.service)
 
-## Немного про systemd файлы
+## About systemd files
 
-Для применения на другой машине, скорее всего потребуется поменять следующие параметры в файле:
-* EnvironmentFile - файл с описанием переменных среды (Полный путь до файла в системе);
-* WorkingDirectory путь до папки с проектом;
-* ExecStart - команда запуска приложения.
+To use systemd files on different machine you may need to change following parameters:
+* EnvironmentFile - absolute path to .env file to use during execution;
+* WorkingDirectory - absolute path to project directory on your machine or server;
+* ExecStart - command to start the application.

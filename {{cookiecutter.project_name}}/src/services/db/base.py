@@ -65,7 +65,7 @@ class Base:
         *columns: Union[InstrumentedAttribute, Type["Base"]],
         use_labels: bool = False,
     ) -> sa.sql.Select:
-        return sa.select(columns or [cls], use_labels=use_labels)  # type: ignore
+        return sa.select(columns or [cls], use_labels=use_labels)
 
     @classmethod
     def insert_query(cls, **values: Any) -> sa.sql.Insert:
