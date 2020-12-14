@@ -47,7 +47,6 @@ repos:
     rev: 5.4.2
     hooks:
       - id: isort
-        language_version: python3.8
         args:
           - "-l=88"
           - "--multi-line=3"
