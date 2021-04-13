@@ -59,7 +59,8 @@ def init_repo():
         hook=None,
         verbose=False,
         color=True,
-        show_diff_on_failure=False
+        show_diff_on_failure=False,
+        is_squash_merge=False,
     )
     pre_commit.run(
         config_file=pre_commit_constants.CONFIG_FILE,
