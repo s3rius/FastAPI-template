@@ -1,0 +1,89 @@
+[flake8]
+max-complexity = 6
+inline-quotes = double
+max-line-length = 88
+extend-ignore = E203
+docstring_style=sphinx
+
+ignore =
+  ; Found `f` string
+  WPS305,
+  ; Missing docstring in public module
+  D100,
+  ; Missing docstring in magic method
+  D105,
+  ; Missing docstring in __init__
+  D107,
+  ; Found class without a base class
+  WPS306,
+  ; Missing docstring in public nested class
+  D106,
+  ; First line should be in imperative mood
+  D401,
+  ; Found `__init__.py` module with logic
+  WPS412,
+  ; Found implicit string concatenation
+  WPS326,
+  ; Found string constant over-use
+  WPS226,
+  ; Found upper-case constant in a class
+  WPS115,
+  ; Found nested function
+  WPS430,
+  ; Found using `@staticmethod`
+  WPS602,
+  ; Found method without arguments
+  WPS605,
+  ; Found overused expression
+  WPS204,
+  ; Found too many module members
+  WPS202,
+  ; Found too high module cognitive complexity
+  WPS232,
+  ; line break before binary operator
+  W503,
+  ; Found module with too many imports
+  WPS201,
+  ; Found vague import that may cause confusion: X
+  WPS347,
+  ; Inline strong start-string without end-string.
+  RST210,
+  ; Found nested class
+  WPS431,
+  ; Found wrong module name
+  WPS100,
+  ; Found too many methods
+  WPS214,
+  ; Found too long ``try`` body
+  WPS229,
+  ; Found unpythonic getter or setter
+  WPS615,
+  ; Found a line that starts with a dot
+  WPS348,
+  ; Found complex default value (for dependency injection)
+  WPS404,
+  ;  not perform function calls in argument defaults (for dependency injection)
+  B008,
+
+  ; all init files
+  __init__.py:
+  ; ignore not used imports
+  F401,
+  ; ignore import with wildcard
+  F403,
+  ; Found wrong metadata variable
+  WPS410,
+
+per-file-ignores =
+  ; all tests
+  test_*.py,tests.py,tests_*.py,*/tests/*:
+  ; Use of assert detected
+  S101,
+  ; Found outer scope names shadowing
+  WPS442,
+
+exclude =
+  ./.git,
+  ./venv,
+  migrations,
+  ./var,

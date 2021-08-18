@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{cookiecutter.project_name}}
+spec:
+  selector:
+    matchLabels:
+      app: {{cookiecutter.project_name}}
+  template:
+    metadata:
+      labels:
+        app: {{cookiecutter.project_name}}
+    spec:
+      containers:
+        - name: {{cookiecutter.project_name}}
+          image: {{cookiecutter.project_name}}:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: {{cookiecutter.project_name}}-env
+          resources:
+            limits:
+              memory: "300Mi"
+              cpu: "200m"
+          ports:
+            - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{cookiecutter.project_name}}
+spec:
+  selector:
+    app: {{cookiecutter.project_name}}
+  ports:
+    - port: 80
+      targetPort: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{cookiecutter.project_name}}
+  labels:
+    name: {{cookiecutter.project_name}}
+spec:
+  rules:
+    - host: {{cookiecutter.project_name}}.local
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: {{cookiecutter.project_name}}
+                port:
+                  number: 80
