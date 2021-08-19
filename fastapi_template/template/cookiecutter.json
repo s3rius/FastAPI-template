@@ -1,29 +1,25 @@
 {
-  "project_name": "new_fastapi_project",
-  "full_name": "Your name",
-  "email": "win10@list.ru",
-  "project_description": "",
-  "default_port": 8401,
-  "add_redis": [
-    true,
-    false
-  ],
-  "add_systemd": [
-    true,
-    false
-  ],
-  "add_dummy_model": [
-    true,
-    false
-  ],
-  "add_elastic_search": [
-    true,
-    false
-  ],
-  "add_scheduler": [
-    true,
-    false
-  ],
+  "project_name": {
+    "type": "string"
+  },
+  "project_description": {
+    "type": "string"
+  },
+  "db_info": {
+    "type": "dict"
+  },
+  "enable_redis": {
+    "type": "bool"
+  },
+  "enable_ci": {
+    "type": "bool"
+  },
+  "enable_alembic": {
+    "type": "bool"
+  },
+  "enable_kube": {
+    "type": "bool"
+  },
   "_extensions": [
     "cookiecutter.extensions.RandomStringExtension"
   ]

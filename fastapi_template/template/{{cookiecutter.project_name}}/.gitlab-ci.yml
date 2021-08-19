@@ -1,33 +1,53 @@
-variables:
-  GIT_STRATEGY: clone
-
 stages:
-  - test
-  - deploy
+  - "test"
 
-.install-deps-template: &install-deps
-  before_script:
-    - echo "Installing deps"
-    - python3 -m pip install poetry
-    - poetry install -vv
-
-run_tests:
-  <<: *install-deps
+.test-template:
   stage: test
+  image: python:3.9.6-slim-buster
   tags:
-    - testing
-  script:
-    - poetry run pre-commit run --all-files
-    - poetry run dotenv -f envs/test.env run pytest -vv --cov=src
+    - kubernetes-runner
+    - docker-runner
+  except:
+    - tags
+  before_script:
+    - pip install poetry==1.1.7
+    - poetry config virtualenvs.create false
+    - poetry install
 
-deploy_app:
-  <<: *install-deps
-  stage: deploy
-  only: ['master']
-  tags:
-    - production
+flake8:
+  extends:
+    - .test-template
   script:
-    - poetry run dotenv -f "${APP_ENV_FILE}" run alembic upgrade head;
-    - sh deploy.sh
-  environment:
-    name: production
+    - flake8 --count .
+
+pytest:
+  extends:
+    - .test-template
+  {%- if cookiecutter.db_info.name != "none" %}
+  {%- if cookiecutter.db_info.name != "mysql" %}
+  services:
+    - name: {{ cookiecutter.db_info.image }}
+  {%- endif %}
+  variables:
+    {%- if cookiecutter.db_info.name == "postgresql" %}
+    {{ cookiecutter.project_name | upper }}_DB_HOST: localhost
+    POSTGRES_PASSWORD: {{ cookiecutter.project_name }}
+    POSTGRES_USER: {{ cookiecutter.project_name }}
+    POSTGRES_DB: {{ cookiecutter.project_name }}
+    {%- endif %}
+    {%- if cookiecutter.db_info.name == "mysql" %}
+    {{ cookiecutter.project_name | upper }}_DB_HOST: localhost
+    MYSQL_PASSWORD: {{ cookiecutter.project_name }}
+    MYSQL_USER: {{ cookiecutter.project_name }}
+    MYSQL_DB: {{ cookiecutter.project_name }}
+    {%- endif %}
+  {%- endif %}
+  script:
+    - pytest -vv --cov="{{cookiecutter.project_name}}" .
+
+black:
+  extends:
+    - .test-template
+  script:
+    - black --check .
+

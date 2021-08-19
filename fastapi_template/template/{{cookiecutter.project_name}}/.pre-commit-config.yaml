@@ -6,54 +6,58 @@ repos:
     hooks:
       - id: check-ast
       - id: trailing-whitespace
+      - id: check-toml
+      - id: end-of-file-fixer
 
-  - repo: https://github.com/psf/black
-    rev: 20.8b0
+  - repo: https://github.com/asottile/add-trailing-comma
+    rev: v2.1.0
+    hooks:
+    -   id: add-trailing-comma
+
+  - repo: local
     hooks:
       - id: black
+        name: Format with Black
+        entry: poetry run black
+        language: system
+        types: [python]
 
-  - repo: https://gitlab.com/PyCQA/flake8.git
-    rev: 3.8.3
-    hooks:
-      - id: flake8
-        args:
-          - "--max-line-length=88"
-          - "--extend-ignore=E203"
-        exclude: >
-          (?x)^(
-              migrations/.+
-          )$
+      - id: autoflake
+        name: autoflake
+        entry: poetry run autoflake
+        language: system
+        types: [ python ]
+        args: [ --in-place, --remove-all-unused-imports, --remove-duplicate-keys ]
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.782
-    hooks:
-      - id: mypy
-        args:
-          - "--strict"
-          - "--ignore-missing-imports"
-          - "--allow-subclassing-any"
-          - "--allow-untyped-calls"
-          - "--pretty"
-          - "--show-error-codes"
-          - "--no-warn-return-any"
-          - "--implicit-reexport"
-          - "--allow-untyped-decorators"
-        exclude: >
-          (?x)^(
-              migrations/.+
-          )$
-
-  - repo: https://github.com/timothycrosley/isort
-    rev: 5.4.2
-    hooks:
       - id: isort
-        args:
-          - "-l=88"
-          - "--multi-line=3"
-          - "--tc"
-          - "--up"
-          - "--force-grid-wrap=0"
-        exclude: >
-          (?x)^(
-              migrations/.+
-          )$
+        name: isort
+        entry: poetry run isort
+        language: system
+        types: [ python ]
+
+      - id: flake8
+        name: Check with Flake8
+        entry: poetry run flake8
+        language: system
+        pass_filenames: false
+        types: [ python ]
+        args: [--count, .]
+
+      - id: mypy
+        name: Validate types with MyPy
+        entry: poetry run mypy
+        language: system
+        types: [ python ]
+
+      - id: yesqa
+        name: Remove usless noqa
+        entry: poetry run yesqa
+        language: system
+        types: [ python ]
+
+      - id: pytest
+        name: pytest
+        entry: poetry run pytest
+        language: system
+        pass_filenames: false
+        types: [ python ]

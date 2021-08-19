@@ -2,12 +2,13 @@
 import json
 import os
 import shutil
+import subprocess
 from argparse import Namespace
 
 import pre_commit.constants as pre_commit_constants
 import pre_commit.main as pre_commit
 from pygit2 import init_repository
-from termcolor import cprint
+from termcolor import cprint, colored
 
 MANIFEST = "conditional_files.json"
 
@@ -24,13 +25,17 @@ def delete_resource(resource):
 def delete_resources_for_disabled_features():
     with open(MANIFEST) as manifest_file:
         manifest = json.load(manifest_file)
-        for feature in manifest['features']:
-            if not feature['enabled'] == "true":
-                print("removing resources for disabled feature {}...".format(feature['name']))
+        for feature_name, feature in manifest.items():
+            if feature['enabled'].lower() != "true":
+                text = "{} resources for disabled feature {}...".format(
+                    colored("Removing", color="red"),
+                    colored(feature_name, color="magenta", attrs=['underline'])
+                )
+                print(text)
                 for resource in feature['resources']:
                     delete_resource(resource)
-    print("cleanup complete, removing manifest...")
     delete_resource(MANIFEST)
+    cprint("cleanup complete!", color="green")
 
 
 def init_repo():
@@ -48,7 +53,7 @@ def init_repo():
         overwrite=False
     )
     cprint("pre-commit installed.", "green")
-    run_namespace = Namespace(
+    pre_commit_args = Namespace(
         all_files=True,
         files=[],
         hook_stage='commit',
@@ -62,10 +67,11 @@ def init_repo():
         show_diff_on_failure=False,
         is_squash_merge=False,
     )
+    subprocess.run(["poetry", "install", "-n"])
     pre_commit.run(
         config_file=pre_commit_constants.CONFIG_FILE,
         store=store,
-        args=run_namespace
+        args=pre_commit_args
     )
     repo.index.add_all()
     repo.index.write()

@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+    env_file:
+      - .env
+    environment:
+      - {{cookiecutter.project_name | upper }}_VAR=test # stub
+      {%- if cookiecutter.db_info.name == "postgresql" %}
+      - {{cookiecutter.project_name | upper }}_DB_PORT=5432
+      {%- endif %}
+      {%- if cookiecutter.db_info.name == "mysql" %}
+      - {{cookiecutter.project_name | upper }}_DB_PORT=3306
+      {%- endif %}
+
+  {%- if cookiecutter.db_info.name == "postgresql" %}
+  db:
+    image: postgres:13.4-buster
+    hostname: {{cookiecutter.project_name}}-db
+    environment:
+      - POSTGRES_PASSWORD={{cookiecutter.project_name}}
+      - POSTGRES_USER={{cookiecutter.project_name}}
+      - POSTGRES_DB={{cookiecutter.project_name}}
+  {%- endif %}
+
+  {%- if cookiecutter.db_info.name == "mysql" %}
+  db:
+    image: bitnami/mysql:8.0.26
+    hostname: {{cookiecutter.project_name}}-db
+    environment:
+      - MYSQL_PASSWORD={{cookiecutter.project_name}}
+      - MYSQL_USER={{cookiecutter.project_name}}
+      - MYSQL_DATABASE={{cookiecutter.project_name}}
+  {%- endif %}
+
+  {%- if cookiecutter.enable_redis == "True" %}
+  redis:
+    image: bitnami/redis:6.2.5
+    hostname: {{cookiecutter.project_name}}-redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+  {%- endif %}

@@ -1,5 +1,6 @@
 ### Python template
 
+deploy/
 .idea/
 .vscode/
 # Byte-compiled / optimized / DLL files
