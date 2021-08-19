@@ -11,8 +11,8 @@
   "enable_redis": {
     "type": "bool"
   },
-  "enable_ci": {
-    "type": "bool"
+  "ci_type": {
+    "type": "string"
   },
   "enable_alembic": {
     "type": "bool"

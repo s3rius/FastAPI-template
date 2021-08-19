@@ -7,7 +7,7 @@ from prompt_toolkit.document import Document
 from prompt_toolkit.shortcuts import checkboxlist_dialog, radiolist_dialog
 from prompt_toolkit.validation import ValidationError, Validator
 
-from fastapi_template.input_model import BuilderContext, Database, DatabaseType
+from fastapi_template.input_model import BuilderContext, Database, DatabaseType, CIType
 
 
 class SnakeCaseValidator(Validator):
@@ -68,10 +68,11 @@ def parse_args():
     )
     parser.add_argument(
         "--ci",
-        help="Add CI/CD support",
-        action="store_true",
+        help="Choose CI support",
         default=None,
-        dest="enable_ci",
+        type=CIType,
+        choices=list(CIType),
+        dest="ci_type",
     )
     parser.add_argument(
         "--redis",
@@ -110,10 +111,6 @@ def ask_features(current_context: BuilderContext) -> BuilderContext:
         "Redis support": {
             "name": "enable_redis",
             "value": current_context.enable_redis,
-        },
-        "CI/CD": {
-            "name": "enable_ci",
-            "value": current_context.enable_ci,
         },
         "Kubernetes": {
             "name": "enable_kube",
@@ -160,6 +157,14 @@ def read_user_input(current_context: BuilderContext) -> BuilderContext:
             raise KeyboardInterrupt()
         if current_context.db == DatabaseType.none:
             current_context.enable_alembic = False
+    if current_context.ci_type is None:
+        current_context.ci_type = radiolist_dialog(
+            "CI",
+            text="Which CI/CD do you want?",
+            values=[(ci, ci.value) for ci in list(CIType)],
+        ).run()
+        if current_context.ci_type is None:
+            raise KeyboardInterrupt()
     ask_features(current_context)
     return current_context
 

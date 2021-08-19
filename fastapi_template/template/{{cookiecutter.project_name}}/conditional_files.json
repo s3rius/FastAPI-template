@@ -30,10 +30,16 @@
       "{{cookiecutter.project_name}}/db/migrations"
     ]
   },
-  "CI support": {
-    "enabled": "{{cookiecutter.enable_ci}}",
+  "Gitlab CI": {
+    "enabled": "{{cookiecutter.ci_type == 'CIType.gitlab_ci'}}",
     "resources": [
       ".gitlab-ci.yml"
+    ]
+  },
+  "Github CI": {
+    "enabled": "{{cookiecutter.ci_type == 'CIType.github'}}",
+    "resources": [
+      ".github"
     ]
   }
 }

@@ -42,7 +42,7 @@ Generator features:
 - Different databases to choose from.
 - Alembic integration;
 - redis support;
-- CI\CD (Currently only gitlab-ci);
+- different CI\CD templates;
 - Kubernetes config.
 
 This project can handle arguments passed through command line.
@@ -52,19 +52,21 @@ $ python -m fastapi_template --help
 
 usage: FastAPI template [-h] [--name PROJECT_NAME]
                         [--description PROJECT_DESCRIPTION]
-                        [--db {none,sqlite,mysql,postgresql}] [--ci] [--redis]
-                        [--alembic] [--kube] [--force]
+                        [--db {DatabaseType.none,DatabaseType.sqlite,DatabaseType.mysql,DatabaseType.postgresql}]
+                        [--ci {CIType.none,CIType.gitlab_ci,CIType.github}]
+                        [--redis] [--alembic] [--kube] [--force]
 
 optional arguments:
   -h, --help            show this help message and exit
   --name PROJECT_NAME   Name of your awesome project
   --description PROJECT_DESCRIPTION
                         Project description
-  --db {none,sqlite,mysql,postgresql}
+  --db {DatabaseType.none,DatabaseType.sqlite,DatabaseType.mysql,DatabaseType.postgresql}
                         Database
-  --ci                  Add CI/CD support
+  --ci {CIType.none,CIType.gitlab_ci,CIType.github}
+                        Choose CI support
   --redis               Add redis support
   --alembic             Add alembic support
   --kube                Add kubernetes configs
-  --force               Owerrite directory if exists
+  --force               Owerrite directory if it exists
 ```
