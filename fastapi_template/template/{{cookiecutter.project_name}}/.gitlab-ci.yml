@@ -43,7 +43,7 @@ pytest:
     {%- endif %}
   {%- endif %}
   script:
-    - pytest -vv --cov="{{cookiecutter.project_name}}" .
+    - pytest -vv --cov="{{cookiecutter.project_name}}" . --test-alembic
 
 black:
   extends:

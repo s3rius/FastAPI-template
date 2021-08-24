@@ -21,14 +21,14 @@ class Settings(BaseSettings):
     {%- if cookiecutter.db_info.name != "none" %}
     {%- if cookiecutter.db_info.name == "sqlite" %}
     db_file: Path = TEMP_DIR / "db.sqlite3"
-    {% else %}
+    {%- else %}
     db_host: str = "{{cookiecutter.project_name}}-db"
     db_port: int = {{cookiecutter.db_info.port}}
     db_user: str = "{{cookiecutter.project_name}}"
     db_pass: str = "{{cookiecutter.project_name}}"
     db_base: str = "{{cookiecutter.project_name}}"
-    db_echo: bool = False
     {%- endif %}
+    db_echo: bool = False
     {%- endif %}
 
     {%- if cookiecutter.enable_redis == "True" %}

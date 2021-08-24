@@ -10,6 +10,13 @@ services:
       - .env
     environment:
       - {{cookiecutter.project_name | upper }}_HOST=0.0.0.0
+      {%- if cookiecutter.db_info.name == "sqlite" %}
+      - {{cookiecutter.project_name | upper }}_DB_FILE=/db_data/db.sqlite3
+      {%- endif %}
+    {%- if cookiecutter.db_info.name == "sqlite" %}
+    volumes:
+      - {{cookiecutter.project_name}}-db-data:/db_data/
+    {%- endif %}
 
   {%- if cookiecutter.db_info.name == "postgresql" %}
   db:
@@ -35,13 +42,21 @@ services:
       - {{cookiecutter.project_name}}-db-data:/bitnami/mysql/data
   {%- endif %}
 
-  {% if cookiecutter.db_info.name != 'none' %}
+  {% if cookiecutter.enable_alembic == 'True' %}
   migrator:
     build:
       context: .
       dockerfile: ./deploy/Dockerfile
     image: {{cookiecutter.project_name}}:latest
+    {%- if cookiecutter.db_info.name == "sqlite" %}
+    command: alembic upgrade head
+    environment:
+      - {{cookiecutter.project_name | upper }}_DB_FILE=/db_data/db.sqlite3
+    volumes:
+      - {{cookiecutter.project_name}}-db-data:/db_data/
+    {%- else %}
     command: wait-for-it {{cookiecutter.project_name}}-db:{{cookiecutter.db_info.port}} -- alembic upgrade head
+    {%- endif %}
   {%- endif %}
 
   {%- if cookiecutter.enable_redis == "True" %}
