@@ -10,7 +10,7 @@ import aioredis
 
 {%- if cookiecutter.db_info.name != "none" %}
 from asyncio import current_task
-from sqlalchemy.ext.asyncio import (  # type: ignore
+from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_scoped_session,
     create_async_engine,

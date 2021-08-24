@@ -14,6 +14,8 @@
 
 ⚠️ [Git](https://git-scm.com/downloads), [Python](https://www.python.org/) and [Poetry](https://python-poetry.org/) must be installed and accessible ⚠️
 
+Poetry version must be greater or equal than 1.1.8. Otherwise it won't be able to install SQLAlchemy.
+
 ```bash
 python3 -m pip install fastapi_template
 python3 -m fastapi_template

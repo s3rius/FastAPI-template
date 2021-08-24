@@ -1,12 +1,16 @@
 FROM python:3.9.6-slim-buster
 
+RUN apt-get update && apt-get install -y \
+    wait-for-it \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 RUN useradd -m {{cookiecutter.project_name}}
 
 USER {{cookiecutter.project_name}}
 
 ENV PATH="${PATH}:/home/{{cookiecutter.project_name}}/.poetry/bin:/home/{{cookiecutter.project_name}}/.local/bin"
 
-RUN pip install poetry==1.1.7
+RUN pip install poetry==1.1.8
 
 # Installing requirements
 RUN poetry config virtualenvs.create false
@@ -21,10 +25,7 @@ COPY . /home/{{cookiecutter.project_name}}/app/src/
 WORKDIR /home/{{cookiecutter.project_name}}/app/src/
 RUN pip install --use-feature=in-tree-build  .
 
-WORKDIR /home/{{cookiecutter.project_name}}/app
-
 USER root
-RUN rm -rf /home/{{cookiecutter.project_name}}/app/src
 RUN chown -R {{cookiecutter.project_name}} /home/{{cookiecutter.project_name}}
 RUN chmod -R 700 /home/{{cookiecutter.project_name}}
 USER {{cookiecutter.project_name}}

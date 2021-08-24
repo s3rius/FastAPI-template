@@ -5,16 +5,11 @@ services:
     build:
       context: .
       dockerfile: ./deploy/Dockerfile
+    image: {{cookiecutter.project_name}}:latest
     env_file:
       - .env
     environment:
-      - {{cookiecutter.project_name | upper }}_VAR=test # stub
-      {%- if cookiecutter.db_info.name == "postgresql" %}
-      - {{cookiecutter.project_name | upper }}_DB_PORT=5432
-      {%- endif %}
-      {%- if cookiecutter.db_info.name == "mysql" %}
-      - {{cookiecutter.project_name | upper }}_DB_PORT=3306
-      {%- endif %}
+      - {{cookiecutter.project_name | upper }}_HOST=0.0.0.0
 
   {%- if cookiecutter.db_info.name == "postgresql" %}
   db:
@@ -24,6 +19,8 @@ services:
       - POSTGRES_PASSWORD={{cookiecutter.project_name}}
       - POSTGRES_USER={{cookiecutter.project_name}}
       - POSTGRES_DB={{cookiecutter.project_name}}
+    volumes:
+      - {{cookiecutter.project_name}}-db-data:/var/lib/postgresql/data
   {%- endif %}
 
   {%- if cookiecutter.db_info.name == "mysql" %}
@@ -34,6 +31,17 @@ services:
       - MYSQL_PASSWORD={{cookiecutter.project_name}}
       - MYSQL_USER={{cookiecutter.project_name}}
       - MYSQL_DATABASE={{cookiecutter.project_name}}
+    volumes:
+      - {{cookiecutter.project_name}}-db-data:/bitnami/mysql/data
+  {%- endif %}
+
+  {% if cookiecutter.db_info.name != 'none' %}
+  migrator:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+    image: {{cookiecutter.project_name}}:latest
+    command: wait-for-it {{cookiecutter.project_name}}-db:{{cookiecutter.db_info.port}} -- alembic upgrade head
   {%- endif %}
 
   {%- if cookiecutter.enable_redis == "True" %}
@@ -43,3 +51,9 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
   {%- endif %}
+
+{% if cookiecutter.db_info.name != 'none' %}
+volumes:
+  {{cookiecutter.project_name}}-db-data:
+    name: {{cookiecutter.project_name}}-db-data
+{% endif %}
