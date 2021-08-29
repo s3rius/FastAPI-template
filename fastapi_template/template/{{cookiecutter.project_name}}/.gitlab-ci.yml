@@ -14,19 +14,32 @@ stages:
     - poetry config virtualenvs.create false
     - poetry install
 
+black:
+  extends:
+    - .test-template
+  script:
+    - black --check .
+
 flake8:
   extends:
     - .test-template
   script:
     - flake8 --count .
 
+mypy:
+  extends:
+    - .test-template
+  script:
+    - mypy .
+
 pytest:
   extends:
     - .test-template
   {%- if cookiecutter.db_info.name != "none" %}
-  {%- if cookiecutter.db_info.name != "mysql" %}
+  {%- if cookiecutter.db_info.name != "sqlite" %}
   services:
     - name: {{ cookiecutter.db_info.image }}
+      alias: {{ cookiecutter.project_name }}-db
   {%- endif %}
   variables:
     {%- if cookiecutter.db_info.name == "postgresql" %}
@@ -39,15 +52,16 @@ pytest:
     {{ cookiecutter.project_name | upper }}_DB_HOST: localhost
     MYSQL_PASSWORD: {{ cookiecutter.project_name }}
     MYSQL_USER: {{ cookiecutter.project_name }}
-    MYSQL_DB: {{ cookiecutter.project_name }}
+    MYSQL_DATABASE: {{ cookiecutter.project_name }}
+    ALLOW_EMPTY_PASSWORD: yes
     {%- endif %}
   {%- endif %}
   script:
-    - pytest -vv --cov="{{cookiecutter.project_name}}" . --test-alembic
-
-black:
-  extends:
-    - .test-template
-  script:
-    - black --check .
-
+    {%- if cookiecutter.db_info.name != "none" %}
+    {%- if cookiecutter.db_info.name != "sqlite" %}
+    - apt update
+    - apt install -y wait-for-it
+    - wait-for-it -t 180 {{ cookiecutter.project_name }}-db:{{cookiecutter.db_info.port}}
+    {%- endif %}
+    {%- endif %}
+    - pytest -vv --cov="{{cookiecutter.project_name}}" . {% if cookiecutter.enable_alembic %}--test-alembic{%- endif %}
