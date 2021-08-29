@@ -4,30 +4,24 @@ RUN apt-get update && apt-get install -y \
     wait-for-it \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN useradd -m {{cookiecutter.project_name}}
-
-USER {{cookiecutter.project_name}}
-
-ENV PATH="${PATH}:/home/{{cookiecutter.project_name}}/.poetry/bin:/home/{{cookiecutter.project_name}}/.local/bin"
+# ENV PATH="${PATH}:/home/{{cookiecutter.project_name}}/.poetry/bin:/home/{{cookiecutter.project_name}}/.local/bin"
 
 RUN pip install poetry==1.1.8
 
 # Installing requirements
 RUN poetry config virtualenvs.create false
 
-COPY pyproject.toml poetry.lock /home/{{cookiecutter.project_name}}/app/
-WORKDIR /home/{{cookiecutter.project_name}}/app/
+COPY pyproject.toml poetry.lock /app/src/
+WORKDIR /app/src
 
 RUN poetry install --no-dev
 
 # Copying actuall application
-COPY . /home/{{cookiecutter.project_name}}/app/src/
-WORKDIR /home/{{cookiecutter.project_name}}/app/src/
+COPY . /app/src/
 RUN pip install --use-feature=in-tree-build  .
 
-USER root
-RUN chown -R {{cookiecutter.project_name}} /home/{{cookiecutter.project_name}}
-RUN chmod -R 700 /home/{{cookiecutter.project_name}}
-USER {{cookiecutter.project_name}}
+{%- if cookiecutter.db_info.name == "sqlite" %}
+VOLUME [ "/db_data" ]
+{%- endif %}
 
 CMD python -m {{cookiecutter.project_name}}

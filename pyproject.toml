@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastapi_template"
-version = "2.1.2"
+version = "2.1.3"
 description = "Feature-rich robust FastAPI template"
 authors = ["Pavel Kirilin <win10@list.ru>"]
 packages = [
