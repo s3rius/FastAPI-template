@@ -38,6 +38,7 @@ services:
       - MYSQL_PASSWORD={{cookiecutter.project_name}}
       - MYSQL_USER={{cookiecutter.project_name}}
       - MYSQL_DATABASE={{cookiecutter.project_name}}
+      - ALLOW_EMPTY_PASSWORD=yes
     volumes:
       - {{cookiecutter.project_name}}-db-data:/bitnami/mysql/data
   {%- endif %}
@@ -55,7 +56,7 @@ services:
     volumes:
       - {{cookiecutter.project_name}}-db-data:/db_data/
     {%- else %}
-    command: wait-for-it {{cookiecutter.project_name}}-db:{{cookiecutter.db_info.port}} -- alembic upgrade head
+    command: wait-for-it -t 180 {{cookiecutter.project_name}}-db:{{cookiecutter.db_info.port}} -- alembic upgrade head
     {%- endif %}
   {%- endif %}
 
