@@ -1,15 +1,16 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{cookiecutter.project_name}}-db
+  name: {{cookiecutter.kube_name}}-db
 spec:
   selector:
     matchLabels:
-      app: {{cookiecutter.project_name}}-db
+      app: {{cookiecutter.kube_name}}-db
   template:
     metadata:
       labels:
-        app: {{cookiecutter.project_name}}-db
+        app: {{cookiecutter.kube_name}}-db
     spec:
       containers:
         - name: database
@@ -18,16 +19,59 @@ spec:
             limits:
               memory: "300Mi"
               cpu: "200m"
+          env:
+            {%- if cookiecutter.db_info.name == 'postgresql' %}
+            - name: POSTGRES_PASSWORD
+              value: {{cookiecutter.project_name}}
+            - name: POSTGRES_USER
+              value: {{cookiecutter.project_name}}
+            - name: POSTGRES_DB
+              value: {{cookiecutter.project_name}}
+            {%- elif cookiecutter.db_info.name == 'mysql' %}
+            - name: MYSQL_PASSWORD
+              value: {{cookiecutter.project_name}}
+            - name: MYSQL_USER
+              value: {{cookiecutter.project_name}}
+            - name: MYSQL_DATABASE
+              value: {{cookiecutter.project_name}}
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "yes"
+            {%- endif %}
           ports:
-            - containerPort: 5432
+            - containerPort: {{cookiecutter.db_info.port}}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{cookiecutter.project_name}}-db"
+  name: "{{cookiecutter.kube_name}}-db-service"
 spec:
   selector:
-    app: {{cookiecutter.project_name}}-db
+    app: {{cookiecutter.kube_name}}-db
   ports:
     - port: {{cookiecutter.db_info.port}}
       targetPort: {{cookiecutter.db_info.port}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{cookiecutter.kube_name}}-migrator
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      containers:
+      - name: migrator
+        image: {{cookiecutter.project_name}}:latest
+        command:
+          - "wait-for-it"
+          - "-t"
+          - "180"
+          - "{{cookiecutter.kube_name}}-db-service:{{cookiecutter.db_info.port}}"
+          - "--"
+          - "alembic"
+          - "upgrade"
+          - "head"
+        env:
+          - name: {{cookiecutter.project_name | upper }}_DB_HOST
+            value: {{cookiecutter.kube_name}}-db-service
+      restartPolicy: Never

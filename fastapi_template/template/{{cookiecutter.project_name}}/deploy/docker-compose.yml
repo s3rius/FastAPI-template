@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: ./deploy/Dockerfile
-    image: {{cookiecutter.project_name}}:latest
+    image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
     env_file:
       - .env
     environment:
@@ -45,10 +45,7 @@ services:
 
   {% if cookiecutter.enable_alembic == 'True' %}
   migrator:
-    build:
-      context: .
-      dockerfile: ./deploy/Dockerfile
-    image: {{cookiecutter.project_name}}:latest
+    image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
     {%- if cookiecutter.db_info.name == "sqlite" %}
     command: alembic upgrade head
     environment:

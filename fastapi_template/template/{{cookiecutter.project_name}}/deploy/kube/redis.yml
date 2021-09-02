@@ -1,19 +1,23 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{cookiecutter.project_name}}-redis
+  name: {{cookiecutter.kube_name}}-redis
 spec:
   selector:
     matchLabels:
-      app: {{cookiecutter.project_name}}-redis
+      app: {{cookiecutter.kube_name}}-redis
   template:
     metadata:
       labels:
-        app: {{cookiecutter.project_name}}-redis
+        app: {{cookiecutter.kube_name}}-redis
     spec:
       containers:
         - name: redis
           image: bitnami/redis:6.2.5
+          env:
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "yes"
           resources:
             limits:
               memory: "300Mi"
@@ -24,10 +28,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{cookiecutter.project_name}}-redis"
+  name: "{{cookiecutter.kube_name}}-redis-service"
 spec:
   selector:
-    app: {{cookiecutter.project_name}}-redis
+    app: {{cookiecutter.kube_name}}-redis
   ports:
     - port: 6379
       targetPort: 6379
