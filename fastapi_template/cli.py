@@ -145,6 +145,7 @@ def read_user_input(current_context: BuilderContext) -> BuilderContext:
         current_context.project_name = prompt(
             "Project name: ", validator=SnakeCaseValidator()
         )
+    current_context.kube_name = current_context.project_name.replace('_', '-')
     if current_context.project_description is None:
         current_context.project_description = prompt("Project description: ")
     if current_context.db is None:

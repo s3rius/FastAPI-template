@@ -30,6 +30,7 @@ class BuilderContext(BaseModel):
     """Options for project generation."""
 
     project_name: Optional[str]
+    kube_name: Optional[str]
     project_description: Optional[str]
     db: Optional[DatabaseType]
     db_info: Optional[Database]

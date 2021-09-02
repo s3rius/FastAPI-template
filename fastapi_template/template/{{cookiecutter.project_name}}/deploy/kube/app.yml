@@ -2,23 +2,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{cookiecutter.project_name}}
+  name: {{cookiecutter.kube_name}}-app
 spec:
   selector:
     matchLabels:
-      app: {{cookiecutter.project_name}}
+      app: {{cookiecutter.kube_name}}-app
   template:
     metadata:
       labels:
-        app: {{cookiecutter.project_name}}
+        app: {{cookiecutter.kube_name}}-app
     spec:
       containers:
-        - name: {{cookiecutter.project_name}}
+        - name: app
           image: {{cookiecutter.project_name}}:latest
-          imagePullPolicy: Always
-          envFrom:
-            - configMapRef:
-                name: {{cookiecutter.project_name}}-env
+          {%- if cookiecutter.db_info.name == "sqlite" %}
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - >-
+              alembic upgrade head &&
+              python -m {{cookiecutter.project_name }}
+          {%- endif %}
+          env:
+            - name: {{cookiecutter.project_name | upper }}_HOST
+              value: 0.0.0.0
+            {%- if cookiecutter.db_info.name != "none" %}
+            {%- if cookiecutter.db_info.name != "sqlite" %}
+            - name: {{cookiecutter.project_name | upper }}_DB_HOST
+              value: {{cookiecutter.kube_name}}-db-service
+            {%- endif %}
+            {%- endif %}
+            {%- if cookiecutter.enable_redis %}
+            - name: {{cookiecutter.project_name | upper }}_REDIS_HOST
+              value: {{cookiecutter.kube_name}}-redis-service
+            {%- endif %}
           resources:
             limits:
               memory: "300Mi"
@@ -29,10 +46,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{cookiecutter.project_name}}
+  name: {{cookiecutter.kube_name}}-app-service
 spec:
   selector:
-    app: {{cookiecutter.project_name}}
+    app: {{cookiecutter.kube_name}}-app
   ports:
     - port: 80
       targetPort: 8000
@@ -40,18 +57,18 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{cookiecutter.project_name}}
+  name: {{cookiecutter.kube_name}}-app
   labels:
-    name: {{cookiecutter.project_name}}
+    name: {{cookiecutter.kube_name}}-app
 spec:
   rules:
-    - host: {{cookiecutter.project_name}}.local
+    - host: {{ cookiecutter.kube_name }}.local
       http:
         paths:
           - pathType: Prefix
             path: "/"
             backend:
               service:
-                name: {{cookiecutter.project_name}}
+                name: {{cookiecutter.kube_name}}-app-service
                 port:
                   number: 80

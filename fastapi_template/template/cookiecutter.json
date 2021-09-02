@@ -20,6 +20,9 @@
   "enable_kube": {
     "type": "bool"
   },
+  "kube_name": {
+    "type": "string"
+  },
   "_extensions": [
     "cookiecutter.extensions.RandomStringExtension"
   ]

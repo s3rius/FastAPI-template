@@ -23,6 +23,12 @@
       "alembic.ini"
     ]
   },
+  "Postgres and MySQL support": {
+    "enabled": "{{cookiecutter.db_info.name != 'sqlite'}}",
+    "resources": [
+      "deploy/kube/db.yml"
+    ]
+  },
   "Alembic": {
     "enabled": "{{cookiecutter.enable_alembic}}",
     "resources": [
