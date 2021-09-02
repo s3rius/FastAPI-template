@@ -2,12 +2,7 @@
 
 <div align="center">
 <img src="https://raw.githubusercontent.com/s3rius/FastAPI-template/master/images/logo.png" width=700>
-<div><i>Fast and flexible general-purpose template for your API.</i></div>
-</div>
-
-<div align="center">
-<img src="https://raw.githubusercontent.com/s3rius/FastAPI-template/master/images/ui-example.png" width=700>
-<div><i>With text user interface.</i></div>
+<div><i>Flexible and Lightweight general-purpose template for FastAPI.</i></div>
 </div>
 
 ## Usage
@@ -35,28 +30,28 @@ python3 -m fastapi_template
 
 ## Features
 
-Template is made with SQLAlchemy14 and uses sqlalchemy orm and sessions,
+Template is made with SQLAlchemy1.4 and uses sqlalchemy orm and sessions,
 instead of raw drivers.
 
 It has minimum to start new excellent project.
+
+Pre-commit integrations and excellent code documentation.
 
 Generator features:
 - Different databases to choose from.
 - Alembic integration;
 - redis support;
 - different CI\CD templates;
-- Kubernetes config.
+- Kubernetes config generation.
 
 This project can handle arguments passed through command line.
 
 ```shell
 $ python -m fastapi_template --help
 
-usage: FastAPI template [-h] [--name PROJECT_NAME]
-                        [--description PROJECT_DESCRIPTION]
+usage: FastAPI template [-h] [--name PROJECT_NAME] [--description PROJECT_DESCRIPTION]
                         [--db {DatabaseType.none,DatabaseType.sqlite,DatabaseType.mysql,DatabaseType.postgresql}]
-                        [--ci {CIType.none,CIType.gitlab_ci,CIType.github}]
-                        [--redis] [--alembic] [--kube] [--force]
+                        [--ci {CIType.none,CIType.gitlab_ci,CIType.github}] [--redis] [--alembic] [--kube] [--force]
 
 optional arguments:
   -h, --help            show this help message and exit
