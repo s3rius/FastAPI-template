@@ -23,6 +23,12 @@
   "kube_name": {
     "type": "string"
   },
+  "enable_routers": {
+    "type": "bool"
+  },
+  "add_dummy": {
+    "type": "bool"
+  },
   "_extensions": [
     "cookiecutter.extensions.RandomStringExtension"
   ]

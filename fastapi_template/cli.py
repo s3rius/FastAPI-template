@@ -41,7 +41,6 @@ DB_INFO = {
     ),
 }
 
-
 def parse_args():
     parser = ArgumentParser(
         prog="FastAPI template",
@@ -55,14 +54,15 @@ def parse_args():
     parser.add_argument(
         "--description",
         type=str,
+        default=None,
         dest="project_description",
         help="Project description",
     )
     parser.add_argument(
         "--db",
         help="Database",
-        type=DatabaseType,
-        choices=list(DatabaseType),
+        type=str,
+        choices=list(map(attrgetter("value"), DatabaseType)),
         default=None,
         dest="db",
     )
@@ -70,8 +70,8 @@ def parse_args():
         "--ci",
         help="Choose CI support",
         default=None,
-        type=CIType,
-        choices=list(CIType),
+        type=str,
+        choices=list(map(attrgetter("value"), CIType)),
         dest="ci_type",
     )
     parser.add_argument(
@@ -96,6 +96,21 @@ def parse_args():
         dest="enable_kube",
     )
     parser.add_argument(
+        "--dummy",
+        "--dummy-model",
+        help="Add dummy model",
+        action="store_true",
+        default=None,
+        dest="add_dummy",
+    )
+    parser.add_argument(
+        "--routers",
+        help="Add exmaple routers",
+        action="store_true",
+        default=None,
+        dest="enable_routers",
+    )
+    parser.add_argument(
         "--force",
         help="Owerrite directory if it exists",
         action="store_true",
@@ -116,12 +131,21 @@ def ask_features(current_context: BuilderContext) -> BuilderContext:
             "name": "enable_kube",
             "value": current_context.enable_kube,
         },
+        "Demo routers": {
+            "name": "enable_routers",
+            "value": current_context.enable_routers,
+        },
     }
     if current_context.db != DatabaseType.none:
         features["Alembic migrations"] = {
             "name": "enable_alembic",
             "value": current_context.enable_alembic,
         }
+        features["Add dummy model"] = {
+            "name": "add_dummy",
+            "value": current_context.add_dummy
+        }
+
     checkbox_values = []
     for feature_name, feature in features.items():
         if feature["value"] is None:

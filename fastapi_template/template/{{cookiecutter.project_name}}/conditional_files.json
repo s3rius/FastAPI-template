@@ -1,51 +1,68 @@
 {
-  "Redis": {
-    "enabled": "{{cookiecutter.enable_redis}}",
-    "resources": [
-      "{{cookiecutter.project_name}}/web/api/redis",
-      "{{cookiecutter.project_name}}/services/redis",
-      "deploy/kube/redis.yml"
-    ]
-  },
-  "Kubernetes": {
-    "enabled": "{{cookiecutter.enable_kube}}",
-    "resources": [
-      "deploy/kube"
-    ]
-  },
-  "Database support": {
-    "enabled": "{{cookiecutter.db_info.name != 'none'}}",
-    "resources": [
-      "{{cookiecutter.project_name}}/web/api/dummy",
-      "{{cookiecutter.project_name}}/db",
-      "{{cookiecutter.project_name}}/conftest.py",
-      "deploy/kube/db.yml",
-      "alembic.ini"
-    ]
-  },
-  "Postgres and MySQL support": {
-    "enabled": "{{cookiecutter.db_info.name != 'sqlite'}}",
-    "resources": [
-      "deploy/kube/db.yml"
-    ]
-  },
-  "Alembic": {
-    "enabled": "{{cookiecutter.enable_alembic}}",
-    "resources": [
-      "alembic.ini",
-      "{{cookiecutter.project_name}}/db/migrations"
-    ]
-  },
-  "Gitlab CI": {
-    "enabled": "{{cookiecutter.ci_type == 'CIType.gitlab_ci'}}",
-    "resources": [
-      ".gitlab-ci.yml"
-    ]
-  },
-  "Github CI": {
-    "enabled": "{{cookiecutter.ci_type == 'CIType.github'}}",
-    "resources": [
-      ".github"
-    ]
-  }
+    "Redis": {
+        "enabled": "{{cookiecutter.enable_redis}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/api/redis",
+            "{{cookiecutter.project_name}}/services/redis",
+            "deploy/kube/redis.yml"
+        ]
+    },
+    "Kubernetes": {
+        "enabled": "{{cookiecutter.enable_kube}}",
+        "resources": [
+            "deploy/kube"
+        ]
+    },
+    "Database support": {
+        "enabled": "{{cookiecutter.db_info.name != 'none'}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/api/dummy",
+            "{{cookiecutter.project_name}}/db",
+            "{{cookiecutter.project_name}}/conftest.py",
+            "deploy/kube/db.yml",
+            "alembic.ini"
+        ]
+    },
+    "Postgres and MySQL support": {
+        "enabled": "{{cookiecutter.db_info.name != 'sqlite'}}",
+        "resources": [
+            "deploy/kube/db.yml"
+        ]
+    },
+    "Alembic": {
+        "enabled": "{{cookiecutter.enable_alembic}}",
+        "resources": [
+            "alembic.ini",
+            "{{cookiecutter.project_name}}/db/migrations"
+        ]
+    },
+    "Gitlab CI": {
+        "enabled": "{{cookiecutter.ci_type == 'CIType.gitlab_ci'}}",
+        "resources": [
+            ".gitlab-ci.yml"
+        ]
+    },
+    "Github CI": {
+        "enabled": "{{cookiecutter.ci_type == 'CIType.github'}}",
+        "resources": [
+            ".github"
+        ]
+    },
+    "Routers": {
+        "enabled": "{{cookiecutter.enable_routers}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/api/echo",
+            "{{cookiecutter.project_name}}/web/api/dummy",
+            "{{cookiecutter.project_name}}/web/api/redis"
+        ]
+    },
+    "Dummy model": {
+        "enabled": "{{cookiecutter.add_dummy}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/api/dummy",
+            "{{cookiecutter.project_name}}/db/dao",
+            "{{cookiecutter.project_name}}/db/models/dummy_model.py",
+            "{{cookiecutter.project_name}}/db/migrations/versions/2021-08-16-16-55_2b7380507a71.py"
+        ]
+    }
 }
