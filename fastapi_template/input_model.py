@@ -38,6 +38,8 @@ class BuilderContext(BaseModel):
     ci_type: Optional[CIType]
     enable_alembic: Optional[bool]
     enable_kube: Optional[bool]
+    enable_routers: Optional[bool]
+    add_dummy: Optional[bool] = False
     force: bool = False
 
     class Config:

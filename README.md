@@ -49,21 +49,26 @@ This project can handle arguments passed through command line.
 ```shell
 $ python -m fastapi_template --help
 
-usage: FastAPI template [-h] [--name PROJECT_NAME] [--description PROJECT_DESCRIPTION]
-                        [--db {DatabaseType.none,DatabaseType.sqlite,DatabaseType.mysql,DatabaseType.postgresql}]
-                        [--ci {CIType.none,CIType.gitlab_ci,CIType.github}] [--redis] [--alembic] [--kube] [--force]
+usage: FastAPI template [-h] [--name PROJECT_NAME]
+                        [--description PROJECT_DESCRIPTION]
+                        [--db {none,sqlite,mysql,postgresql}]
+                        [--ci {none,gitlab,github}] [--redis] [--alembic]
+                        [--kube] [--dummy] [--routers] [--force]
 
 optional arguments:
   -h, --help            show this help message and exit
   --name PROJECT_NAME   Name of your awesome project
   --description PROJECT_DESCRIPTION
                         Project description
-  --db {DatabaseType.none,DatabaseType.sqlite,DatabaseType.mysql,DatabaseType.postgresql}
+  --db {none,sqlite,mysql,postgresql}
                         Database
-  --ci {CIType.none,CIType.gitlab_ci,CIType.github}
+  --ci {none,gitlab,github}
                         Choose CI support
   --redis               Add redis support
   --alembic             Add alembic support
   --kube                Add kubernetes configs
+  --dummy, --dummy-model
+                        Add dummy model
+  --routers             Add exmaple routers
   --force               Owerrite directory if it exists
 ```
