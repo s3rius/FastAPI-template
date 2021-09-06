@@ -19,7 +19,7 @@ yarl = "^1.6.3"
 {%- if cookiecutter.db_info.name != "none" %}
 SQLAlchemy = {version = "^1.4", extras = ["mypy", "asyncio"]}
 {%- endif %}
-{% if cookiecutter.enable_alembic == "True" %}
+{%- if cookiecutter.enable_alembic == "True" %}
 alembic = "^1.6.5"
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
