@@ -32,7 +32,7 @@ spec:
               value: {{cookiecutter.kube_name}}-db-service
             {%- endif %}
             {%- endif %}
-            {%- if cookiecutter.enable_redis %}
+            {%- if cookiecutter.enable_redis == 'True' %}
             - name: {{cookiecutter.project_name | upper }}_REDIS_HOST
               value: {{cookiecutter.kube_name}}-redis-service
             {%- endif %}
