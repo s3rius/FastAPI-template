@@ -15,6 +15,7 @@ async def get_redis_connection(request: Request) -> AsyncGenerator[Redis, None]:
     """
     redis_client = Redis(connection_pool=request.app.state.redis_pool)
 
-    yield redis_client
-
-    await redis_client.close()
+    try:  # noqa: WPS501
+        yield redis_client
+    finally:
+        await redis_client.close()

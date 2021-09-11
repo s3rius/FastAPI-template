@@ -38,4 +38,5 @@ async def set_value(
     :param redis_value: new value data.
     :param redis: redis connection.
     """
-    await redis.set(name=redis_value.key, value=redis_value.value)
+    if redis_value.value is not None:
+        await redis.set(name=redis_value.key, value=redis_value.value)

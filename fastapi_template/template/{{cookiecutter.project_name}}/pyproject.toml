@@ -34,6 +34,9 @@ aiomysql = "^0.0.21"
 {%- if cookiecutter.enable_redis == "True" %}
 aioredis = {version = "^2.0.0", extras = ["hiredis"]}
 {%- endif %}
+httptools = "^0.3.0"
+async-exit-stack = "^1.0.1"
+async-generator = "^1.10"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.0"
