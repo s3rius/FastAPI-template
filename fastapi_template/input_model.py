@@ -40,6 +40,7 @@ class BuilderContext(BaseModel):
     enable_kube: Optional[bool]
     enable_routers: Optional[bool]
     add_dummy: Optional[bool] = False
+    self_hosted_swagger: Optional[bool]
     force: bool = False
 
     class Config:

@@ -11,8 +11,15 @@ from {{cookiecutter.project_name}}.web.api import dummy
 from {{cookiecutter.project_name}}.web.api import redis
 {%- endif %}
 {%- endif %}
+{%- if cookiecutter.self_hosted_swagger == "True" %}
+from {{cookiecutter.project_name}}.web.api import docs
+{%- endif %}
+
 
 api_router = APIRouter()
+{%- if cookiecutter.self_hosted_swagger == "True" %}
+api_router.include_router(docs.router)
+{%- endif %}
 {%- if cookiecutter.enable_routers == "True" %}
 api_router.include_router(echo.router, prefix="/echo", tags=["echo"])
 {%- if cookiecutter.db_info.name != "none" %}

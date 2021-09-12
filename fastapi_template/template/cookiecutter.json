@@ -29,7 +29,14 @@
   "add_dummy": {
     "type": "bool"
   },
+  "self_hosted_swagger": {
+    "type": "bool"
+  },
   "_extensions": [
     "cookiecutter.extensions.RandomStringExtension"
+  ],
+  "_copy_without_render": [
+    "*.js",
+    "*.css"
   ]
 }

@@ -64,5 +64,12 @@
             "{{cookiecutter.project_name}}/db/models/dummy_model.py",
             "{{cookiecutter.project_name}}/db/migrations/versions/2021-08-16-16-55_2b7380507a71.py"
         ]
+    },
+    "Self-hosted swagger": {
+        "enabled": "{{cookiecutter.self_hosted_swagger}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/static",
+            "{{cookiecutter.project_name}}/web/api/docs"
+        ]
     }
 }

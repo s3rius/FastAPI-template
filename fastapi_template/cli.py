@@ -111,6 +111,13 @@ def parse_args():
         dest="enable_routers",
     )
     parser.add_argument(
+        "--swagger",
+        help="Eanble self-hosted swagger",
+        action="store_true",
+        default=None,
+        dest="self_hosted_swagger",
+    )
+    parser.add_argument(
         "--force",
         help="Owerrite directory if it exists",
         action="store_true",
@@ -135,6 +142,11 @@ def ask_features(current_context: BuilderContext) -> BuilderContext:
             "name": "enable_routers",
             "value": current_context.enable_routers,
         },
+        "Self-hosted swagger": {
+            "name": "self_hosted_swagger",
+            "value": current_context.self_hosted_swagger,
+        },
+
     }
     if current_context.db != DatabaseType.none:
         features["Alembic migrations"] = {
