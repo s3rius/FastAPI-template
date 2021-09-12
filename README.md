@@ -53,7 +53,7 @@ usage: FastAPI template [-h] [--name PROJECT_NAME]
                         [--description PROJECT_DESCRIPTION]
                         [--db {none,sqlite,mysql,postgresql}]
                         [--ci {none,gitlab,github}] [--redis] [--alembic]
-                        [--kube] [--dummy] [--routers] [--force]
+                        [--kube] [--dummy] [--routers] [--swagger] [--force]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -70,5 +70,6 @@ optional arguments:
   --dummy, --dummy-model
                         Add dummy model
   --routers             Add exmaple routers
+  --swagger             Eanble self-hosted swagger
   --force               Owerrite directory if it exists
 ```
