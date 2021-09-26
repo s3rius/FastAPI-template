@@ -54,10 +54,3 @@ repos:
         entry: poetry run yesqa
         language: system
         types: [ python ]
-
-      - id: pytest
-        name: pytest
-        entry: poetry run pytest
-        language: system
-        pass_filenames: false
-        types: [ python ]

@@ -11,13 +11,14 @@ from {{cookiecutter.project_name}}.settings import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
-config = context.config  # type: ignore
+config = context.config
 
 
 load_all_models()
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-fileConfig(config.config_file_name)
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
 # for 'autogenerate' support

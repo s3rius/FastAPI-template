@@ -20,7 +20,7 @@ class SnakeCaseValidator(Validator):
 DB_INFO = {
     DatabaseType.none: Database(
         name="none",
-        image="none",
+        image=None,
         driver=None,
         port=None,
     ),
@@ -157,7 +157,6 @@ def ask_features(current_context: BuilderContext) -> BuilderContext:
             "name": "add_dummy",
             "value": current_context.add_dummy
         }
-
     checkbox_values = []
     for feature_name, feature in features.items():
         if feature["value"] is None:
@@ -192,8 +191,9 @@ def read_user_input(current_context: BuilderContext) -> BuilderContext:
         ).run()
         if current_context.db is None:
             raise KeyboardInterrupt()
-        if current_context.db == DatabaseType.none:
-            current_context.enable_alembic = False
+    if current_context.db == DatabaseType.none:
+        current_context.enable_alembic = False
+        current_context.add_dummy = False
     if current_context.ci_type is None:
         current_context.ci_type = radiolist_dialog(
             "CI",

@@ -4,6 +4,7 @@
         "resources": [
             "{{cookiecutter.project_name}}/web/api/redis",
             "{{cookiecutter.project_name}}/services/redis",
+            "{{cookiecutter.project_name}}/tests/test_redis.py",
             "deploy/kube/redis.yml"
         ]
     },
@@ -18,7 +19,7 @@
         "resources": [
             "{{cookiecutter.project_name}}/web/api/dummy",
             "{{cookiecutter.project_name}}/db",
-            "{{cookiecutter.project_name}}/conftest.py",
+            "{{cookiecutter.project_name}}/tests/test_dummy.py",
             "deploy/kube/db.yml",
             "alembic.ini"
         ]
@@ -53,7 +54,10 @@
         "resources": [
             "{{cookiecutter.project_name}}/web/api/echo",
             "{{cookiecutter.project_name}}/web/api/dummy",
-            "{{cookiecutter.project_name}}/web/api/redis"
+            "{{cookiecutter.project_name}}/web/api/redis",
+            "{{cookiecutter.project_name}}/tests/test_echo.py",
+            "{{cookiecutter.project_name}}/tests/test_dummy.py",
+            "{{cookiecutter.project_name}}/tests/test_redis.py"
         ]
     },
     "Dummy model": {
@@ -62,6 +66,7 @@
             "{{cookiecutter.project_name}}/web/api/dummy",
             "{{cookiecutter.project_name}}/db/dao",
             "{{cookiecutter.project_name}}/db/models/dummy_model.py",
+            "{{cookiecutter.project_name}}/tests/test_dummy.py",
             "{{cookiecutter.project_name}}/db/migrations/versions/2021-08-16-16-55_2b7380507a71.py"
         ]
     },

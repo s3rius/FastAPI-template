@@ -28,7 +28,7 @@ async def get_dummy_models(
 
 
 @router.put("/")
-async def create_dummy_model(
+def create_dummy_model(
     new_dummy_object: DummyModelInputDTO,
     dummy_dao: DummyDAO = Depends(),
 ) -> None:
@@ -38,4 +38,4 @@ async def create_dummy_model(
     :param new_dummy_object: new dummy model item.
     :param dummy_dao: DAO for dummy models.
     """
-    await dummy_dao.create_dummy_model(**new_dummy_object.dict())
+    dummy_dao.create_dummy_model(**new_dummy_object.dict())

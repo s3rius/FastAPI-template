@@ -1,4 +1,9 @@
 .idea
+.vscode
+
+{%- if cookiecutter.db_info.name == "sqlite" %}
+*.sqlite3
+{%- endif %}
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

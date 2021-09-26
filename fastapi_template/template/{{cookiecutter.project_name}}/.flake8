@@ -14,6 +14,8 @@ ignore =
   D105,
   ; Missing docstring in __init__
   D107,
+  ; Found `__init__.py` module with logic
+  WPS412,
   ; Found class without a base class
   WPS306,
   ; Missing docstring in public nested class
@@ -21,16 +23,12 @@ ignore =
   ; First line should be in imperative mood
   D401,
   ; Found `__init__.py` module with logic
-  WPS412,
-  ; Found implicit string concatenation
   WPS326,
   ; Found string constant over-use
   WPS226,
   ; Found upper-case constant in a class
   WPS115,
   ; Found nested function
-  WPS430,
-  ; Found using `@staticmethod`
   WPS602,
   ; Found method without arguments
   WPS605,
@@ -44,8 +42,6 @@ ignore =
   W503,
   ; Found module with too many imports
   WPS201,
-  ; Found vague import that may cause confusion: X
-  WPS347,
   ; Inline strong start-string without end-string.
   RST210,
   ; Found nested class
@@ -65,6 +61,18 @@ ignore =
   ;  not perform function calls in argument defaults (for dependency injection)
   B008,
 
+per-file-ignores =
+  ; all tests
+  test_*.py,tests.py,tests_*.py,*/tests/*,conftest.py:
+  ; Use of assert detected
+  S101,
+  ; Found outer scope names shadowing
+  WPS442,
+  ; Found too many local variables
+  WPS210,
+  ; Found magic number
+  WPS432,
+
   ; all init files
   __init__.py:
   ; ignore not used imports
@@ -73,14 +81,6 @@ ignore =
   F403,
   ; Found wrong metadata variable
   WPS410,
-
-per-file-ignores =
-  ; all tests
-  test_*.py,tests.py,tests_*.py,*/tests/*:
-  ; Use of assert detected
-  S101,
-  ; Found outer scope names shadowing
-  WPS442,
 
 exclude =
   ./.git,

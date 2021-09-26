@@ -1,3 +1,4 @@
+from typing import List, Optional
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncScalarResult, AsyncSession
@@ -12,7 +13,7 @@ class DummyDAO:
     def __init__(self, session: AsyncSession = Depends(get_db_session)):
         self.session = session
 
-    async def create_dummy_model(self, name: str) -> None:
+    def create_dummy_model(self, name: str) -> None:
         """
         Add single dummy to session.
 
@@ -33,3 +34,19 @@ class DummyDAO:
         )
 
         return raw_stream.scalars()
+
+    async def filter(
+        self,
+        name: Optional[str] = None
+    ) -> List[DummyModel]:
+        """
+        Get specific dummy model.
+
+        :param name: name of dummy instance.
+        :return: dummy models.
+        """
+        query = select(DummyModel)
+        if name:
+            query = query.where(DummyModel.name == name)
+        rows = await self.session.execute(query)
+        return rows.scalars().fetchall()

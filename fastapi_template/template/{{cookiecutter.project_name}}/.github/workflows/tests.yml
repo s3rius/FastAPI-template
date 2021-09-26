@@ -85,7 +85,7 @@ jobs:
         env:
           POETRY_VIRTUALENVS_CREATE: false
       - name: Run pytest check
-        run: poetry run pytest -vv --cov="{{cookiecutter.project_name}}" . {% if cookiecutter.enable_alembic %}--test-alembic{%- endif %}
+        run: poetry run pytest -vv --cov="{{cookiecutter.project_name}}" .
         {%- if cookiecutter.db_info.name != "none" %}
         {%- if cookiecutter.db_info.name != "sqlite" %}
         env:

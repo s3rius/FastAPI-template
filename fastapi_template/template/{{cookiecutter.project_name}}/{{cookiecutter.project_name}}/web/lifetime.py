@@ -62,7 +62,7 @@ def startup(app: FastAPI) -> Callable[[], Awaitable[None]]:
     :return: function that actually performs actions.
     """
 
-    async def _startup() -> None:
+    async def _startup() -> None:  # noqa: WPS430
         {%- if cookiecutter.db_info.name != "none" %}
         _setup_db(app)
         {%- endif %}
@@ -82,7 +82,7 @@ def shutdown(app: FastAPI) -> Callable[[], Awaitable[None]]:
     :return: function that actually performs actions.
     """
 
-    async def _shutdown() -> None:
+    async def _shutdown() -> None:  # noqa: WPS430
         {%- if cookiecutter.db_info.name != "none" %}
         await app.state.db_engine.dispose()
         {%- endif %}
