@@ -25,6 +25,29 @@ class Database(BaseModel):
     driver: Optional[str]
     port: Optional[int]
 
+DB_INFO = {
+    DatabaseType.none: Database(
+        name="none",
+        image=None,
+        driver=None,
+        port=None,
+    ),
+    DatabaseType.postgresql: Database(
+        name=DatabaseType.postgresql.value,
+        image="postgres:13.4-buster",
+        driver="postgresql+asyncpg",
+        port=5432,
+    ),
+    DatabaseType.mysql: Database(
+        name=DatabaseType.mysql.value,
+        image="bitnami/mysql:8.0.26",
+        driver="mysql+aiomysql",
+        port=3306,
+    ),
+    DatabaseType.sqlite: Database(
+        name=DatabaseType.sqlite.value, image=None, driver="sqlite+aiosqlite", port=None
+    ),
+}
 
 class BuilderContext(BaseModel):
     """Options for project generation."""

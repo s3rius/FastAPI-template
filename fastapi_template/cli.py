@@ -7,7 +7,7 @@ from prompt_toolkit.document import Document
 from prompt_toolkit.shortcuts import checkboxlist_dialog, radiolist_dialog
 from prompt_toolkit.validation import ValidationError, Validator
 
-from fastapi_template.input_model import BuilderContext, Database, DatabaseType, CIType
+from fastapi_template.input_model import BuilderContext, DB_INFO, DatabaseType, CIType
 
 
 class SnakeCaseValidator(Validator):
@@ -16,30 +16,6 @@ class SnakeCaseValidator(Validator):
         if not text or re.fullmatch(r"[a-zA-Z][\w\_\d]*", text) is None:
             raise ValidationError(message="Must be a valid snake_case name.")
 
-
-DB_INFO = {
-    DatabaseType.none: Database(
-        name="none",
-        image=None,
-        driver=None,
-        port=None,
-    ),
-    DatabaseType.postgresql: Database(
-        name=DatabaseType.postgresql.value,
-        image="postgres:13.4-buster",
-        driver="postgresql+asyncpg",
-        port=5432,
-    ),
-    DatabaseType.mysql: Database(
-        name=DatabaseType.mysql.value,
-        image="bitnami/mysql:8.0.26",
-        driver="mysql+aiomysql",
-        port=3306,
-    ),
-    DatabaseType.sqlite: Database(
-        name=DatabaseType.sqlite.value, image=None, driver="sqlite+aiosqlite", port=None
-    ),
-}
 
 def parse_args():
     parser = ArgumentParser(

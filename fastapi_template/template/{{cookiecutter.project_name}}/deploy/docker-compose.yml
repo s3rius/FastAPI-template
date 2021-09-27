@@ -8,6 +8,8 @@ services:
     image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
     env_file:
       - .env
+    {%- if ((cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite") or
+            (cookiecutter.enable_redis == "True")) %}
     depends_on:
       {%- if cookiecutter.db_info.name != "none" %}
       {%- if cookiecutter.db_info.name != "sqlite" %}
@@ -19,6 +21,7 @@ services:
       redis:
         condition: service_healthy
       {%- endif %}
+    {%- endif %}
     environment:
       {{cookiecutter.project_name | upper }}_HOST: 0.0.0.0
       {%- if cookiecutter.db_info.name != "none" %}
@@ -43,9 +46,9 @@ services:
     image: {{cookiecutter.db_info.image}}
     hostname: {{cookiecutter.project_name}}-db
     environment:
-      POSTGRES_PASSWORD: {{cookiecutter.project_name}}
-      POSTGRES_USER: {{cookiecutter.project_name}}
-      POSTGRES_DB: {{cookiecutter.project_name}}
+      - "POSTGRES_PASSWORD={{cookiecutter.project_name}}"
+      - "POSTGRES_USER={{cookiecutter.project_name}}"
+      - "POSTGRES_DB={{cookiecutter.project_name}}"
     volumes:
       - {{cookiecutter.project_name}}-db-data:/var/lib/postgresql/data
     healthcheck:
@@ -55,15 +58,15 @@ services:
       retries: 40
   {%- endif %}
 
-  {%- if cookiecutter.db_info.name == "mysql" %}
+  {% if cookiecutter.db_info.name == "mysql" -%}
   db:
     image: {{cookiecutter.db_info.image}}
     hostname: {{cookiecutter.project_name}}-db
     environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
-      MYSQL_ROOT_PASSWORD: {{cookiecutter.project_name}}
-      MYSQL_ROOT_USER: {{cookiecutter.project_name}}
-      MYSQL_DATABASE: {{cookiecutter.project_name}}
+      - "ALLOW_EMPTY_PASSWORD=yes"
+      - "MYSQL_ROOT_PASSWORD={{cookiecutter.project_name}}"
+      - "MYSQL_ROOT_USER={{cookiecutter.project_name}}"
+      - "MYSQL_DATABASE={{cookiecutter.project_name}}"
     healthcheck:
       test:
         - "CMD"
@@ -80,7 +83,7 @@ services:
       - {{cookiecutter.project_name}}-db-data:/bitnami/mysql/data
   {%- endif %}
 
-  {% if cookiecutter.enable_alembic == 'True' %}
+  {% if cookiecutter.enable_alembic == 'True' -%}
   migrator:
     image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
     command: alembic upgrade head
@@ -104,12 +107,12 @@ services:
     {%- endif %}
   {%- endif %}
 
-  {%- if cookiecutter.enable_redis == "True" %}
+  {% if cookiecutter.enable_redis == "True" -%}
   redis:
     image: bitnami/redis:6.2.5
     hostname: {{cookiecutter.project_name}}-redis
     environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
+      - "ALLOW_EMPTY_PASSWORD=yes"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 1s
