@@ -1,0 +1,65 @@
+import uuid
+import pytest
+from fastapi.testclient import TestClient
+from fastapi import FastAPI
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.functions import count
+from starlette import status
+from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
+from {{cookiecutter.project_name}}.db.dao.dummy_dao import DummyDAO
+
+@pytest.mark.asyncio
+async def test_creation(
+    fastapi_app: FastAPI,
+    client: TestClient,
+    dbsession: AsyncSession
+) -> None:
+    """
+    Tests dummy instance creation.
+
+    :param fastapi_app: current app fixture.
+    :param client: client for app.
+    :param dbsession: current db session.
+    """
+    url = fastapi_app.url_path_for('create_dummy_model')
+    test_name = uuid.uuid4().hex
+    response = client.put(url, json={
+        "name": test_name
+    })
+    assert response.status_code == status.HTTP_200_OK
+    instance_count = await dbsession.scalar(
+        select(count()).select_from(DummyModel)
+    )
+    assert instance_count == 1
+    dao = DummyDAO(dbsession)
+    instances = await dao.filter(name=test_name)
+    assert instances[0].name == test_name
+
+
+@pytest.mark.asyncio
+async def test_getting(
+    fastapi_app: FastAPI,
+    client: TestClient,
+    dbsession: AsyncSession
+) -> None:
+    """
+    Tests dummy instance retrieval.
+
+    :param fastapi_app: current app fixture.
+    :param client: client for app.
+    :param dbsession: current db session.
+    """
+    dao = DummyDAO(dbsession)
+    test_name = uuid.uuid4().hex
+    dao.create_dummy_model(name=test_name)
+    await dbsession.commit()
+
+    url = fastapi_app.url_path_for('get_dummy_models')
+    response = client.get(url)
+    assert response.status_code == status.HTTP_200_OK
+    response_json = response.json()
+    assert len(response_json) == 1
+    assert response_json[0]['name'] == test_name
+
+

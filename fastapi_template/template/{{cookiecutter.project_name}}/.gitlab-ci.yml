@@ -39,7 +39,6 @@ pytest:
   {%- if cookiecutter.db_info.name != "sqlite" %}
   services:
     - name: {{ cookiecutter.db_info.image }}
-  {%- endif %}
   variables:
     {%- if cookiecutter.db_info.name == "postgresql" %}
     {{ cookiecutter.project_name | upper }}_DB_HOST: localhost
@@ -55,6 +54,7 @@ pytest:
     ALLOW_EMPTY_PASSWORD: yes
     {%- endif %}
   {%- endif %}
+  {%- endif %}
   script:
     {%- if cookiecutter.db_info.name != "none" %}
     {%- if cookiecutter.db_info.name != "sqlite" %}
@@ -63,4 +63,4 @@ pytest:
     - wait-for-it -t 180 ${{ cookiecutter.project_name | upper }}_DB_HOST:{{cookiecutter.db_info.port}}
     {%- endif %}
     {%- endif %}
-    - pytest -vv --cov="{{cookiecutter.project_name}}" . {% if cookiecutter.enable_alembic %}--test-alembic{%- endif %}
+    - pytest -vv --cov="{{cookiecutter.project_name}}" .

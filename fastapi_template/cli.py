@@ -7,7 +7,7 @@ from prompt_toolkit.document import Document
 from prompt_toolkit.shortcuts import checkboxlist_dialog, radiolist_dialog
 from prompt_toolkit.validation import ValidationError, Validator
 
-from fastapi_template.input_model import BuilderContext, Database, DatabaseType, CIType
+from fastapi_template.input_model import BuilderContext, DB_INFO, DatabaseType, CIType
 
 
 class SnakeCaseValidator(Validator):
@@ -16,30 +16,6 @@ class SnakeCaseValidator(Validator):
         if not text or re.fullmatch(r"[a-zA-Z][\w\_\d]*", text) is None:
             raise ValidationError(message="Must be a valid snake_case name.")
 
-
-DB_INFO = {
-    DatabaseType.none: Database(
-        name="none",
-        image="none",
-        driver=None,
-        port=None,
-    ),
-    DatabaseType.postgresql: Database(
-        name=DatabaseType.postgresql.value,
-        image="postgres:13.4-buster",
-        driver="postgresql+asyncpg",
-        port=5432,
-    ),
-    DatabaseType.mysql: Database(
-        name=DatabaseType.mysql.value,
-        image="bitnami/mysql:8.0.26",
-        driver="mysql+aiomysql",
-        port=3306,
-    ),
-    DatabaseType.sqlite: Database(
-        name=DatabaseType.sqlite.value, image=None, driver="sqlite+aiosqlite", port=None
-    ),
-}
 
 def parse_args():
     parser = ArgumentParser(
@@ -157,7 +133,6 @@ def ask_features(current_context: BuilderContext) -> BuilderContext:
             "name": "add_dummy",
             "value": current_context.add_dummy
         }
-
     checkbox_values = []
     for feature_name, feature in features.items():
         if feature["value"] is None:
@@ -192,8 +167,9 @@ def read_user_input(current_context: BuilderContext) -> BuilderContext:
         ).run()
         if current_context.db is None:
             raise KeyboardInterrupt()
-        if current_context.db == DatabaseType.none:
-            current_context.enable_alembic = False
+    if current_context.db == DatabaseType.none:
+        current_context.enable_alembic = False
+        current_context.add_dummy = False
     if current_context.ci_type is None:
         current_context.ci_type = radiolist_dialog(
             "CI",

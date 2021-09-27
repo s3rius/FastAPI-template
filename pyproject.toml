@@ -1,19 +1,13 @@
 [tool.poetry]
 name = "fastapi_template"
-version = "2.4.1"
+version = "2.5.0"
 description = "Feature-rich robust FastAPI template"
 authors = ["Pavel Kirilin <win10@list.ru>"]
-packages = [
-    { include = "fastapi_template" },
-]
+packages = [{ include = "fastapi_template" }]
 repository = "https://github.com/s3rius/FastAPI-template"
 homepage = "https://github.com/s3rius/FastAPI-template"
 readme = "README.md"
-keywords = [
-    "FastAPI",
-    "Cookiecutter",
-    "Template"
-]
+keywords = ["FastAPI", "Cookiecutter", "Template"]
 
 
 [tool.poetry.dependencies]
@@ -26,6 +20,22 @@ pydantic = "^1.8.2"
 prompt-toolkit = "^3.0.19"
 
 [tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pytest-env = "^0.6.2"
+Faker = "^8.14.0"
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+markers = [
+    "pg: tests for postgresql.",
+    "mysql: tests for mysql.",
+    "sqlite: tests for sqlite3.",
+]
+env = [
+    "POETRY_VIRTUALENVS_IN_PROJECT=True"
+]
+testpaths = ["fastapi_template/tests"]
 
 [tool.poetry.scripts]
 fastapi_template = "fastapi_template.__main__:main"

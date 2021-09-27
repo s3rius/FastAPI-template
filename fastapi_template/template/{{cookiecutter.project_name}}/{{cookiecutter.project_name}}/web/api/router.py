@@ -14,9 +14,10 @@ from {{cookiecutter.project_name}}.web.api import redis
 {%- if cookiecutter.self_hosted_swagger == "True" %}
 from {{cookiecutter.project_name}}.web.api import docs
 {%- endif %}
-
+from {{cookiecutter.project_name}}.web.api import monitoring
 
 api_router = APIRouter()
+api_router.include_router(monitoring.router)
 {%- if cookiecutter.self_hosted_swagger == "True" %}
 api_router.include_router(docs.router)
 {%- endif %}

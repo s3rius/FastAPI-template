@@ -8,11 +8,34 @@ services:
     image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
     env_file:
       - .env
-    environment:
-      - {{cookiecutter.project_name | upper }}_HOST=0.0.0.0
-      {%- if cookiecutter.db_info.name == "sqlite" %}
-      - {{cookiecutter.project_name | upper }}_DB_FILE=/db_data/db.sqlite3
+    {%- if ((cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite") or
+            (cookiecutter.enable_redis == "True")) %}
+    depends_on:
+      {%- if cookiecutter.db_info.name != "none" %}
+      {%- if cookiecutter.db_info.name != "sqlite" %}
+      db:
+        condition: service_healthy
       {%- endif %}
+      {%- endif %}
+      {%- if cookiecutter.enable_redis == "True" %}
+      redis:
+        condition: service_healthy
+      {%- endif %}
+    {%- endif %}
+    environment:
+      {{cookiecutter.project_name | upper }}_HOST: 0.0.0.0
+      {%- if cookiecutter.db_info.name != "none" %}
+      {%- if cookiecutter.db_info.name == "sqlite" %}
+      {{cookiecutter.project_name | upper }}_DB_FILE: /db_data/db.sqlite3
+      {%- else %}
+      {{cookiecutter.project_name | upper}}_DB_HOST: {{cookiecutter.project_name}}-db
+      {{cookiecutter.project_name | upper}}_DB_PORT: {{cookiecutter.db_info.port}}
+      {{cookiecutter.project_name | upper}}_DB_USER: {{cookiecutter.project_name}}
+      {{cookiecutter.project_name | upper}}_DB_PASS: {{cookiecutter.project_name}}
+      {{cookiecutter.project_name | upper}}_DB_BASE: {{cookiecutter.project_name}}
+      {%- endif %}
+      {%- endif %}
+
     {%- if cookiecutter.db_info.name == "sqlite" %}
     volumes:
       - {{cookiecutter.project_name}}-db-data:/db_data/
@@ -20,49 +43,81 @@ services:
 
   {%- if cookiecutter.db_info.name == "postgresql" %}
   db:
-    image: postgres:13.4-buster
+    image: {{cookiecutter.db_info.image}}
     hostname: {{cookiecutter.project_name}}-db
     environment:
-      - POSTGRES_PASSWORD={{cookiecutter.project_name}}
-      - POSTGRES_USER={{cookiecutter.project_name}}
-      - POSTGRES_DB={{cookiecutter.project_name}}
+      - "POSTGRES_PASSWORD={{cookiecutter.project_name}}"
+      - "POSTGRES_USER={{cookiecutter.project_name}}"
+      - "POSTGRES_DB={{cookiecutter.project_name}}"
     volumes:
       - {{cookiecutter.project_name}}-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 2s
+      timeout: 3s
+      retries: 40
   {%- endif %}
 
-  {%- if cookiecutter.db_info.name == "mysql" %}
+  {% if cookiecutter.db_info.name == "mysql" -%}
   db:
-    image: bitnami/mysql:8.0.26
+    image: {{cookiecutter.db_info.image}}
     hostname: {{cookiecutter.project_name}}-db
     environment:
-      - MYSQL_PASSWORD={{cookiecutter.project_name}}
-      - MYSQL_USER={{cookiecutter.project_name}}
-      - MYSQL_DATABASE={{cookiecutter.project_name}}
-      - ALLOW_EMPTY_PASSWORD=yes
+      - "ALLOW_EMPTY_PASSWORD=yes"
+      - "MYSQL_ROOT_PASSWORD={{cookiecutter.project_name}}"
+      - "MYSQL_ROOT_USER={{cookiecutter.project_name}}"
+      - "MYSQL_DATABASE={{cookiecutter.project_name}}"
+    healthcheck:
+      test:
+        - "CMD"
+        - "mysql"
+        - "-u"
+        - "{{cookiecutter.project_name}}"
+        - "-p{{cookiecutter.project_name}}"
+        - "-e"
+        - "SELECT 1"
+      interval: 2s
+      timeout: 3s
+      retries: 40
     volumes:
       - {{cookiecutter.project_name}}-db-data:/bitnami/mysql/data
   {%- endif %}
 
-  {% if cookiecutter.enable_alembic == 'True' %}
+  {% if cookiecutter.enable_alembic == 'True' -%}
   migrator:
     image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
-    {%- if cookiecutter.db_info.name == "sqlite" %}
     command: alembic upgrade head
+    {%- if cookiecutter.db_info.name == "sqlite" %}
     environment:
-      - {{cookiecutter.project_name | upper }}_DB_FILE=/db_data/db.sqlite3
+      {{cookiecutter.project_name | upper }}_DB_FILE: /db_data/db.sqlite3
     volumes:
       - {{cookiecutter.project_name}}-db-data:/db_data/
     {%- else %}
-    command: wait-for-it -t 180 {{cookiecutter.project_name}}-db:{{cookiecutter.db_info.port}} -- alembic upgrade head
+    environment:
+      {{cookiecutter.project_name | upper}}_DB_HOST: {{cookiecutter.project_name}}-db
+      {{cookiecutter.project_name | upper}}_DB_PORT: {{cookiecutter.db_info.port}}
+      {{cookiecutter.project_name | upper}}_DB_USER: {{cookiecutter.project_name}}
+      {{cookiecutter.project_name | upper}}_DB_PASS: {{cookiecutter.project_name}}
+      {{cookiecutter.project_name | upper}}_DB_BASE: {{cookiecutter.project_name}}
+    {%- endif %}
+    {%- if cookiecutter.db_info.name != "sqlite" %}
+    depends_on:
+      db:
+        condition: service_healthy
     {%- endif %}
   {%- endif %}
 
-  {%- if cookiecutter.enable_redis == "True" %}
+  {% if cookiecutter.enable_redis == "True" -%}
   redis:
     image: bitnami/redis:6.2.5
     hostname: {{cookiecutter.project_name}}-redis
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
+      - "ALLOW_EMPTY_PASSWORD=yes"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
   {%- endif %}
 
 {% if cookiecutter.db_info.name != 'none' %}

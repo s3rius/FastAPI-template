@@ -10,12 +10,12 @@ from fastapi_template.input_model import BuilderContext
 script_dir = Path(__file__).parent
 
 
-def main():
-    try:
-        context = get_context()
-    except KeyboardInterrupt:
-        print("Goodbye!")
-        return
+def generate_project(context: BuilderContext) -> None:
+    """
+    Generate actual project with given context.
+
+    :param context: builder_context
+    """
     try:
         cookiecutter(
             template=f"{script_dir}/template",
@@ -32,6 +32,15 @@ def main():
         "Project successfully generated. You can read information about usage in README.md"
     )
 
+
+def main() -> None:
+    """Starting point."""
+    try:
+        context = get_context()
+    except KeyboardInterrupt:
+        print("Goodbye!")
+        return
+    generate_project(context)
 
 if __name__ == "__main__":
     main()

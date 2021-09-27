@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 @router.get("/", response_model=RedisValueDTO)
-async def get_value(
+async def get_redis_value(
     key: str,
     redis: Redis = Depends(get_redis_connection),
 ) -> RedisValueDTO:
@@ -28,7 +28,7 @@ async def get_value(
 
 
 @router.put("/")
-async def set_value(
+async def set_redis_value(
     redis_value: RedisValueDTO,
     redis: Redis = Depends(get_redis_connection),
 ) -> None:
