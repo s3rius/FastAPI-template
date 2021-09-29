@@ -16,20 +16,33 @@ fastapi = "^0.68.0"
 uvicorn = "^0.15.0"
 pydantic = {version = "^1.8.2", extras = ["dotenv"]}
 yarl = "^1.6.3"
-{%- if cookiecutter.db_info.name != "none" %}
+{%- if cookiecutter.orm == "sqlalchemy" %}
 SQLAlchemy = {version = "^1.4", extras = ["mypy", "asyncio"]}
+{%- elif cookiecutter.orm == "tortoise" %}
+tortoise-orm = "^0.17.7"
 {%- endif %}
-{%- if cookiecutter.enable_alembic == "True" %}
+{%- if cookiecutter.enable_migrations == "True" %}
+{%- if cookiecutter.orm == "sqlalchemy" %}
 alembic = "^1.6.5"
+{%- elif cookiecutter.orm == "tortoise" %}
+aerich = "^0.5.8"
+{%- endif %}
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
+{%- if cookiecutter.orm == "sqlalchemy" %}
 asyncpg = {version = "^0.24.0", extras = ["sa"]}
+{%- elif cookiecutter.orm == "tortoise" %}
+asyncpg = {version = "^0.24.0"}
+{%- endif %}
 {%- endif %}
 {%- if cookiecutter.db_info.name == "sqlite" %}
 aiosqlite = "^0.17.0"
 {%- endif %}
 {%- if cookiecutter.db_info.name == "mysql" %}
 aiomysql = "^0.0.21"
+{%- if cookiecutter.orm == "tortoise" %}
+cryptography = "^3.4.8"
+{%- endif %}
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
 aioredis = {version = "^2.0.0", extras = ["hiredis"]}
@@ -51,7 +64,7 @@ pre-commit = "^2.11.0"
 wemake-python-styleguide = "^0.15.3"
 black = "^21.7b0"
 autoflake = "^1.4"
-{%- if cookiecutter.db_info.name != "none" %}
+{%- if cookiecutter.orm == "sqlalchemy" %}
 SQLAlchemy = {version = "^1.4", extras = ["mypy"]}
 {%- endif %}
 pytest-cov = "^2.12.1"
@@ -62,6 +75,10 @@ pytest-env = "^0.6.2"
 fakeredis = "^1.6.1"
 {%- endif %}
 requests = "^2.26.0"
+{%- if cookiecutter.orm == "tortoise" %}
+asynctest = "^0.13.0"
+{%- endif %}
+
 
 [tool.isort]
 profile = "black"
@@ -76,11 +93,16 @@ pretty = true
 show_error_codes = true
 implicit_reexport = true
 allow_untyped_decorators = true
-{%- if cookiecutter.db_info.name != "none" %}
+warn_return_any = false
+{%- if cookiecutter.orm == "sqlalchemy" %}
 plugins = ["sqlalchemy.ext.mypy.plugin"]
 {%- endif %}
 
 [tool.pytest.ini_options]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
+]
 {%- if cookiecutter.db_info.name != "none" %}
 env = [
     {%- if cookiecutter.db_info.name == "sqlite" %}

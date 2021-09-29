@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from cookiecutter.exceptions import FailedHookException, OutputDirExistsException
@@ -19,7 +20,7 @@ def generate_project(context: BuilderContext) -> None:
     try:
         cookiecutter(
             template=f"{script_dir}/template",
-            extra_context=context.dict(),
+            extra_context=json.loads(context.json()),
             default_config=BuilderContext().dict(),
             no_input=True,
             overwrite_if_exists=context.force,
@@ -41,6 +42,7 @@ def main() -> None:
         print("Goodbye!")
         return
     generate_project(context)
+
 
 if __name__ == "__main__":
     main()

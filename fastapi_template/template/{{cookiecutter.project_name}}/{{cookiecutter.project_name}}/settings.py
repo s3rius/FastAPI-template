@@ -49,12 +49,20 @@ class Settings(BaseSettings):
         """
         {%- if cookiecutter.db_info.name == "sqlite" %}
         return URL.build(
+            {%- if cookiecutter.orm == "sqlalchemy" %}
+            scheme="{{cookiecutter.db_info.async_driver}}",
+            {%- elif cookiecutter.orm == "tortoise" %}
             scheme="{{cookiecutter.db_info.driver}}",
+            {%- endif %}
             path=f"///{self.db_file}"
         )
-        {% else %}
+        {%- else %}
         return URL.build(
+            {%- if cookiecutter.orm == "sqlalchemy" %}
+            scheme="{{cookiecutter.db_info.async_driver}}",
+            {%- elif cookiecutter.orm == "tortoise" %}
             scheme="{{cookiecutter.db_info.driver}}",
+            {%- endif %}
             host=self.db_host,
             port=self.db_port,
             user=self.db_user,

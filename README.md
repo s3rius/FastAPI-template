@@ -30,42 +30,50 @@ python3 -m fastapi_template
 
 ## Features
 
-Template is made with SQLAlchemy1.4 and uses sqlalchemy orm and sessions,
-instead of raw drivers.
+One of the coolest features is that this project is extremely small and handy.
+You can choose between different databases and even ORMs. 
+Currently SQLAlchemy1.4 and TortoiseORM are supported.
 
-It has minimum to start new excellent project.
-
-Pre-commit integrations and excellent code documentation.
+TUI and CLI and excellent code documentation.
 
 Generator features:
-- Different databases to choose from.
-- Alembic integration;
+- Different databases support;
+- Different ORMs support;
+- Optional migrations for each ORM;
 - redis support;
-- different CI\CD templates;
-- Kubernetes config generation.
+- different CI\CD;
+- Kubernetes config generation;
+- Demo routers and models;
+- Pre-commit integrations;
+- Generated tests;
+- Tests for the generator itself.
 
 This project can handle arguments passed through command line.
 
 ```shell
 $ python -m fastapi_template --help
 
-usage: FastAPI template [-h] [--name PROJECT_NAME]
+usage: FastAPI template [-h] [--version] [--name PROJECT_NAME]
                         [--description PROJECT_DESCRIPTION]
                         [--db {none,sqlite,mysql,postgresql}]
-                        [--ci {none,gitlab,github}] [--redis] [--alembic]
+                        [--orm {sqlalchemy,tortoise}]
+                        [--ci {none,gitlab,github}] [--redis] [--migrations]
                         [--kube] [--dummy] [--routers] [--swagger] [--force]
 
 optional arguments:
   -h, --help            show this help message and exit
+  --version, -V         Prints current version
   --name PROJECT_NAME   Name of your awesome project
   --description PROJECT_DESCRIPTION
                         Project description
   --db {none,sqlite,mysql,postgresql}
                         Database
+  --orm {sqlalchemy,tortoise}
+                        ORM
   --ci {none,gitlab,github}
                         Choose CI support
   --redis               Add redis support
-  --alembic             Add alembic support
+  --migrations          Add migrations support
   --kube                Add kubernetes configs
   --dummy, --dummy-model
                         Add dummy model

@@ -72,6 +72,8 @@ per-file-ignores =
   WPS210,
   ; Found magic number
   WPS432,
+  ; Missing parameter(s) in Docstring
+  DAR101,
 
   ; all init files
   __init__.py:

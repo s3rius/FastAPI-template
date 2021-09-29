@@ -8,7 +8,7 @@ from {{cookiecutter.project_name}}.settings import settings
 import aioredis
 {%- endif %}
 
-{%- if cookiecutter.db_info.name != "none" %}
+{%- if cookiecutter.db_info.name != "none" and cookiecutter.orm == "sqlalchemy" %}
 from asyncio import current_task
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -16,10 +16,8 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.orm import sessionmaker
-{%- endif %}
 
 
-{% if cookiecutter.db_info.name != "none" %}
 def _setup_db(app: FastAPI) -> None:
     """
     Create connection to the database.
@@ -63,7 +61,7 @@ def startup(app: FastAPI) -> Callable[[], Awaitable[None]]:
     """
 
     async def _startup() -> None:  # noqa: WPS430
-        {%- if cookiecutter.db_info.name != "none" %}
+        {%- if cookiecutter.db_info.name != "none" and cookiecutter.orm == "sqlalchemy" %}
         _setup_db(app)
         {%- endif %}
         {%- if cookiecutter.enable_redis == "True" %}
@@ -83,7 +81,7 @@ def shutdown(app: FastAPI) -> Callable[[], Awaitable[None]]:
     """
 
     async def _shutdown() -> None:  # noqa: WPS430
-        {%- if cookiecutter.db_info.name != "none" %}
+        {%- if cookiecutter.db_info.name != "none" and cookiecutter.orm == "sqlalchemy" %}
         await app.state.db_engine.dispose()
         {%- endif %}
         {%- if cookiecutter.enable_redis == "True" %}

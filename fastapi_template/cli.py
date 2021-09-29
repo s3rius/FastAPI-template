@@ -7,7 +7,14 @@ from prompt_toolkit.document import Document
 from prompt_toolkit.shortcuts import checkboxlist_dialog, radiolist_dialog
 from prompt_toolkit.validation import ValidationError, Validator
 
-from fastapi_template.input_model import BuilderContext, DB_INFO, DatabaseType, CIType
+from fastapi_template.input_model import (
+    ORM,
+    BuilderContext,
+    DB_INFO,
+    DatabaseType,
+    CIType,
+)
+from importlib.metadata import version
 
 
 class SnakeCaseValidator(Validator):
@@ -20,6 +27,9 @@ class SnakeCaseValidator(Validator):
 def parse_args():
     parser = ArgumentParser(
         prog="FastAPI template",
+    )
+    parser.add_argument(
+        "--version", "-V", action="store_true", help="Prints current version"
     )
     parser.add_argument(
         "--name",
@@ -43,6 +53,14 @@ def parse_args():
         dest="db",
     )
     parser.add_argument(
+        "--orm",
+        help="ORM",
+        type=str,
+        choices=list(map(attrgetter("value"), ORM)),
+        default=None,
+        dest="orm",
+    )
+    parser.add_argument(
         "--ci",
         help="Choose CI support",
         default=None,
@@ -58,11 +76,11 @@ def parse_args():
         dest="enable_redis",
     )
     parser.add_argument(
-        "--alembic",
-        help="Add alembic support",
+        "--migrations",
+        help="Add migrations support",
         action="store_true",
         default=None,
-        dest="enable_alembic",
+        dest="enable_migrations",
     )
     parser.add_argument(
         "--kube",
@@ -122,16 +140,15 @@ def ask_features(current_context: BuilderContext) -> BuilderContext:
             "name": "self_hosted_swagger",
             "value": current_context.self_hosted_swagger,
         },
-
     }
     if current_context.db != DatabaseType.none:
-        features["Alembic migrations"] = {
-            "name": "enable_alembic",
-            "value": current_context.enable_alembic,
+        features["Migrations support"] = {
+            "name": "enable_migrations",
+            "value": current_context.enable_migrations,
         }
         features["Add dummy model"] = {
             "name": "add_dummy",
-            "value": current_context.add_dummy
+            "value": current_context.add_dummy,
         }
     checkbox_values = []
     for feature_name, feature in features.items():
@@ -156,7 +173,7 @@ def read_user_input(current_context: BuilderContext) -> BuilderContext:
         current_context.project_name = prompt(
             "Project name: ", validator=SnakeCaseValidator()
         )
-    current_context.kube_name = current_context.project_name.replace('_', '-')
+    current_context.kube_name = current_context.project_name.replace("_", "-")
     if current_context.project_description is None:
         current_context.project_description = prompt("Project description: ")
     if current_context.db is None:
@@ -168,8 +185,16 @@ def read_user_input(current_context: BuilderContext) -> BuilderContext:
         if current_context.db is None:
             raise KeyboardInterrupt()
     if current_context.db == DatabaseType.none:
-        current_context.enable_alembic = False
+        current_context.enable_migrations = False
         current_context.add_dummy = False
+    elif current_context.orm is None:
+        current_context.orm = radiolist_dialog(
+            "ORM",
+            text="Which ORM do you want?",
+            values=[(orm, orm.value) for orm in list(ORM)],
+        ).run()
+        if current_context.orm is None:
+            raise KeyboardInterrupt()
     if current_context.ci_type is None:
         current_context.ci_type = radiolist_dialog(
             "CI",
@@ -184,6 +209,9 @@ def read_user_input(current_context: BuilderContext) -> BuilderContext:
 
 def get_context() -> BuilderContext:
     args = parse_args()
+    if args.version:
+        print(version("fastapi_template"))
+        exit(0)
     context = BuilderContext.from_orm(args)
     context = read_user_input(context)
     context.db_info = DB_INFO[context.db]

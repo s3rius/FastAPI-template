@@ -1,0 +1,6 @@
+{
+    "{{cookiecutter.project_name}}/db": [
+        "{{cookiecutter.project_name}}/db_sa",
+        "{{cookiecutter.project_name}}/db_tortoise"
+    ]
+}

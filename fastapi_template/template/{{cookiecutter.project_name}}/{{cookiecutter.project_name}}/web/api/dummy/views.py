@@ -1,9 +1,10 @@
-from typing import Any, List
+from typing import List
 
 from fastapi import APIRouter
 from fastapi.param_functions import Depends
 
 from {{cookiecutter.project_name}}.db.dao.dummy_dao import DummyDAO
+from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
 from {{cookiecutter.project_name}}.web.api.dummy.schema import DummyModelDTO, DummyModelInputDTO
 
 router = APIRouter()
@@ -14,7 +15,7 @@ async def get_dummy_models(
     limit: int = 10,
     offset: int = 0,
     dummy_dao: DummyDAO = Depends(),
-) -> Any:
+) -> List[DummyModel]:
     """
     Retrieve all dummy objects from database.
 
@@ -23,12 +24,11 @@ async def get_dummy_models(
     :param dummy_dao: DAO for dummy models.
     :return: list of dummy obbjects from database.
     """
-    dummies = await dummy_dao.get_all_dummies(limit=limit, offset=offset)
-    return await dummies.fetchall()
+    return await dummy_dao.get_all_dummies(limit=limit, offset=offset)
 
 
 @router.put("/")
-def create_dummy_model(
+async def create_dummy_model(
     new_dummy_object: DummyModelInputDTO,
     dummy_dao: DummyDAO = Depends(),
 ) -> None:
@@ -38,4 +38,4 @@ def create_dummy_model(
     :param new_dummy_object: new dummy model item.
     :param dummy_dao: DAO for dummy models.
     """
-    dummy_dao.create_dummy_model(**new_dummy_object.dict())
+    await dummy_dao.create_dummy_model(**new_dummy_object.dict())

@@ -68,9 +68,14 @@ spec:
           - "180"
           - "{{cookiecutter.kube_name}}-db-service:{{cookiecutter.db_info.port}}"
           - "--"
+          {%- if cookiecutter.orm == 'sqlalchemy' %}
           - "alembic"
           - "upgrade"
           - "head"
+          {% elif cookiecutter.orm == 'tortoise' %}
+          - "aerich"
+          - "upgrade"
+          {%- endif %}
         env:
           - name: {{cookiecutter.project_name | upper }}_DB_HOST
             value: {{cookiecutter.kube_name}}-db-service
