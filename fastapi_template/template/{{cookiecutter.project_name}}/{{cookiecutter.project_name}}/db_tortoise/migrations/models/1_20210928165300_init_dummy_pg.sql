@@ -4,3 +4,5 @@ CREATE TABLE IF NOT EXISTS "dummymodel" (
     "name" VARCHAR(200) NOT NULL
 );
 COMMENT ON TABLE "dummymodel" IS 'Model for demo purpose.';
+-- downgrade --
+DROP TABLE "dummymodel";

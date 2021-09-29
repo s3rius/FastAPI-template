@@ -5,3 +5,5 @@ CREATE TABLE IF NOT EXISTS `aerich` (
     `app` VARCHAR(20) NOT NULL,
     `content` JSON NOT NULL
 ) CHARACTER SET utf8mb4;
+-- downgrade --
+DROP TABLE `aerich`;
