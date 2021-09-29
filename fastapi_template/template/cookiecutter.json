@@ -14,7 +14,7 @@
   "ci_type": {
     "type": "string"
   },
-  "enable_alembic": {
+  "enable_migrations": {
     "type": "bool"
   },
   "enable_kube": {
@@ -28,6 +28,9 @@
   },
   "add_dummy": {
     "type": "bool"
+  },
+  "orm": {
+    "type": "str"
   },
   "self_hosted_swagger": {
     "type": "bool"

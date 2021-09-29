@@ -1,7 +1,7 @@
 from typing import List, Optional
 from fastapi import Depends
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncScalarResult, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from {{cookiecutter.project_name}}.db.dependencies import get_db_session
 from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
@@ -13,7 +13,7 @@ class DummyDAO:
     def __init__(self, session: AsyncSession = Depends(get_db_session)):
         self.session = session
 
-    def create_dummy_model(self, name: str) -> None:
+    async def create_dummy_model(self, name: str) -> None:
         """
         Add single dummy to session.
 
@@ -21,7 +21,7 @@ class DummyDAO:
         """
         self.session.add(DummyModel(name=name))
 
-    async def get_all_dummies(self, limit: int, offset: int) -> AsyncScalarResult:
+    async def get_all_dummies(self, limit: int, offset: int) -> List[DummyModel]:
         """
         Get all dummy models with limit/offset pagination.
 
@@ -29,11 +29,11 @@ class DummyDAO:
         :param offset: offset of dummies.
         :return: stream of dummies.
         """
-        raw_stream = await self.session.stream(
+        raw_dummies = await self.session.execute(
             select(DummyModel).limit(limit).offset(offset),
         )
 
-        return raw_stream.scalars()
+        return raw_dummies.scalars().fetchall()
 
     async def filter(
         self,

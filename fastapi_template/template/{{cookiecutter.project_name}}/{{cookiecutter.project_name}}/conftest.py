@@ -1,6 +1,7 @@
 import asyncio
+from asyncio.events import AbstractEventLoop
 import sys
-from typing import Any, Generator, AsyncGenerator
+from typing import Generator, AsyncGenerator
 
 import pytest
 from fastapi import FastAPI
@@ -11,14 +12,22 @@ from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_co
 {%- endif %}
 
 from {{cookiecutter.project_name}}.settings import settings
+from {{cookiecutter.project_name}}.web.application import get_app
+
 
 {%- if cookiecutter.db_info.name != "none" %}
+{%- if cookiecutter.orm == "sqlalchemy" %}
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncEngine, AsyncConnection
 from sqlalchemy.orm import sessionmaker
 from {{cookiecutter.project_name}}.db.dependencies import get_db_session
 from {{cookiecutter.project_name}}.db.utils import create_database, drop_database
+{%- elif cookiecutter.orm == "tortoise" %}
+from tortoise.contrib.test import finalizer, initializer, _restore_default  # noqa: WPS450
+from tortoise import Tortoise
+from {{cookiecutter.project_name}}.db.config import MODELS_MODULES
 {%- endif %}
-from {{cookiecutter.project_name}}.web.application import get_app
+{%- endif %}
+
 import nest_asyncio
 
 nest_asyncio.apply()
@@ -44,8 +53,8 @@ def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
     yield loop
     loop.close()
 
-
 {%- if cookiecutter.db_info.name != "none" %}
+{%- if cookiecutter.orm == "sqlalchemy" %}
 @pytest.fixture(scope="session")
 @pytest.mark.asyncio
 async def _engine() -> AsyncGenerator[AsyncEngine, None]:
@@ -113,6 +122,47 @@ async def transaction(_engine: AsyncEngine) -> AsyncGenerator[AsyncConnection, N
         yield conn
     finally:
         await conn.rollback()
+{%- elif cookiecutter.orm == "tortoise" %}
+
+@pytest.fixture(scope="session", autouse=True)
+def initialize_db(event_loop: AbstractEventLoop) -> Generator[None, None, None]:
+    """
+    Initialize models and database.
+
+    :param event_loop: Session-wide event loop.
+    :yields: Nothing.
+    """
+    initializer(
+        MODELS_MODULES,
+        db_url=str(settings.db_url),
+        app_label="models",
+        loop=event_loop,
+    )
+
+    yield
+
+    finalizer()
+
+@pytest.fixture(autouse=True)
+@pytest.mark.asyncio
+async def clean_db() -> AsyncGenerator[None, None]:
+    """
+    Removes all data from database after test.
+
+    :yields: Nothing.
+    """
+    yield
+
+    _restore_default()
+    for app in Tortoise.apps.values():
+        for model in app.values():
+            meta = model._meta  # noqa: WPS437
+            quote_char = meta.db.query_class._builder().QUOTE_CHAR  # noqa: WPS437
+            await meta.db.execute_script(
+                f"DELETE FROM {quote_char}{meta.db_table}{quote_char}" # noqa: S608
+            )
+
+{%- endif %}
 {%- endif %}
 
 
@@ -129,7 +179,7 @@ def fake_redis() -> FakeRedis:
 
 @pytest.fixture()
 def fastapi_app(
-    {%- if cookiecutter.db_info.name != "none" %}
+    {%- if cookiecutter.db_info.name != "none" and cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
     {%- endif %}
     {% if cookiecutter.enable_redis == "True" -%}
@@ -139,16 +189,10 @@ def fastapi_app(
     """
     Fixture for creating FastAPI app.
 
-    {% if cookiecutter.db_info.name != "none" -%}
-    :param dbsession: test db session.
-    {% endif -%}
-    {% if cookiecutter.enable_redis == "True" -%}
-    :param fake_redis: Fake redis instance.
-    {% endif -%}
     :return: fastapi app with mocked dependencies.
     """
     application = get_app()
-    {%- if cookiecutter.db_info.name != "none" %}
+    {% if cookiecutter.db_info.name != "none" and cookiecutter.orm == "sqlalchemy" -%}
     application.dependency_overrides[get_db_session] = lambda: dbsession
     {%- endif %}
     {%- if cookiecutter.enable_redis == "True" %}

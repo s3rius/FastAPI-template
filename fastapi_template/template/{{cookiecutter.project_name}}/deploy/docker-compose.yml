@@ -83,10 +83,14 @@ services:
       - {{cookiecutter.project_name}}-db-data:/bitnami/mysql/data
   {%- endif %}
 
-  {% if cookiecutter.enable_alembic == 'True' -%}
+  {% if cookiecutter.enable_migrations == 'True' -%}
   migrator:
     image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
+    {%- if cookiecutter.orm == 'sqlalchemy' %}
     command: alembic upgrade head
+    {%- elif cookiecutter.orm == 'tortoise' %}
+    command: aerich upgrade
+    {%- endif %}
     {%- if cookiecutter.db_info.name == "sqlite" %}
     environment:
       {{cookiecutter.project_name | upper }}_DB_FILE: /db_data/db.sqlite3

@@ -4,9 +4,16 @@ from {{cookiecutter.project_name}}.web.api.router import api_router
 from {{cookiecutter.project_name}}.web.lifetime import shutdown, startup
 from importlib import metadata
 
+{%- if cookiecutter.orm == 'tortoise' %}
+from tortoise.contrib.fastapi import register_tortoise
+from {{cookiecutter.project_name}}.db.config import TORTOISE_CONFIG
+{%- endif %}
+
+
 {%- if cookiecutter.self_hosted_swagger == 'True' %}
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+
 
 APP_ROOT = Path(__file__).parent.parent
 {%- endif %}
@@ -46,5 +53,9 @@ def get_app() -> FastAPI:
         name="static"
     )
     {% endif %}
+
+    {%- if cookiecutter.orm == 'tortoise' %}
+    register_tortoise(app, config=TORTOISE_CONFIG, add_exception_handlers=True)
+    {%- endif %}
 
     return app

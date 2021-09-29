@@ -31,7 +31,7 @@ docker save --output {{cookiecutter.project_name}}.tar {{cookiecutter.project_na
 ```
 
 {%- endif %}
-{%- if cookiecutter.enable_alembic == 'True' %}
+{%- if cookiecutter.enable_migrations == 'True' %}
 
 ## Migrations
 
