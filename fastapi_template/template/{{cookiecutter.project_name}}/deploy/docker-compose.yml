@@ -76,7 +76,7 @@ services:
         - "-p{{cookiecutter.project_name}}"
         - "-e"
         - "SELECT 1"
-      interval: 2s
+      interval: 3s
       timeout: 3s
       retries: 40
     volumes:

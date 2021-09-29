@@ -18,7 +18,7 @@ def project_name() -> str:
     """
     fake = Faker()
     raw_name: str = fake.name_female()
-    return raw_name.lower().replace(" ", "_").replace("-", "_")
+    return raw_name.lower().replace(" ", "_").replace("-", "_").replace(".", "_")
 
 
 @pytest.fixture(scope="session", autouse=True)
