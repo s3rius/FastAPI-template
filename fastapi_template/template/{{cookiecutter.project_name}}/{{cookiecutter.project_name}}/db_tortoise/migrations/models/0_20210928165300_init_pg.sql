@@ -5,3 +5,5 @@ CREATE TABLE IF NOT EXISTS "aerich" (
     "app" VARCHAR(20) NOT NULL,
     "content" JSONB NOT NULL
 );
+-- downgrade --
+DROP TABLE "aerich";
