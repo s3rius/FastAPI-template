@@ -8,7 +8,7 @@ from pygit2 import init_repository
 from termcolor import cprint, colored
 from pathlib import Path
 
-MANIFEST = "conditional_files.json"
+CONDITIONAL_MANIFEST = "conditional_files.json"
 REPLACE_MANIFEST = "replaceable_files.json"
 
 
@@ -20,7 +20,7 @@ def delete_resource(resource):
 
 
 def delete_resources_for_disabled_features():
-    with open(MANIFEST) as manifest_file:
+    with open(CONDITIONAL_MANIFEST) as manifest_file:
         manifest = json.load(manifest_file)
         for feature_name, feature in manifest.items():
             if feature["enabled"].lower() != "true":
@@ -31,7 +31,7 @@ def delete_resources_for_disabled_features():
                 print(text)
                 for resource in feature["resources"]:
                     delete_resource(resource)
-    delete_resource(MANIFEST)
+    delete_resource(CONDITIONAL_MANIFEST)
     cprint("cleanup complete!", color="green")
 
 
@@ -49,6 +49,7 @@ def replace_resources():
             for src_file in map(Path, replaces):
                 if src_file.exists():
                     shutil.move(src_file, target_path)
+    delete_resource(REPLACE_MANIFEST)
     print(
         "Resources are happy to be where {}.".format(
             colored("they are needed the most", color="green", attrs=["underline"])
