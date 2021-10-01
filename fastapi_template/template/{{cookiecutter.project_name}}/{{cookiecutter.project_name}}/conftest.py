@@ -22,8 +22,7 @@ from sqlalchemy.orm import sessionmaker
 from {{cookiecutter.project_name}}.db.dependencies import get_db_session
 from {{cookiecutter.project_name}}.db.utils import create_database, drop_database
 {%- elif cookiecutter.orm == "tortoise" %}
-from tortoise.contrib.test import finalizer, initializer, _restore_default  # noqa: WPS450
-from tortoise import Tortoise
+from tortoise.contrib.test import finalizer, initializer
 from {{cookiecutter.project_name}}.db.config import MODELS_MODULES
 {%- endif %}
 {%- endif %}
@@ -124,7 +123,7 @@ async def transaction(_engine: AsyncEngine) -> AsyncGenerator[AsyncConnection, N
         await conn.rollback()
 {%- elif cookiecutter.orm == "tortoise" %}
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(autouse=True)
 def initialize_db(event_loop: AbstractEventLoop) -> Generator[None, None, None]:
     """
     Initialize models and database.
@@ -142,25 +141,6 @@ def initialize_db(event_loop: AbstractEventLoop) -> Generator[None, None, None]:
     yield
 
     finalizer()
-
-@pytest.fixture(autouse=True)
-@pytest.mark.asyncio
-async def clean_db() -> AsyncGenerator[None, None]:
-    """
-    Removes all data from database after test.
-
-    :yields: Nothing.
-    """
-    yield
-
-    _restore_default()
-    for app in Tortoise.apps.values():
-        for model in app.values():
-            meta = model._meta  # noqa: WPS437
-            quote_char = meta.db.query_class._builder().QUOTE_CHAR  # noqa: WPS437
-            await meta.db.execute_script(
-                f"DELETE FROM {quote_char}{meta.db_table}{quote_char}" # noqa: S608
-            )
 
 {%- endif %}
 {%- endif %}
