@@ -2,8 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: {{cookiecutter.kube_name}}
   name: {{cookiecutter.kube_name}}-app
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: {{cookiecutter.kube_name}}-app
@@ -15,12 +17,22 @@ spec:
       containers:
         - name: app
           image: {{cookiecutter.project_name}}:latest
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: api-port
+            initialDelaySeconds: 10
+            periodSeconds: 10
           {%- if cookiecutter.db_info.name == "sqlite" %}
           command: ["/bin/sh"]
           args:
             - -c
             - >-
+              {%- if cookiecutter.orm == 'sqlalchemy' %}
               alembic upgrade head &&
+              {%- elif cookiecutter.orm == 'tortoise' %}
+              aerich upgrade &&
+              {%- endif %}
               python -m {{cookiecutter.project_name }}
           {%- endif %}
           env:
@@ -29,12 +41,12 @@ spec:
             {%- if cookiecutter.db_info.name != "none" %}
             {%- if cookiecutter.db_info.name != "sqlite" %}
             - name: {{cookiecutter.project_name | upper }}_DB_HOST
-              value: {{cookiecutter.kube_name}}-db-service
+              value: "{{cookiecutter.kube_name}}-db-service"
             {%- endif %}
             {%- endif %}
             {%- if cookiecutter.enable_redis == 'True' %}
             - name: {{cookiecutter.project_name | upper }}_REDIS_HOST
-              value: {{cookiecutter.kube_name}}-redis-service
+              value: "{{cookiecutter.kube_name}}-redis-service"
             {%- endif %}
           resources:
             limits:
@@ -42,22 +54,28 @@ spec:
               cpu: "200m"
           ports:
             - containerPort: 8000
+              name: api-port
 ---
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: {{cookiecutter.kube_name}}
   name: {{cookiecutter.kube_name}}-app-service
 spec:
   selector:
     app: {{cookiecutter.kube_name}}-app
   ports:
-    - port: 80
-      targetPort: 8000
+    - protocol: TCP
+      port: 80
+      targetPort: api-port
+      name: api-port
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{cookiecutter.kube_name}}-app
+  namespace: {{cookiecutter.kube_name}}
   labels:
     name: {{cookiecutter.kube_name}}-app
 spec:
@@ -71,4 +89,6 @@ spec:
               service:
                 name: {{cookiecutter.kube_name}}-app-service
                 port:
-                  number: 80
+                  name: api-port
+
+---

@@ -18,4 +18,4 @@ RUN poetry install
 COPY . /app/src/
 RUN pip install --use-feature=in-tree-build  .
 
-CMD python -m {{cookiecutter.project_name}}
+CMD ["/usr/local/bin/python", "-m", "{{cookiecutter.project_name}}"]
