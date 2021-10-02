@@ -15,10 +15,14 @@ repos:
       hooks:
           - id: add-trailing-comma
 
-    - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
-      rev: 0.0.11 # or specific tag
+    - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+      rev: v2.1.0
       hooks:
-          - id: yamlfmt
+          - id: pretty-format-yaml
+            args:
+              - --autofix
+              - --preserve-quotes
+              - --indent=2
 
     - repo: local
       hooks:
