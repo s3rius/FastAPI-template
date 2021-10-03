@@ -4,6 +4,8 @@ on:
   push:
     branches-ignore:
       - master
+    tags-ignore:
+      - "*"
 
 jobs:
   pytest:

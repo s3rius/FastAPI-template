@@ -36,7 +36,6 @@ services:
       {{cookiecutter.project_name | upper}}_DB_BASE: {{cookiecutter.project_name}}
       {%- endif %}
       {%- endif %}
-
     {%- if cookiecutter.db_info.name == "sqlite" %}
     volumes:
       - {{cookiecutter.project_name}}-db-data:/db_data/
@@ -47,14 +46,18 @@ services:
     image: {{cookiecutter.db_info.image}}
     hostname: {{cookiecutter.project_name}}-db
     environment:
-      - "POSTGRES_PASSWORD={{cookiecutter.project_name}}"
-      - "POSTGRES_USER={{cookiecutter.project_name}}"
-      - "POSTGRES_DB={{cookiecutter.project_name}}"
+      POSTGRES_PASSWORD: "{{cookiecutter.project_name}}"
+      POSTGRES_USER: "{{cookiecutter.project_name}}"
+      POSTGRES_DB: "{{cookiecutter.project_name}}"
     volumes:
       - {{cookiecutter.project_name}}-db-data:/var/lib/postgresql/data
     restart: always
     healthcheck:
-      test: pg_isready -U {{cookiecutter.project_name}}
+      test:
+        - CMD
+        - pg_isready
+        - -U
+        - {{cookiecutter.project_name}}
       interval: 2s
       timeout: 3s
       retries: 40
@@ -66,19 +69,19 @@ services:
     hostname: {{cookiecutter.project_name}}-db
     restart: always
     environment:
-      - "ALLOW_EMPTY_PASSWORD=yes"
-      - "MYSQL_ROOT_PASSWORD={{cookiecutter.project_name}}"
-      - "MYSQL_ROOT_USER={{cookiecutter.project_name}}"
-      - "MYSQL_DATABASE={{cookiecutter.project_name}}"
+      ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: "{{cookiecutter.project_name}}"
+      MYSQL_ROOT_USER: "{{cookiecutter.project_name}}"
+      MYSQL_DATABASE: "{{cookiecutter.project_name}}"
     healthcheck:
       test:
-        - "CMD"
-        - "mysql"
-        - "-u"
-        - "{{cookiecutter.project_name}}"
-        - "-p{{cookiecutter.project_name}}"
-        - "-e"
-        - "SELECT 1"
+        - CMD
+        - mysql
+        - -u
+        - {{cookiecutter.project_name}}
+        - -p{{cookiecutter.project_name}}
+        - -e
+        - SELECT 1
       interval: 3s
       timeout: 3s
       retries: 40
@@ -89,6 +92,7 @@ services:
   {% if cookiecutter.enable_migrations == 'True' -%}
   migrator:
     image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
+    restart: "no"
     {%- if cookiecutter.orm == 'sqlalchemy' %}
     command: alembic upgrade head
     {%- elif cookiecutter.orm == 'tortoise' %}
@@ -120,9 +124,12 @@ services:
     hostname: {{cookiecutter.project_name}}-redis
     restart: always
     environment:
-      - "ALLOW_EMPTY_PASSWORD=yes"
+      ALLOW_EMPTY_PASSWORD: "yes"
     healthcheck:
-      test: redis-cli ping
+      test:
+        - CMD
+        - redis-cli
+        - ping
       interval: 1s
       timeout: 3s
       retries: 30

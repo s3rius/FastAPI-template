@@ -23,10 +23,8 @@ api_router.include_router(docs.router)
 {%- endif %}
 {%- if cookiecutter.enable_routers == "True" %}
 api_router.include_router(echo.router, prefix="/echo", tags=["echo"])
-{%- if cookiecutter.db_info.name != "none" %}
 {%- if cookiecutter.add_dummy == 'True' %}
 api_router.include_router(dummy.router, prefix="/dummy", tags=["dummy"])
-{%- endif %}
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
 api_router.include_router(redis.router, prefix="/redis", tags=["redis"])

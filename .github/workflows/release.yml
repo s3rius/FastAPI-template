@@ -2,8 +2,8 @@ name: Release python package
 
 on:
   push:
-    branches:
-    - master
+    tags:
+      - "*"
 
 jobs:
   deploy:
