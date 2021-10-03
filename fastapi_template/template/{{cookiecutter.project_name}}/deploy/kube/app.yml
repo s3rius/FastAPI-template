@@ -17,11 +17,11 @@ spec:
       containers:
         - name: app
           image: {{cookiecutter.project_name}}:latest
-          livenessProbe:
+          readinessProbe:
             httpGet:
               path: /api/health
               port: api-port
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             periodSeconds: 10
           {%- if cookiecutter.db_info.name == "sqlite" %}
           command: ["/bin/sh"]
@@ -37,7 +37,9 @@ spec:
           {%- endif %}
           env:
             - name: {{cookiecutter.project_name | upper }}_HOST
-              value: 0.0.0.0
+              value: "0.0.0.0"
+            - name: {{cookiecutter.project_name | upper }}_WORKERS_COUNT
+              value: "10"
             {%- if cookiecutter.db_info.name != "none" %}
             {%- if cookiecutter.db_info.name != "sqlite" %}
             - name: {{cookiecutter.project_name | upper }}_DB_HOST

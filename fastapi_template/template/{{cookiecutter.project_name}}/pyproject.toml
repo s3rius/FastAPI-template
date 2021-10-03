@@ -16,6 +16,7 @@ fastapi = "^0.68.0"
 uvicorn = "^0.15.0"
 pydantic = {version = "^1.8.2", extras = ["dotenv"]}
 yarl = "^1.6.3"
+ujson = "^4.2.0"
 {%- if cookiecutter.orm == "sqlalchemy" %}
 SQLAlchemy = {version = "^1.4", extras = ["mypy", "asyncio"]}
 {%- elif cookiecutter.orm == "tortoise" %}

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import UJSONResponse
 
 from {{cookiecutter.project_name}}.web.api.router import api_router
 from {{cookiecutter.project_name}}.web.lifetime import shutdown, startup
@@ -39,6 +40,7 @@ def get_app() -> FastAPI:
         redoc_url="/api/redoc",
         {%- endif %}
         openapi_url="/api/openapi.json",
+        default_response_class=UJSONResponse,
     )
 
     app.on_event("startup")(startup(app))
