@@ -8,7 +8,7 @@ docker-compose -f deploy/docker-compose.yml --project-directory . up
 
 ## Pre-commit
 
-To install pre-commit simply run inside of the shell:
+To install pre-commit simply run inside the shell:
 ```bash
 pre-commit install
 ```
@@ -23,7 +23,7 @@ kubectl apply -f deploy/kube
 
 It will create needed components.
 
-If you hasn't pushed to docker registry yet, you can build image locally.
+If you haven't pushed to docker registry yet, you can build image locally.
 
 ```bash
 docker-compose -f deploy/docker-compose.yml --project-directory . build
