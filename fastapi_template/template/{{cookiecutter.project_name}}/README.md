@@ -64,7 +64,7 @@ aerich downgrade
 {%- endif %}
 ```
 
-### Miration generation
+### Migration generation
 
 To generate migrations you should run:
 ```bash
