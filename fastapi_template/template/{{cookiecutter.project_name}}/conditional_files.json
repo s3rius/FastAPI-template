@@ -37,7 +37,14 @@
             "aerich.ini",
             "alembic.ini",
             "{{cookiecutter.project_name}}/db_sa/migrations",
+            "{{cookiecutter.project_name}}/db_ormar/migrations",
             "{{cookiecutter.project_name}}/db_tortoise/migrations"
+        ]
+    },
+    "Alembic migrations": {
+        "enabled": "{{cookiecutter.orm in ['ormar', 'sqlalchemy']}}",
+        "resources": [
+            "alembic.ini"
         ]
     },
     "Gitlab CI": {
@@ -69,10 +76,13 @@
             "{{cookiecutter.project_name}}/web/api/dummy",
             "{{cookiecutter.project_name}}/db_sa/dao",
             "{{cookiecutter.project_name}}/db_sa/models/dummy_model.py",
+            "{{cookiecutter.project_name}}/db_ormar/dao",
+            "{{cookiecutter.project_name}}/db_ormar/models/dummy_model.py",
             "{{cookiecutter.project_name}}/db_tortoise/dao",
             "{{cookiecutter.project_name}}/db_tortoise/models/dummy_model.py",
             "{{cookiecutter.project_name}}/tests/test_dummy.py",
             "{{cookiecutter.project_name}}/db_sa/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
+            "{{cookiecutter.project_name}}/db_ormar/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
             "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_pg.sql",
             "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_mysql.sql",
             "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_sqlite.sql"
@@ -88,7 +98,6 @@
     "SQLAlchemy ORM": {
         "enabled": "{{cookiecutter.orm == 'sqlalchemy'}}",
         "resources": [
-            "alembic.ini",
             "{{cookiecutter.project_name}}/db_sa"
         ]
     },
@@ -97,6 +106,12 @@
         "resources": [
             "aerich.ini",
             "{{cookiecutter.project_name}}/db_tortoise"
+        ]
+    },
+    "Ormar ORM": {
+        "enabled": "{{cookiecutter.orm == 'ormar'}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/db_ormar"
         ]
     },
     "Postgresql DB": {

@@ -15,7 +15,6 @@ from {{cookiecutter.project_name}}.settings import settings
 from {{cookiecutter.project_name}}.web.application import get_app
 
 
-{%- if cookiecutter.db_info.name != "none" %}
 {%- if cookiecutter.orm == "sqlalchemy" %}
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncEngine, AsyncConnection
 from sqlalchemy.orm import sessionmaker
@@ -24,7 +23,10 @@ from {{cookiecutter.project_name}}.db.utils import create_database, drop_databas
 {%- elif cookiecutter.orm == "tortoise" %}
 from tortoise.contrib.test import finalizer, initializer
 from {{cookiecutter.project_name}}.db.config import MODELS_MODULES
-{%- endif %}
+{%- elif cookiecutter.orm == "ormar" %}
+from sqlalchemy.engine import create_engine
+from {{cookiecutter.project_name}}.db.config import database
+from {{cookiecutter.project_name}}.db.utils import create_database, drop_database
 {%- endif %}
 
 import nest_asyncio
@@ -52,7 +54,6 @@ def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
     yield loop
     loop.close()
 
-{%- if cookiecutter.db_info.name != "none" %}
 {%- if cookiecutter.orm == "sqlalchemy" %}
 @pytest.fixture(scope="session")
 @pytest.mark.asyncio
@@ -142,7 +143,36 @@ def initialize_db(event_loop: AbstractEventLoop) -> Generator[None, None, None]:
 
     finalizer()
 
-{%- endif %}
+{%- elif cookiecutter.orm == "ormar" %}
+
+@pytest.fixture(autouse=True)
+@pytest.mark.asyncio
+async def initialize_db() -> AsyncGenerator[None, None]:
+    """
+    Create models and databases.
+
+    :yield: new engine.
+    """
+    from {{cookiecutter.project_name}}.db.meta import meta  # noqa: WPS433
+    from {{cookiecutter.project_name}}.db.models import load_all_models  # noqa: WPS433
+
+    load_all_models()
+
+    create_database()
+
+    engine = create_engine(str(settings.db_url))
+    with engine.begin() as conn:
+        meta.create_all(conn)
+
+    engine.dispose()
+
+    await database.connect()
+
+    yield None
+
+    await database.disconnect()
+    drop_database()
+
 {%- endif %}
 
 
@@ -159,7 +189,7 @@ def fake_redis() -> FakeRedis:
 
 @pytest.fixture()
 def fastapi_app(
-    {%- if cookiecutter.db_info.name != "none" and cookiecutter.orm == "sqlalchemy" %}
+    {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
     {%- endif %}
     {% if cookiecutter.enable_redis == "True" -%}
@@ -172,7 +202,7 @@ def fastapi_app(
     :return: fastapi app with mocked dependencies.
     """
     application = get_app()
-    {% if cookiecutter.db_info.name != "none" and cookiecutter.orm == "sqlalchemy" -%}
+    {% if cookiecutter.orm == "sqlalchemy" -%}
     application.dependency_overrides[get_db_session] = lambda: dbsession
     {%- endif %}
     {%- if cookiecutter.enable_redis == "True" %}

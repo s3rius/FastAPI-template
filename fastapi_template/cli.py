@@ -187,6 +187,7 @@ def read_user_input(current_context: BuilderContext) -> BuilderContext:
     if current_context.db == DatabaseType.none:
         current_context.enable_migrations = False
         current_context.add_dummy = False
+        current_context.orm == ORM.none
     elif current_context.orm is None:
         current_context.orm = radiolist_dialog(
             "ORM",
