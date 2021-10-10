@@ -93,7 +93,7 @@ services:
   migrator:
     image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
     restart: "no"
-    {%- if cookiecutter.orm == 'sqlalchemy' %}
+    {%- if cookiecutter.orm in ['sqlalchemy', 'ormar'] %}
     command: alembic upgrade head
     {%- elif cookiecutter.orm == 'tortoise' %}
     command: aerich upgrade

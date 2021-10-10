@@ -8,7 +8,11 @@ from {{cookiecutter.project_name}}.settings import settings
 import aioredis
 {%- endif %}
 
-{%- if cookiecutter.db_info.name != "none" and cookiecutter.orm == "sqlalchemy" %}
+{%- if cookiecutter.orm == "ormar" %}
+from {{cookiecutter.project_name}}.db.config import database
+{%- endif %}
+
+{%- if cookiecutter.orm == "sqlalchemy" %}
 from asyncio import current_task
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -61,8 +65,10 @@ def startup(app: FastAPI) -> Callable[[], Awaitable[None]]:
     """
 
     async def _startup() -> None:  # noqa: WPS430
-        {%- if cookiecutter.db_info.name != "none" and cookiecutter.orm == "sqlalchemy" %}
+        {%- if cookiecutter.orm == "sqlalchemy" %}
         _setup_db(app)
+        {% elif cookiecutter.orm == "ormar" %}
+        await database.connect()
         {%- endif %}
         {%- if cookiecutter.enable_redis == "True" %}
         _setup_redis(app)
@@ -81,8 +87,10 @@ def shutdown(app: FastAPI) -> Callable[[], Awaitable[None]]:
     """
 
     async def _shutdown() -> None:  # noqa: WPS430
-        {%- if cookiecutter.db_info.name != "none" and cookiecutter.orm == "sqlalchemy" %}
+        {%- if cookiecutter.orm == "sqlalchemy" %}
         await app.state.db_engine.dispose()
+        {% elif cookiecutter.orm == "ormar" %}
+        await database.disconnect()
         {%- endif %}
         {%- if cookiecutter.enable_redis == "True" %}
         await app.state.redis_pool.disconnect()

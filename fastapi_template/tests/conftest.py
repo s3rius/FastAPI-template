@@ -1,6 +1,6 @@
+import re
 import pytest
 import os
-import uuid
 import tempfile
 import shutil
 from faker import Faker
@@ -17,8 +17,10 @@ def project_name() -> str:
     :return: project name.
     """
     fake = Faker()
-    raw_name: str = fake.name_female()
-    return raw_name.lower().replace(" ", "_").replace("-", "_").replace(".", "_")
+    raw_name: str = (
+        fake.name_female().lower().replace(" ", "_").replace("-", "_").replace(".", "_")
+    )
+    return re.sub("_+", "_", raw_name).strip("_")
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -62,20 +64,6 @@ def default_context(project_name: str) -> None:
         force=True,
     )
 
-
-@pytest.fixture(autouse=True)
-def lock_remover(project_name: str) -> None:
-    """
-    Automatically removes lock file
-    after each test.
-
-    :param project_name: generated project.
-    """
-    yield
-
-    Path("poetry.lock").unlink(missing_ok=True)
-
-
 @pytest.fixture(autouse=True)
 def default_dir(generator_start_dir: str) -> None:
     """
@@ -103,23 +91,6 @@ def docker_module_shutdown(generator_start_dir: str, project_name: str) -> None:
     if not project_dir.exists():
         return
     os.chdir(project_dir)
+    Path("poetry.lock").unlink(missing_ok=True)
     run_docker_compose_command("down -v")
-    os.chdir(cwd)
-
-
-@pytest.fixture(scope="session", autouse=True)
-def docker_shutdown(generator_start_dir: str, project_name: str) -> None:
-    """
-    Cleans up docker context.
-
-    :param generator_start_dir: generator dir.
-    :param project_name: name of the project.
-    """
-    yield
-    cwd = os.getcwd()
-    project_dir = Path(generator_start_dir) / project_name
-    if not project_dir.exists():
-        return
-    os.chdir(project_dir)
-    run_docker_compose_command("down -v --rmi=all")
     os.chdir(cwd)
