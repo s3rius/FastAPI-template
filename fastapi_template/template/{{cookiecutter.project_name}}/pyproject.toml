@@ -19,30 +19,46 @@ yarl = "^1.6.3"
 ujson = "^4.2.0"
 {%- if cookiecutter.orm == "sqlalchemy" %}
 SQLAlchemy = {version = "^1.4", extras = ["mypy", "asyncio"]}
-{%- elif cookiecutter.orm == "tortoise" %}
-tortoise-orm = "^0.17.7"
-{%- endif %}
 {%- if cookiecutter.enable_migrations == "True" %}
-{%- if cookiecutter.orm == "sqlalchemy" %}
 alembic = "^1.6.5"
-{%- elif cookiecutter.orm == "tortoise" %}
-aerich = "^0.5.8"
-{%- endif %}
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
-{%- if cookiecutter.orm == "sqlalchemy" %}
 asyncpg = {version = "^0.24.0", extras = ["sa"]}
-{%- elif cookiecutter.orm == "tortoise" %}
-asyncpg = {version = "^0.24.0"}
-{%- endif %}
-{%- endif %}
-{%- if cookiecutter.db_info.name == "sqlite" %}
+{%- elif cookiecutter.db_info.name == "sqlite" %}
 aiosqlite = "^0.17.0"
-{%- endif %}
-{%- if cookiecutter.db_info.name == "mysql" %}
+{%- elif cookiecutter.db_info.name == "mysql" %}
 aiomysql = "^0.0.21"
+mysqlclient = "^2.0.3"
+{%- endif %}
+{%- endif %}
 {%- if cookiecutter.orm == "tortoise" %}
+tortoise-orm = "^0.17.7"
+{%- if cookiecutter.enable_migrations == "True" %}
+aerich = "^0.5.8"
+{%- endif %}
+{%- if cookiecutter.db_info.name == "postgresql" %}
+asyncpg = "^0.24.0"
+{%- elif cookiecutter.db_info.name == "sqlite" %}
+aiosqlite = "^0.17.0"
+{%- elif cookiecutter.db_info.name == "mysql" %}
+aiomysql = "^0.0.21"
+mysqlclient = "^2.0.3"
 cryptography = "^3.4.8"
+{%- endif %}
+{%- endif %}
+{%- if cookiecutter.orm == "ormar" %}
+ormar = "^0.10.20"
+{%- if cookiecutter.enable_migrations == "True" %}
+alembic = "^1.6.5"
+{%- endif %}
+{%- if cookiecutter.db_info.name == "postgresql" %}
+asyncpg = "^0.24.0"
+psycopg2-binary = "^2.9.1"
+{%- elif cookiecutter.db_info.name == "sqlite" %}
+aiosqlite = "^0.17.0"
+{%- elif cookiecutter.db_info.name == "mysql" %}
+aiomysql = "^0.0.21"
+mysqlclient = "^2.0.3"
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
@@ -63,7 +79,7 @@ isort = "^5.9.3"
 yesqa = "^1.2.3"
 pre-commit = "^2.11.0"
 wemake-python-styleguide = "^0.15.3"
-black = "^21.7b0"
+black = "==21.7b0"
 autoflake = "^1.4"
 {%- if cookiecutter.orm == "sqlalchemy" %}
 SQLAlchemy = {version = "^1.4", extras = ["mypy"]}
