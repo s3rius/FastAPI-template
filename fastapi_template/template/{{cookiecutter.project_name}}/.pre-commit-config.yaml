@@ -58,6 +58,9 @@ repos:
             entry: poetry run mypy
             language: system
             types: [python]
+            pass_filenames: false
+            args:
+              - "{{cookiecutter.project_name}}"
 
           - id: yesqa
             name: Remove usless noqa

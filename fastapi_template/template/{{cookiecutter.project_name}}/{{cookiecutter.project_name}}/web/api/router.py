@@ -2,10 +2,8 @@ from fastapi.routing import APIRouter
 
 {%- if cookiecutter.enable_routers == "True" %}
 from {{cookiecutter.project_name}}.web.api import echo
-{%- if cookiecutter.db_info.name != "none" %}
 {%- if cookiecutter.add_dummy == 'True' %}
 from {{cookiecutter.project_name}}.web.api import dummy
-{%- endif %}
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
 from {{cookiecutter.project_name}}.web.api import redis

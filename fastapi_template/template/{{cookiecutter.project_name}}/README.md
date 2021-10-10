@@ -37,7 +37,7 @@ docker save --output {{cookiecutter.project_name}}.tar {{cookiecutter.project_na
 
 If you want to migrate your database, you should run following commands:
 ```bash
-{%- if cookiecutter.orm == 'sqlalchemy' %}
+{%- if cookiecutter.orm in ['sqlalchemy', 'ormar'] %}
 # To run all migrations untill the migration with revision_id.
 alembic upgrade "<revision_id>"
 
@@ -53,7 +53,7 @@ aerich upgrade
 
 If you want to revert migrations, you should run:
 ```bash
-{%- if cookiecutter.orm == 'sqlalchemy' %}
+{%- if cookiecutter.orm in ['sqlalchemy', 'ormar'] %}
 # revert all migrations up to: revision_id.
 alembic downgrade <revision_id>
 
@@ -68,7 +68,7 @@ aerich downgrade
 
 To generate migrations you should run:
 ```bash
-{%- if cookiecutter.orm == 'sqlalchemy' %}
+{%- if cookiecutter.orm in ['sqlalchemy', 'ormar'] %}
 # For automatic change detection.
 alembic revision --autogenerate
 

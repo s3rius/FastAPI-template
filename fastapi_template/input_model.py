@@ -20,6 +20,8 @@ class CIType(enum.Enum):
 
 @enum.unique
 class ORM(enum.Enum):
+    none = "none"
+    ormar = "ormar"
     sqlalchemy = "sqlalchemy"
     tortoise = "tortoise"
 
@@ -29,6 +31,7 @@ class Database(BaseModel):
     image: Optional[str]
     driver: Optional[str]
     async_driver: Optional[str]
+    driver_short: Optional[str]
     port: Optional[int]
 
 
@@ -44,13 +47,15 @@ DB_INFO = {
         name=DatabaseType.postgresql.value,
         image="postgres:13.4-buster",
         async_driver="postgresql+asyncpg",
-        driver="postgres",
+        driver_short="postgres",
+        driver="postgresql",
         port=5432,
     ),
     DatabaseType.mysql: Database(
         name=DatabaseType.mysql.value,
         image="bitnami/mysql:8.0.26",
         async_driver="mysql+aiomysql",
+        driver_short="mysql",
         driver="mysql",
         port=3306,
     ),
@@ -58,6 +63,7 @@ DB_INFO = {
         name=DatabaseType.sqlite.value,
         image=None,
         async_driver="sqlite+aiosqlite",
+        driver_short="sqlite",
         driver="sqlite",
         port=None,
     ),
