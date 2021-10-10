@@ -32,7 +32,7 @@ python3 -m fastapi_template
 
 One of the coolest features is that this project is extremely small and handy.
 You can choose between different databases and even ORMs. 
-Currently SQLAlchemy1.4 and TortoiseORM are supported.
+Currently SQLAlchemy1.4, TortoiseORM and Ormar are supported.
 
 TUI and CLI and excellent code documentation.
 
@@ -56,7 +56,7 @@ $ python -m fastapi_template --help
 usage: FastAPI template [-h] [--version] [--name PROJECT_NAME]
                         [--description PROJECT_DESCRIPTION]
                         [--db {none,sqlite,mysql,postgresql}]
-                        [--orm {sqlalchemy,tortoise}]
+                        [--orm {none,ormar,sqlalchemy,tortoise}]
                         [--ci {none,gitlab,github}] [--redis] [--migrations]
                         [--kube] [--dummy] [--routers] [--swagger] [--force]
 
@@ -68,7 +68,7 @@ optional arguments:
                         Project description
   --db {none,sqlite,mysql,postgresql}
                         Database
-  --orm {sqlalchemy,tortoise}
+  --orm {none,ormar,sqlalchemy,tortoise}
                         ORM
   --ci {none,gitlab,github}
                         Choose CI support
