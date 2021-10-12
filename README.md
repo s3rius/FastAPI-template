@@ -56,7 +56,7 @@ $ python -m fastapi_template --help
 usage: FastAPI template [-h] [--version] [--name PROJECT_NAME]
                         [--description PROJECT_DESCRIPTION]
                         [--db {none,sqlite,mysql,postgresql}]
-                        [--orm {none,ormar,sqlalchemy,tortoise}]
+                        [--orm {ormar,sqlalchemy,tortoise}]
                         [--ci {none,gitlab,github}] [--redis] [--migrations]
                         [--kube] [--dummy] [--routers] [--swagger] [--force]
 
@@ -68,7 +68,7 @@ optional arguments:
                         Project description
   --db {none,sqlite,mysql,postgresql}
                         Database
-  --orm {none,ormar,sqlalchemy,tortoise}
+  --orm {ormar,sqlalchemy,tortoise}
                         ORM
   --ci {none,gitlab,github}
                         Choose CI support
