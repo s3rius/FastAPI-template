@@ -53,6 +53,7 @@ spec:
     - port: {{cookiecutter.db_info.port}}
       targetPort: {{cookiecutter.db_info.port}}
 ---
+{%- if cookiecutter.enable_migrations == "True" %}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -87,5 +88,5 @@ spec:
           command: ["./wait-for-it.sh", "-t", "60", "{{cookiecutter.kube_name}}-db-service:{{cookiecutter.db_info.port}}"]
       restartPolicy: Never
 
-
 ---
+{%- endif %}

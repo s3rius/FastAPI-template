@@ -57,7 +57,14 @@ def get_app() -> FastAPI:
     {% endif %}
 
     {%- if cookiecutter.orm == 'tortoise' %}
-    register_tortoise(app, config=TORTOISE_CONFIG, add_exception_handlers=True)
+    register_tortoise(
+        app,
+        config=TORTOISE_CONFIG,
+        add_exception_handlers=True,
+        {%- if cookiecutter.enable_migrations == "False" %}
+        generate_schemas=True,
+        {%- endif %}
+    )
     {%- endif %}
 
     return app
