@@ -18,6 +18,7 @@ python3 -m fastapi_template
 # Answer all the questions
 # 🍪 Enjoy your new project 🍪
 cd new_project
+docker-compose -f deploy/docker-compose.yml --project-directory . build
 docker-compose -f deploy/docker-compose.yml --project-directory . up --build
 ```
 
@@ -27,6 +28,12 @@ python3 -m pip install poetry
 python3 -m pip install .
 python3 -m fastapi_template
 ```
+
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/18153319/137182689-ce714440-7576-46a0-8f96-862a8469a28c.gif"/>
+  <p>Templator in action</p>
+</div>
+
 
 ## Features
 
