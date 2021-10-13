@@ -7,6 +7,10 @@
 
 ## Usage
 
+
+https://user-images.githubusercontent.com/18153319/137175533-5defca0b-b161-4b90-b67d-0c0d3a8af420.mp4
+
+
 ⚠️ [Git](https://git-scm.com/downloads), [Python](https://www.python.org/) and [Poetry](https://python-poetry.org/) must be installed and accessible ⚠️
 
 Poetry version must be greater or equal than 1.1.8. Otherwise it won't be able to install SQLAlchemy.
