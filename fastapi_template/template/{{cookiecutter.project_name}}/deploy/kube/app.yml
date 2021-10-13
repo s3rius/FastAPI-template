@@ -28,10 +28,12 @@ spec:
           args:
             - -c
             - >-
+              {%- if cookiecutter.enable_migrations == "True" %}
               {%- if cookiecutter.orm in ['sqlalchemy', 'ormar'] %}
               alembic upgrade head &&
               {%- elif cookiecutter.orm == 'tortoise' %}
               aerich upgrade &&
+              {%- endif %}
               {%- endif %}
               python -m {{cookiecutter.project_name }}
           {%- endif %}
@@ -40,11 +42,9 @@ spec:
               value: "0.0.0.0"
             - name: {{cookiecutter.project_name | upper }}_WORKERS_COUNT
               value: "10"
-            {%- if cookiecutter.db_info.name != "none" %}
-            {%- if cookiecutter.db_info.name != "sqlite" %}
+            {%- if cookiecutter.db_info.name not in ["none", "sqlite"] %}
             - name: {{cookiecutter.project_name | upper }}_DB_HOST
               value: "{{cookiecutter.kube_name}}-db-service"
-            {%- endif %}
             {%- endif %}
             {%- if cookiecutter.enable_redis == 'True' %}
             - name: {{cookiecutter.project_name | upper }}_REDIS_HOST

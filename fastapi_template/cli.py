@@ -56,7 +56,7 @@ def parse_args():
         "--orm",
         help="ORM",
         type=str,
-        choices=list(map(attrgetter("value"), ORM)),
+        choices=[orm.value for orm in ORM if orm != ORM.none],
         default=None,
         dest="orm",
     )
@@ -65,7 +65,7 @@ def parse_args():
         help="Choose CI support",
         default=None,
         type=str,
-        choices=list(map(attrgetter("value"), CIType)),
+        choices=[ci.value for ci in CIType],
         dest="ci_type",
     )
     parser.add_argument(
@@ -192,7 +192,7 @@ def read_user_input(current_context: BuilderContext) -> BuilderContext:
         current_context.orm = radiolist_dialog(
             "ORM",
             text="Which ORM do you want?",
-            values=[(orm, orm.value) for orm in list(ORM)],
+            values=[(orm, orm.value) for orm in list(ORM) if orm != ORM.none],
         ).run()
         if current_context.orm is None:
             raise KeyboardInterrupt()
