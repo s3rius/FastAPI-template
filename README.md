@@ -1,5 +1,5 @@
-![python version](https://img.shields.io/pypi/pyversions/fastapi_template?style=flat-square) ![Build status](https://img.shields.io/github/workflow/status/s3rius/FastAPI-template/Release%20python%20package?style=flat-square) [![version](https://img.shields.io/pypi/v/fastapi_template?style=flat-square)](https://pypi.org/project/fastapi-template/)
-
+![python version](https://img.shields.io/pypi/pyversions/fastapi_template?style=for-the-badge) ![Build status](https://img.shields.io/github/workflow/status/s3rius/FastAPI-template/Release%20python%20package?style=for-the-badge) [![version](https://img.shields.io/pypi/v/fastapi_template?style=for-the-badge)](https://pypi.org/project/fastapi-template/)
+[![](https://img.shields.io/pypi/dm/fastapi_template?style=for-the-badge)](https://pypi.org/project/fastapi-template/)
 <div align="center">
 <img src="https://raw.githubusercontent.com/s3rius/FastAPI-template/master/images/logo.png" width=700>
 <div><i>Flexible and Lightweight general-purpose template for FastAPI.</i></div>
