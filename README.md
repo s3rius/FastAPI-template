@@ -29,6 +29,11 @@ python3 -m pip install .
 python3 -m fastapi_template
 ```
 
+Also you can use it with docker.
+```bash
+docker run --rm -it -v "$(pwd):/projects" s3rius/fastapi_template
+```
+
 <div align="center">
   <img src="https://user-images.githubusercontent.com/18153319/137182689-ce714440-7576-46a0-8f96-862a8469a28c.gif"/>
   <p>Templator in action</p>
