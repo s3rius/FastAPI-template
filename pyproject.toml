@@ -15,7 +15,6 @@ python = "^3.8"
 cookiecutter = "^1.7.3"
 pre-commit = "^2.14.0"
 termcolor = "^1.1.0"
-pygit2 = "^1.6.0"
 pydantic = "^1.8.2"
 prompt-toolkit = "^3.0.19"
 
