@@ -4,7 +4,6 @@ import os
 import shutil
 import subprocess
 
-from pygit2 import init_repository
 from termcolor import cprint, colored
 from pathlib import Path
 
@@ -58,19 +57,16 @@ def replace_resources():
 
 
 def init_repo():
-    repo_path = os.getcwd()
-    repo = init_repository(repo_path)
+    subprocess.run(["git", "init"], stdout=subprocess.PIPE)
     cprint("Git repository initialized.", "green")
-    repo.index.add_all()
-    repo.index.write()
+    subprocess.run(["git", "add", "."], stdout=subprocess.PIPE)
     cprint("Added files to index.", "green")
     subprocess.run(["poetry", "install", "-n"])
     subprocess.run(["poetry", "run", "pre-commit", "install"])
     cprint("pre-commit installed.", "green")
     subprocess.run(["poetry", "run", "pre-commit", "run", "-a"])
-    repo.index.add_all()
-    repo.index.write()
-
+    subprocess.run(["git", "add", "."], stdout=subprocess.PIPE)
+    subprocess.run(["git", "commit", "-m", "Initial commit"], stdout=subprocess.PIPE)
 
 if __name__ == "__main__":
     delete_resources_for_disabled_features()
