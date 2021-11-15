@@ -87,6 +87,7 @@ class BuilderContext(BaseModel):
     add_dummy: Optional[bool] = False
     self_hosted_swagger: Optional[bool]
     force: bool = False
+    quite: bool = False
 
     class Config:
         orm_mode = True

@@ -118,6 +118,13 @@ def parse_args():
         default=False,
         dest="force",
     )
+    parser.add_argument(
+        "--quite",
+        help="Quite project generation",
+        action="store_true",
+        default=False,
+        dest="quite",
+    )
 
     return parser.parse_args()
 
@@ -155,7 +162,7 @@ def ask_features(current_context: BuilderContext) -> BuilderContext:
         if feature["value"] is None:
             setattr(current_context, feature["name"], False)
             checkbox_values.append((feature["name"], feature_name))
-    if checkbox_values:
+    if checkbox_values and not current_context.quite:
         results = checkboxlist_dialog(
             title="Features",
             text="What features do you wanna add?",
