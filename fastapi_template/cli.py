@@ -120,7 +120,7 @@ def parse_args():
     )
     parser.add_argument(
         "--quite",
-        help="Quite project generation",
+        help="Do not ask for feature during generation",
         action="store_true",
         default=False,
         dest="quite",
