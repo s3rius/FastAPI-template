@@ -14,13 +14,11 @@ services:
     depends_on:
       {%- if cookiecutter.db_info.name != "none" %}
       {%- if cookiecutter.db_info.name != "sqlite" %}
-      db:
-        condition: service_healthy
+      - db
       {%- endif %}
       {%- endif %}
       {%- if cookiecutter.enable_redis == "True" %}
-      redis:
-        condition: service_healthy
+      - redis
       {%- endif %}
     {%- endif %}
     environment:
@@ -113,8 +111,7 @@ services:
     {%- endif %}
     {%- if cookiecutter.db_info.name != "sqlite" %}
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     {%- endif %}
   {%- endif %}
 
