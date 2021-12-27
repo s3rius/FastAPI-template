@@ -15,7 +15,7 @@ class DatabaseType(enum.Enum):
 @enum.unique
 class CIType(enum.Enum):
     none = "none"
-    gitlab_ci = "gitlab"
+    gitlab_ci = "gitlab_ci"
     github = "github"
 
 @enum.unique
