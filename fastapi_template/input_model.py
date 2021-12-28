@@ -15,7 +15,7 @@ class DatabaseType(enum.Enum):
 @enum.unique
 class CIType(enum.Enum):
     none = "none"
-    gitlab_ci = "gitlab"
+    gitlab_ci = "gitlab_ci"
     github = "github"
 
 @enum.unique
@@ -87,6 +87,7 @@ class BuilderContext(BaseModel):
     add_dummy: Optional[bool] = False
     self_hosted_swagger: Optional[bool]
     force: bool = False
+    quite: bool = False
 
     class Config:
         orm_mode = True
