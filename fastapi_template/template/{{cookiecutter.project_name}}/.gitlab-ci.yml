@@ -4,11 +4,6 @@ stages:
 .test-template:
   stage: test
   image: python:3.9.6-slim-buster
-  tags:
-    - kubernetes-runner
-    - docker-runner
-  except:
-    - tags
   before_script:
     - pip install poetry==1.1.7
     - poetry config virtualenvs.create false
@@ -41,7 +36,7 @@ pytest:
     - name: {{ cookiecutter.db_info.image }}
   variables:
     {%- if cookiecutter.db_info.name == "postgresql" %}
-    {{ cookiecutter.project_name | upper }}_DB_HOST: localhost
+    {{cookiecutter.project_name | upper}}_DB_HOST: postgres
     POSTGRES_PASSWORD: {{ cookiecutter.project_name }}
     POSTGRES_USER: {{ cookiecutter.project_name }}
     POSTGRES_DB: {{ cookiecutter.project_name }}
@@ -57,7 +52,7 @@ pytest:
   {%- endif %}
   script:
     {%- if cookiecutter.db_info.name != "none" %}
-    {%- if cookiecutter.db_info.name != "sqlite" %}
+    {%- if cookiecutter.db_info.name not in ["sqlite", "postgresql"] %}
     - apt update
     - apt install -y wait-for-it
     - wait-for-it -t 180 ${{ cookiecutter.project_name | upper }}_DB_HOST:{{cookiecutter.db_info.port}}

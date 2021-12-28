@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from tempfile import gettempdir
 from typing import Optional
@@ -22,11 +23,11 @@ class Settings(BaseSettings):
     {%- if cookiecutter.db_info.name == "sqlite" %}
     db_file: Path = TEMP_DIR / "db.sqlite3"
     {%- else %}
-    db_host: str = "localhost"
-    db_port: int = {{cookiecutter.db_info.port}}
-    db_user: str = "{{cookiecutter.project_name}}"
-    db_pass: str = "{{cookiecutter.project_name}}"
-    db_base: str = "{{cookiecutter.project_name}}"
+    db_host: str = os.environ.get("{{cookiecutter.project_name | upper}}_DB_HOST", "localhost")
+    db_port: int = int(os.environ.get("{{cookiecutter.project_name | upper}}_DB_PORT", {{cookiecutter.db_info.port}}))  # noqa: WPS432
+    db_user: str = os.environ.get("{{cookiecutter.project_name | upper}}_DB_USER", "{{cookiecutter.project_name}}")
+    db_pass: str = os.environ.get("{{cookiecutter.project_name | upper}}_DB_PASSWORD", "{{cookiecutter.project_name}}")
+    db_base: str = os.environ.get("{{cookiecutter.project_name | upper}}_DB_NAME", "{{cookiecutter.project_name}}")
     {%- endif %}
     db_echo: bool = False
     {%- endif %}
