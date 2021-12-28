@@ -71,6 +71,7 @@ usage: FastAPI template [-h] [--version] [--name PROJECT_NAME]
                         [--orm {ormar,sqlalchemy,tortoise}]
                         [--ci {none,gitlab,github}] [--redis] [--migrations]
                         [--kube] [--dummy] [--routers] [--swagger] [--force]
+                        [--quite]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -92,4 +93,5 @@ optional arguments:
   --routers             Add exmaple routers
   --swagger             Eanble self-hosted swagger
   --force               Owerrite directory if it exists
+  --quite               Do not ask for feature during generation
 ```
