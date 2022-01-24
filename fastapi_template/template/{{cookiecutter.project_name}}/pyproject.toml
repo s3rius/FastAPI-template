@@ -51,6 +51,9 @@ ormar = "^0.10.20"
 {%- if cookiecutter.enable_migrations == "True" %}
 alembic = "^1.6.5"
 {%- endif %}
+{%- if cookiecutter.orm == "piccolo" %}
+piccolo = "^0.66.0"
+{%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
 asyncpg = "^0.24.0"
 psycopg2-binary = "^2.9.1"

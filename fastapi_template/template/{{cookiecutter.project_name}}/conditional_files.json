@@ -1,138 +1,144 @@
 {
-    "Redis": {
-        "enabled": "{{cookiecutter.enable_redis}}",
-        "resources": [
-            "{{cookiecutter.project_name}}/web/api/redis",
-            "{{cookiecutter.project_name}}/services/redis",
-            "{{cookiecutter.project_name}}/tests/test_redis.py",
-            "deploy/kube/redis.yml"
-        ]
-    },
-    "Kubernetes": {
-        "enabled": "{{cookiecutter.enable_kube}}",
-        "resources": [
-            "deploy/kube"
-        ]
-    },
-    "Database support": {
-        "enabled": "{{cookiecutter.db_info.name != 'none'}}",
-        "resources": [
-            "aerich.ini",
-            "alembic.ini",
-            "{{cookiecutter.project_name}}/web/api/dummy",
-            "{{cookiecutter.project_name}}/db_sa",
-            "{{cookiecutter.project_name}}/tests/test_dummy.py",
-            "deploy/kube/db.yml"
-        ]
-    },
-    "Postgres and MySQL support": {
-        "enabled": "{{cookiecutter.db_info.name != 'sqlite'}}",
-        "resources": [
-            "deploy/kube/db.yml"
-        ]
-    },
-    "Migrations": {
-        "enabled": "{{cookiecutter.enable_migrations}}",
-        "resources": [
-            "aerich.ini",
-            "alembic.ini",
-            "{{cookiecutter.project_name}}/db_sa/migrations",
-            "{{cookiecutter.project_name}}/db_ormar/migrations",
-            "{{cookiecutter.project_name}}/db_tortoise/migrations"
-        ]
-    },
-    "Alembic migrations": {
-        "enabled": "{{cookiecutter.orm in ['ormar', 'sqlalchemy']}}",
-        "resources": [
-            "alembic.ini"
-        ]
-    },
-    "Gitlab CI": {
-        "enabled": "{{cookiecutter.ci_type == 'gitlab_ci'}}",
-        "resources": [
-            ".gitlab-ci.yml"
-        ]
-    },
-    "Github CI": {
-        "enabled": "{{cookiecutter.ci_type == 'github'}}",
-        "resources": [
-            ".github"
-        ]
-    },
-    "Routers": {
-        "enabled": "{{cookiecutter.enable_routers}}",
-        "resources": [
-            "{{cookiecutter.project_name}}/web/api/echo",
-            "{{cookiecutter.project_name}}/web/api/dummy",
-            "{{cookiecutter.project_name}}/web/api/redis",
-            "{{cookiecutter.project_name}}/tests/test_echo.py",
-            "{{cookiecutter.project_name}}/tests/test_dummy.py",
-            "{{cookiecutter.project_name}}/tests/test_redis.py"
-        ]
-    },
-    "Dummy model": {
-        "enabled": "{{cookiecutter.add_dummy}}",
-        "resources": [
-            "{{cookiecutter.project_name}}/web/api/dummy",
-            "{{cookiecutter.project_name}}/db_sa/dao",
-            "{{cookiecutter.project_name}}/db_sa/models/dummy_model.py",
-            "{{cookiecutter.project_name}}/db_ormar/dao",
-            "{{cookiecutter.project_name}}/db_ormar/models/dummy_model.py",
-            "{{cookiecutter.project_name}}/db_tortoise/dao",
-            "{{cookiecutter.project_name}}/db_tortoise/models/dummy_model.py",
-            "{{cookiecutter.project_name}}/tests/test_dummy.py",
-            "{{cookiecutter.project_name}}/db_sa/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
-            "{{cookiecutter.project_name}}/db_ormar/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
-            "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_pg.sql",
-            "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_mysql.sql",
-            "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_sqlite.sql"
-        ]
-    },
-    "Self-hosted swagger": {
-        "enabled": "{{cookiecutter.self_hosted_swagger}}",
-        "resources": [
-            "{{cookiecutter.project_name}}/web/static",
-            "{{cookiecutter.project_name}}/web/api/docs"
-        ]
-    },
-    "SQLAlchemy ORM": {
-        "enabled": "{{cookiecutter.orm == 'sqlalchemy'}}",
-        "resources": [
-            "{{cookiecutter.project_name}}/db_sa"
-        ]
-    },
-    "Tortoise ORM": {
-        "enabled": "{{cookiecutter.orm == 'tortoise'}}",
-        "resources": [
-            "aerich.ini",
-            "{{cookiecutter.project_name}}/db_tortoise"
-        ]
-    },
-    "Ormar ORM": {
-        "enabled": "{{cookiecutter.orm == 'ormar'}}",
-        "resources": [
-            "{{cookiecutter.project_name}}/db_ormar"
-        ]
-    },
-    "Postgresql DB": {
-        "enabled": "{{cookiecutter.db_info.name == 'postgresql'}}",
-        "resources": [
-            "{{cookiecutter.project_name}}/db_tortoise/migrations/models/0_20210928165300_init_pg.sql",
-            "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_pg.sql"
-        ]
-    },
-    "MySQL DB": {
-        "enabled": "{{cookiecutter.db_info.name == 'mysql'}}",
-        "resources": [
-            "{{cookiecutter.project_name}}/db_tortoise/migrations/models/0_20210928165300_init_mysql.sql",
-            "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_mysql.sql"
-        ]
-    },
-    "SQLite DB": {
-        "enabled": "{{cookiecutter.db_info.name == 'sqlite'}}",
-        "resources": [
-            "{{cookiecutter.project_name}}/db_tortoise/migrations/models/0_20210928165300_init_sqlite.sql",
-            "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_sqlite.sql"
-        ]
-    }
+  "Redis": {
+    "enabled": "{{cookiecutter.enable_redis}}",
+    "resources": [
+      "{{cookiecutter.project_name}}/web/api/redis",
+      "{{cookiecutter.project_name}}/services/redis",
+      "{{cookiecutter.project_name}}/tests/test_redis.py",
+      "deploy/kube/redis.yml"
+    ]
+  },
+  "Kubernetes": {
+    "enabled": "{{cookiecutter.enable_kube}}",
+    "resources": [
+      "deploy/kube"
+    ]
+  },
+  "Database support": {
+    "enabled": "{{cookiecutter.db_info.name != 'none'}}",
+    "resources": [
+      "aerich.ini",
+      "alembic.ini",
+      "{{cookiecutter.project_name}}/web/api/dummy",
+      "{{cookiecutter.project_name}}/db_sa",
+      "{{cookiecutter.project_name}}/tests/test_dummy.py",
+      "deploy/kube/db.yml"
+    ]
+  },
+  "Postgres and MySQL support": {
+    "enabled": "{{cookiecutter.db_info.name != 'sqlite'}}",
+    "resources": [
+      "deploy/kube/db.yml"
+    ]
+  },
+  "Migrations": {
+    "enabled": "{{cookiecutter.enable_migrations}}",
+    "resources": [
+      "aerich.ini",
+      "alembic.ini",
+      "{{cookiecutter.project_name}}/db_sa/migrations",
+      "{{cookiecutter.project_name}}/db_ormar/migrations",
+      "{{cookiecutter.project_name}}/db_tortoise/migrations"
+    ]
+  },
+  "Alembic migrations": {
+    "enabled": "{{cookiecutter.orm in ['ormar', 'sqlalchemy']}}",
+    "resources": [
+      "alembic.ini"
+    ]
+  },
+  "Gitlab CI": {
+    "enabled": "{{cookiecutter.ci_type == 'gitlab_ci'}}",
+    "resources": [
+      ".gitlab-ci.yml"
+    ]
+  },
+  "Github CI": {
+    "enabled": "{{cookiecutter.ci_type == 'github'}}",
+    "resources": [
+      ".github"
+    ]
+  },
+  "Routers": {
+    "enabled": "{{cookiecutter.enable_routers}}",
+    "resources": [
+      "{{cookiecutter.project_name}}/web/api/echo",
+      "{{cookiecutter.project_name}}/web/api/dummy",
+      "{{cookiecutter.project_name}}/web/api/redis",
+      "{{cookiecutter.project_name}}/tests/test_echo.py",
+      "{{cookiecutter.project_name}}/tests/test_dummy.py",
+      "{{cookiecutter.project_name}}/tests/test_redis.py"
+    ]
+  },
+  "Dummy model": {
+    "enabled": "{{cookiecutter.add_dummy}}",
+    "resources": [
+      "{{cookiecutter.project_name}}/web/api/dummy",
+      "{{cookiecutter.project_name}}/db_sa/dao",
+      "{{cookiecutter.project_name}}/db_sa/models/dummy_model.py",
+      "{{cookiecutter.project_name}}/db_ormar/dao",
+      "{{cookiecutter.project_name}}/db_ormar/models/dummy_model.py",
+      "{{cookiecutter.project_name}}/db_tortoise/dao",
+      "{{cookiecutter.project_name}}/db_tortoise/models/dummy_model.py",
+      "{{cookiecutter.project_name}}/tests/test_dummy.py",
+      "{{cookiecutter.project_name}}/db_sa/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
+      "{{cookiecutter.project_name}}/db_ormar/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
+      "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_pg.sql",
+      "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_mysql.sql",
+      "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_sqlite.sql"
+    ]
+  },
+  "Self-hosted swagger": {
+    "enabled": "{{cookiecutter.self_hosted_swagger}}",
+    "resources": [
+      "{{cookiecutter.project_name}}/web/static",
+      "{{cookiecutter.project_name}}/web/api/docs"
+    ]
+  },
+  "SQLAlchemy ORM": {
+    "enabled": "{{cookiecutter.orm == 'sqlalchemy'}}",
+    "resources": [
+      "{{cookiecutter.project_name}}/db_sa"
+    ]
+  },
+  "Tortoise ORM": {
+    "enabled": "{{cookiecutter.orm == 'tortoise'}}",
+    "resources": [
+      "aerich.ini",
+      "{{cookiecutter.project_name}}/db_tortoise"
+    ]
+  },
+  "Ormar ORM": {
+    "enabled": "{{cookiecutter.orm == 'ormar'}}",
+    "resources": [
+      "{{cookiecutter.project_name}}/db_ormar"
+    ]
+  },
+  "Piccolo ORM": {
+    "enabled": "{{cookiecutter.orm == 'piccolo'}}",
+    "resources": [
+      "{{cookiecutter.project_name}}/db_piccolo"
+    ]
+  },
+  "Postgresql DB": {
+    "enabled": "{{cookiecutter.db_info.name == 'postgresql'}}",
+    "resources": [
+      "{{cookiecutter.project_name}}/db_tortoise/migrations/models/0_20210928165300_init_pg.sql",
+      "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_pg.sql"
+    ]
+  },
+  "MySQL DB": {
+    "enabled": "{{cookiecutter.db_info.name == 'mysql'}}",
+    "resources": [
+      "{{cookiecutter.project_name}}/db_tortoise/migrations/models/0_20210928165300_init_mysql.sql",
+      "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_mysql.sql"
+    ]
+  },
+  "SQLite DB": {
+    "enabled": "{{cookiecutter.db_info.name == 'sqlite'}}",
+    "resources": [
+      "{{cookiecutter.project_name}}/db_tortoise/migrations/models/0_20210928165300_init_sqlite.sql",
+      "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_sqlite.sql"
+    ]
+  }
 }
