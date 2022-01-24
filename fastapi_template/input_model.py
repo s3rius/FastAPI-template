@@ -24,6 +24,7 @@ class ORM(enum.Enum):
     ormar = "ormar"
     sqlalchemy = "sqlalchemy"
     tortoise = "tortoise"
+    piccolo = "piccolo"
 
 
 class Database(BaseModel):
