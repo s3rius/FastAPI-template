@@ -18,5 +18,7 @@ DB = SQLiteEngine(path=settings.db_file)
 {%- endif %}
 
 # A list of paths to piccolo apps
-# e.g. ['blog.piccolo_app']
-APP_REGISTRY = AppRegistry(apps=[])
+# e.g. ['sample_project.db_piccolo.dao.piccolo_app']
+APP_REGISTRY = AppRegistry(
+    apps=['{{cookiecutter.project_name}}.db_piccolo.dao.piccolo_app']
+)

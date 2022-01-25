@@ -38,7 +38,8 @@
       "alembic.ini",
       "{{cookiecutter.project_name}}/db_sa/migrations",
       "{{cookiecutter.project_name}}/db_ormar/migrations",
-      "{{cookiecutter.project_name}}/db_tortoise/migrations"
+      "{{cookiecutter.project_name}}/db_tortoise/migrations",
+      "{{cookiecutter.project_name}}/db_piccolo/migrations"
     ]
   },
   "Alembic migrations": {
