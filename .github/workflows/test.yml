@@ -6,6 +6,9 @@ on:
       - master
     tags-ignore:
       - "*"
+  pull_request:
+    branches:
+      - master
 
 jobs:
   pre_job:
