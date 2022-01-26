@@ -20,6 +20,7 @@ prompt-toolkit = "^3.0.19"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
+pytest-xdist = "^2.5.0"
 pytest-env = "^0.6.2"
 Faker = "^8.14.0"
 
