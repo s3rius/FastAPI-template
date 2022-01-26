@@ -1,6 +1,6 @@
 from piccolo.conf.apps import AppRegistry
 
-{{cookiecutter.project_name}}.settings
+from {{cookiecutter.project_name}}.settings import settings
 
 {%- if cookiecutter.db_info.name == "postgresql" %}
 from piccolo.engine.postgres import PostgresEngine
@@ -19,6 +19,14 @@ DB = SQLiteEngine(path=settings.db_file)
 
 # A list of paths to piccolo apps
 # e.g. ['sample_project.db_piccolo.dao.piccolo_app']
+{%- if cookiecutter.add_dummy == True %}
 APP_REGISTRY = AppRegistry(
     apps=['{{cookiecutter.project_name}}.db_piccolo.dao.piccolo_app']
 )
+
+{%- else %}
+
+APP_REGISTRY = AppRegistry(
+    apps=[]
+)
+{%- endif %}
