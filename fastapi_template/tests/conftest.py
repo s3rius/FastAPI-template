@@ -41,7 +41,7 @@ def generator_start_dir() -> str:
 
 
 @pytest.fixture()
-def default_context(project_name: str) -> None:
+def default_context(project_name: str) -> BuilderContext:
     """
     Default builder context without features.
 
