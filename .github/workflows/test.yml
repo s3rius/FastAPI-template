@@ -7,8 +7,8 @@ on:
     tags-ignore:
       - "*"
   pull_request:
-    tags:
-      - "*"
+    branches:    
+      - 'release/**'
 
 jobs:
   pre_job:
