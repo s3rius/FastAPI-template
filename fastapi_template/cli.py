@@ -99,14 +99,14 @@ def parse_args():
     )
     parser.add_argument(
         "--routers",
-        help="Add exmaple routers",
+        help="Add example routers",
         action="store_true",
         default=None,
         dest="enable_routers",
     )
     parser.add_argument(
         "--swagger",
-        help="Eanble self-hosted swagger",
+        help="Enable self-hosted swagger",
         action="store_true",
         default=None,
         dest="self_hosted_swagger",
