@@ -30,7 +30,11 @@ def test_default_without_db(default_context: BuilderContext):
         DatabaseType.mysql,
     ],
 )
-@pytest.mark.parametrize("orm", [ORM.sqlalchemy, ORM.tortoise, ORM.ormar])
+@pytest.mark.parametrize("orm", [
+    ORM.sqlalchemy,
+    ORM.tortoise,
+    ORM.ormar,
+])
 def test_default_with_db(default_context: BuilderContext, db: DatabaseType, orm: ORM):
     run_default_check(init_context(default_context, db, orm))
 

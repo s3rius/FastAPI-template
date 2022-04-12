@@ -1,10 +1,11 @@
 import uuid
-
-from fastapi.testclient import TestClient
+import pytest
+from httpx import AsyncClient
 from fastapi import FastAPI
 from starlette import status
 
-def test_echo(fastapi_app: FastAPI, client: TestClient) -> None:
+@pytest.mark.anyio
+async def test_echo(fastapi_app: FastAPI, client: AsyncClient) -> None:
     """
     Tests that echo route works.
 
@@ -13,7 +14,7 @@ def test_echo(fastapi_app: FastAPI, client: TestClient) -> None:
     """
     url = fastapi_app.url_path_for('send_echo_message')
     message = uuid.uuid4().hex
-    response = client.post(url, json={
+    response = await client.post(url, json={
         "message": message
     })
     assert response.status_code == status.HTTP_200_OK

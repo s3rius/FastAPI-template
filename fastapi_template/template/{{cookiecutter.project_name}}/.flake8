@@ -60,6 +60,10 @@ ignore =
   WPS404,
   ;  not perform function calls in argument defaults (for dependency injection)
   B008,
+  ; Model should define verbose_name in its Meta inner class
+  DJ10,
+  ; Model should define verbose_name_plural in its Meta inner class
+  DJ11,
 
 per-file-ignores =
   ; all tests

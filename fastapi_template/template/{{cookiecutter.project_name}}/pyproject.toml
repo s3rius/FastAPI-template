@@ -12,89 +12,88 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = "^0.68.0"
-uvicorn = "^0.15.0"
-pydantic = {version = "^1.8.2", extras = ["dotenv"]}
-yarl = "^1.6.3"
-ujson = "^4.2.0"
+fastapi = "^0.75.0"
+uvicorn = "^0.17.0"
+pydantic = {version = "^1.9.0", extras = ["dotenv"]}
+yarl = "^1.7.2"
+ujson = "^5.1.0"
 {%- if cookiecutter.orm == "sqlalchemy" %}
 SQLAlchemy = {version = "^1.4", extras = ["mypy", "asyncio"]}
 {%- if cookiecutter.enable_migrations == "True" %}
-alembic = "^1.6.5"
+alembic = "^1.7.7"
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
-asyncpg = {version = "^0.24.0", extras = ["sa"]}
+asyncpg = {version = "^0.25.0", extras = ["sa"]}
 {%- elif cookiecutter.db_info.name == "sqlite" %}
 aiosqlite = "^0.17.0"
 {%- elif cookiecutter.db_info.name == "mysql" %}
-aiomysql = "^0.0.21"
-mysqlclient = "^2.0.3"
+aiomysql = "^0.0.22"
+mysqlclient = "^2.1.0"
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.orm == "tortoise" %}
-tortoise-orm = "^0.17.7"
+tortoise-orm = "^0.19.0"
 {%- if cookiecutter.enable_migrations == "True" %}
-aerich = "^0.5.8"
+aerich = "^0.6.2"
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
-asyncpg = "^0.24.0"
+asyncpg = "^0.25.0"
 {%- elif cookiecutter.db_info.name == "sqlite" %}
 aiosqlite = "^0.17.0"
 {%- elif cookiecutter.db_info.name == "mysql" %}
 aiomysql = "^0.0.21"
 mysqlclient = "^2.0.3"
-cryptography = "^3.4.8"
+cryptography = "^36.0.2"
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.orm == "ormar" %}
-ormar = "^0.10.20"
+ormar = "^0.11.0"
 {%- if cookiecutter.enable_migrations == "True" %}
-alembic = "^1.6.5"
+alembic = "^1.7.7"
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
-asyncpg = "^0.24.0"
-psycopg2-binary = "^2.9.1"
+asyncpg = "^0.25.0"
+psycopg2-binary = "^2.9.3"
 {%- elif cookiecutter.db_info.name == "sqlite" %}
 aiosqlite = "^0.17.0"
 {%- elif cookiecutter.db_info.name == "mysql" %}
-aiomysql = "^0.0.21"
-mysqlclient = "^2.0.3"
+aiomysql = "^0.0.22"
+mysqlclient = "^2.1.0"
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
-aioredis = {version = "^2.0.0", extras = ["hiredis"]}
+aioredis = {version = "^2.0.1", extras = ["hiredis"]}
 {%- endif %}
 {%- if cookiecutter.self_hosted_swagger == 'True' %}
-aiofiles = "^0.7.0"
+aiofiles = "^0.8.0"
 {%- endif %}
 httptools = "^0.3.0"
-async-exit-stack = "^1.0.1"
-async-generator = "^1.10"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.0"
-flake8 = "^3.9.2"
+pytest = "^7.0"
+flake8 = "^4.0.1"
 mypy = "^0.910"
 isort = "^5.9.3"
 yesqa = "^1.2.3"
 pre-commit = "^2.11.0"
-wemake-python-styleguide = "^0.15.3"
-black = "==21.7b0"
+wemake-python-styleguide = "^0.16.1"
+black = "^22.3.0"
 autoflake = "^1.4"
 {%- if cookiecutter.orm == "sqlalchemy" %}
 SQLAlchemy = {version = "^1.4", extras = ["mypy"]}
 {%- endif %}
-pytest-cov = "^2.12.1"
-pytest-asyncio = "^0.15.1"
-nest-asyncio = "^1.5.1"
+pytest-cov = "^3.0.0"
+anyio = "^3.5.0"
 pytest-env = "^0.6.2"
 {%- if cookiecutter.enable_redis == "True" %}
-fakeredis = "^1.6.1"
+fakeredis = "^1.7.1"
 {%- endif %}
 requests = "^2.26.0"
 {%- if cookiecutter.orm == "tortoise" %}
 asynctest = "^0.13.0"
+nest-asyncio = "^1.5.5"
 {%- endif %}
+httpx = "^0.22.0"
 
 
 [tool.isort]
@@ -120,6 +119,7 @@ plugins = ["sqlalchemy.ext.mypy.plugin"]
 filterwarnings = [
     "error",
     "ignore::DeprecationWarning",
+    "ignore:.*unclosed.*:ResourceWarning",
 ]
 {%- if cookiecutter.db_info.name != "none" %}
 env = [
@@ -129,6 +129,15 @@ env = [
     "{{cookiecutter.project_name | upper}}_DB_BASE={{cookiecutter.project_name}}_test",
     {%- endif %}
 ]
+{%- endif %}
+
+{%- if cookiecutter.orm == "tortoise" %}
+{%- if cookiecutter.enable_migrations == "True" %}
+[tool.aerich]
+tortoise_orm = "{{cookiecutter.project_name}}.db.config.TORTOISE_CONFIG"
+location = "./{{cookiecutter.project_name}}/db/migrations"
+src_folder = "./{{cookiecutter.project_name}}"
+{%- endif %}
 {%- endif %}
 
 [build-system]
