@@ -68,8 +68,6 @@ aioredis = {version = "^2.0.1", extras = ["hiredis"]}
 aiofiles = "^0.8.0"
 {%- endif %}
 httptools = "^0.3.0"
-async-exit-stack = "^1.0.1"
-async-generator = "^1.10"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"
@@ -85,8 +83,7 @@ autoflake = "^1.4"
 SQLAlchemy = {version = "^1.4", extras = ["mypy"]}
 {%- endif %}
 pytest-cov = "^3.0.0"
-pytest-asyncio = "^0.18.0"
-nest-asyncio = "^1.5.1"
+anyio = "^3.5.0"
 pytest-env = "^0.6.2"
 {%- if cookiecutter.enable_redis == "True" %}
 fakeredis = "^1.7.1"
@@ -94,7 +91,9 @@ fakeredis = "^1.7.1"
 requests = "^2.26.0"
 {%- if cookiecutter.orm == "tortoise" %}
 asynctest = "^0.13.0"
+nest-asyncio = "^1.5.5"
 {%- endif %}
+httpx = "^0.22.0"
 
 
 [tool.isort]
@@ -120,6 +119,7 @@ plugins = ["sqlalchemy.ext.mypy.plugin"]
 filterwarnings = [
     "error",
     "ignore::DeprecationWarning",
+    "ignore:.*unclosed.*:ResourceWarning",
 ]
 {%- if cookiecutter.db_info.name != "none" %}
 env = [
