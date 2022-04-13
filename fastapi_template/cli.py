@@ -1,6 +1,7 @@
 import re
 from argparse import ArgumentParser
 from operator import attrgetter
+from termcolor import cprint
 
 from prompt_toolkit import prompt
 from prompt_toolkit.document import Document
@@ -8,6 +9,8 @@ from prompt_toolkit.shortcuts import checkboxlist_dialog, radiolist_dialog
 from prompt_toolkit.validation import ValidationError, Validator
 
 from fastapi_template.input_model import (
+    SUPPORTED_ORMS,
+    ORMS_WITHOUT_MIGRATIONS,
     ORM,
     BuilderContext,
     DB_INFO,
@@ -99,14 +102,14 @@ def parse_args():
     )
     parser.add_argument(
         "--routers",
-        help="Add exmaple routers",
+        help="Add example routers",
         action="store_true",
         default=None,
         dest="enable_routers",
     )
     parser.add_argument(
         "--swagger",
-        help="Eanble self-hosted swagger",
+        help="Enable self-hosted swagger",
         action="store_true",
         default=None,
         dest="self_hosted_swagger",
@@ -199,10 +202,19 @@ def read_user_input(current_context: BuilderContext) -> BuilderContext:
         current_context.orm = radiolist_dialog(
             "ORM",
             text="Which ORM do you want?",
-            values=[(orm, orm.value) for orm in list(ORM) if orm != ORM.none],
+            values=[(orm, orm.value) for orm in SUPPORTED_ORMS[current_context.db]],
         ).run()
         if current_context.orm is None:
             raise KeyboardInterrupt()
+    if (
+        current_context.orm is not None 
+        and current_context.orm != ORM.none 
+        and current_context.orm not in SUPPORTED_ORMS.get(current_context.db, [])
+    ):
+        cprint("This ORM is not supported by chosen database.", "red")
+        raise KeyboardInterrupt()
+    if current_context.orm in ORMS_WITHOUT_MIGRATIONS:
+        current_context.enable_migrations = False
     if current_context.ci_type is None:
         current_context.ci_type = radiolist_dialog(
             "CI",

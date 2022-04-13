@@ -1,9 +1,10 @@
 from fastapi import FastAPI
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 from starlette import status
+import pytest
 
-
-def test_health(client: TestClient, fastapi_app: FastAPI) -> None:
+@pytest.mark.anyio
+async def test_health(client: AsyncClient, fastapi_app: FastAPI) -> None:
     """
     Checks the health endpoint.
 
@@ -11,5 +12,5 @@ def test_health(client: TestClient, fastapi_app: FastAPI) -> None:
     :param fastapi_app: current FastAPI application.
     """
     url = fastapi_app.url_path_for('health_check')
-    response = client.get(url)
+    response = await client.get(url)
     assert response.status_code == status.HTTP_200_OK

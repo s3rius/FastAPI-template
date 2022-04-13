@@ -1,11 +1,11 @@
 import asyncio
 from asyncio.events import AbstractEventLoop
 import sys
-from typing import Generator, AsyncGenerator
+from typing import Any, Generator, AsyncGenerator
 
 import pytest
 from fastapi import FastAPI
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 {%- if cookiecutter.enable_redis == "True" %}
 from fakeredis.aioredis import FakeRedis
 from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_connection
@@ -22,41 +22,35 @@ from {{cookiecutter.project_name}}.db.dependencies import get_db_session
 from {{cookiecutter.project_name}}.db.utils import create_database, drop_database
 {%- elif cookiecutter.orm == "tortoise" %}
 from tortoise.contrib.test import finalizer, initializer
-from {{cookiecutter.project_name}}.db.config import MODELS_MODULES
+from tortoise import Tortoise
+from {{cookiecutter.project_name}}.db.config import MODELS_MODULES, TORTOISE_CONFIG
+import nest_asyncio
+
+nest_asyncio.apply()
 {%- elif cookiecutter.orm == "ormar" %}
 from sqlalchemy.engine import create_engine
 from {{cookiecutter.project_name}}.db.config import database
 from {{cookiecutter.project_name}}.db.utils import create_database, drop_database
+{%- elif cookiecutter.orm == "psycopg" %}
+from psycopg import AsyncConnection
+from psycopg_pool import AsyncConnectionPool
+
+from {{cookiecutter.project_name}}.db.dependencies import get_db_session
+
 {%- endif %}
 
-import nest_asyncio
-
-nest_asyncio.apply()
 
 @pytest.fixture(scope="session")
-def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
+def anyio_backend() -> str:
     """
-    Create an instance of event loop for tests.
+    Backend for anyio pytest plugin.
 
-    This hack is required in order to get `dbsession` fixture to work.
-    Because default fixture `event_loop` is function scoped,
-    but dbsession requires session scoped `event_loop` fixture.
-
-    :yields: event loop.
+    :return: backend name.
     """
-    python_version = sys.version_info[:2]
-    if sys.platform.startswith("win") and python_version >= (3, 8):
-        # Avoid "RuntimeError: Event loop is closed" on Windows when tearing down tests
-        # https://github.com/encode/httpx/issues/914
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
-    loop = asyncio.new_event_loop()
-    yield loop
-    loop.close()
+    return 'asyncio'
 
 {%- if cookiecutter.orm == "sqlalchemy" %}
 @pytest.fixture(scope="session")
-@pytest.mark.asyncio
 async def _engine() -> AsyncGenerator[AsyncEngine, None]:
     """
     Create engine and databases.
@@ -80,9 +74,10 @@ async def _engine() -> AsyncGenerator[AsyncEngine, None]:
         await engine.dispose()
         await drop_database()
 
-@pytest.fixture()
-@pytest.mark.asyncio
-async def dbsession(_engine: AsyncEngine) -> AsyncGenerator[AsyncSession, None]:
+@pytest.fixture
+async def dbsession(
+    _engine: AsyncEngine,
+) -> AsyncGenerator[AsyncSession, None]:
     """
     Get session to database.
 
@@ -107,46 +102,30 @@ async def dbsession(_engine: AsyncEngine) -> AsyncGenerator[AsyncSession, None]:
         await trans.rollback()
         await connection.close()
 
-
-@pytest.fixture()
-@pytest.mark.asyncio
-async def transaction(_engine: AsyncEngine) -> AsyncGenerator[AsyncConnection, None]:
-    """
-    Create and obtain a transaction.
-
-    :param _engine: current database engine.
-    :yield: connection.
-    """
-    conn = await _engine.begin()
-    try:
-        yield conn
-    finally:
-        await conn.rollback()
 {%- elif cookiecutter.orm == "tortoise" %}
 
 @pytest.fixture(autouse=True)
-def initialize_db(event_loop: AbstractEventLoop) -> Generator[None, None, None]:
+async def initialize_db() -> AsyncGenerator[None, None]:
     """
     Initialize models and database.
 
-    :param event_loop: Session-wide event loop.
     :yields: Nothing.
     """
     initializer(
         MODELS_MODULES,
         db_url=str(settings.db_url),
         app_label="models",
-        loop=event_loop,
     )
+    await Tortoise.init(config=TORTOISE_CONFIG)
 
     yield
 
+    await Tortoise.close_connections()
     finalizer()
 
 {%- elif cookiecutter.orm == "ormar" %}
 
 @pytest.fixture(autouse=True)
-@pytest.mark.asyncio
 async def initialize_db() -> AsyncGenerator[None, None]:
     """
     Create models and databases.
@@ -168,29 +147,127 @@ async def initialize_db() -> AsyncGenerator[None, None]:
 
     await database.connect()
 
-    yield None
+    yield
 
     await database.disconnect()
     drop_database()
+
+{%- elif cookiecutter.orm == "psycopg" %}
+
+async def drop_db() -> None:
+    """Drops database after tests."""
+    pool = AsyncConnectionPool(conninfo=str(settings.db_url.with_path("/postgres")))
+    await pool.wait()
+    async with pool.connection() as conn:
+        await conn.set_autocommit(True)
+        await conn.execute(
+            "SELECT pg_terminate_backend(pg_stat_activity.pid) "  # noqa: S608
+            "FROM pg_stat_activity "
+            "WHERE pg_stat_activity.datname = %(dbname)s "
+            "AND pid <> pg_backend_pid();",
+            params={
+                "dbname": settings.db_base,
+            }
+        )
+        await conn.execute(
+            f"DROP DATABASE {settings.db_base}",
+        )
+    await pool.close()
+
+
+async def create_db() -> None:  # noqa: WPS217
+    """Creates database for tests."""
+    pool = AsyncConnectionPool(conninfo=str(settings.db_url.with_path("/postgres")))
+    await pool.wait()
+    async with pool.connection() as conn_check:
+        res = await conn_check.execute(
+            "SELECT 1 FROM pg_database WHERE datname=%(dbname)s",
+            params={
+                "dbname": settings.db_base,
+            }
+        )
+        db_exists = False
+        row = await res.fetchone()
+        if row is not None:
+            db_exists = row[0]
+
+    if db_exists:
+        await drop_db()
+
+    async with pool.connection() as conn_create:
+        await conn_create.set_autocommit(True)
+        await conn_create.execute(
+            f"CREATE DATABASE {settings.db_base};",
+        )
+    await pool.close()
+
+
+async def create_tables(connection: AsyncConnection[Any]) -> None:
+    """
+    Create tables for your database.
+
+    Since psycopg doesn't have migration tool,
+    you must create your tables for tests.
+
+    :param connection: connection to database.
+    """
+    {%- if cookiecutter.add_dummy == 'True' %}
+    await connection.execute(
+        "CREATE TABLE dummy ("
+        "id SERIAL primary key,"
+        "name VARCHAR(200)"
+        ");"
+    )
+    {%- endif %}
+    pass  # noqa: WPS420
+
+
+@pytest.fixture
+async def dbsession() -> AsyncGenerator[AsyncConnection[Any], None]:
+    """
+    Creates connection to some test database.
+
+    This connection must be used in tests and for application.
+
+    :yield: connection to database.
+    """
+    await create_db()
+    pool = AsyncConnectionPool(conninfo=str(settings.db_url))
+    await pool.wait()
+
+    async with pool.connection() as create_conn:
+        await create_tables(create_conn)
+
+    try:
+        async with pool.connection() as conn:
+            yield conn
+    finally:
+        await pool.close()
+        await drop_db()
 
 {%- endif %}
 
 
 {% if cookiecutter.enable_redis == "True" -%}
-@pytest.fixture()
-def fake_redis() -> FakeRedis:
+@pytest.fixture
+async def fake_redis() -> AsyncGenerator[FakeRedis, None]:
     """
     Get instance of a fake redis.
 
-    :return: FakeRedis instance.
+    :yield: FakeRedis instance.
     """
-    return FakeRedis(decode_responses=True)
+    redis = FakeRedis(decode_responses=True)
+    yield redis
+    await redis.close()
+
 {%- endif %}
 
-@pytest.fixture()
+@pytest.fixture
 def fastapi_app(
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
+    {%- elif cookiecutter.orm == "psycopg" %}
+    dbsession: AsyncConnection[Any],
     {%- endif %}
     {% if cookiecutter.enable_redis == "True" -%}
     fake_redis: FakeRedis,
@@ -202,7 +279,7 @@ def fastapi_app(
     :return: fastapi app with mocked dependencies.
     """
     application = get_app()
-    {% if cookiecutter.orm == "sqlalchemy" -%}
+    {% if cookiecutter.orm in ["sqlalchemy", "psycopg"] -%}
     application.dependency_overrides[get_db_session] = lambda: dbsession
     {%- endif %}
     {%- if cookiecutter.enable_redis == "True" %}
@@ -211,14 +288,17 @@ def fastapi_app(
 
     return application  # noqa: WPS331
 
-@pytest.fixture(scope="function")
-def client(
+
+@pytest.fixture
+async def client(
     fastapi_app: FastAPI,
-) -> TestClient:
+    anyio_backend: Any
+) -> AsyncGenerator[AsyncClient, None]:
     """
     Fixture that creates client for requesting server.
 
     :param fastapi_app: the application.
-    :return: client for the app.
+    :yield: client for the app.
     """
-    return TestClient(app=fastapi_app)
+    async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
+            yield ac

@@ -80,6 +80,8 @@
             "{{cookiecutter.project_name}}/db_ormar/models/dummy_model.py",
             "{{cookiecutter.project_name}}/db_tortoise/dao",
             "{{cookiecutter.project_name}}/db_tortoise/models/dummy_model.py",
+            "{{cookiecutter.project_name}}/db_psycopg/dao",
+            "{{cookiecutter.project_name}}/db_psycopg/models/dummy_model.py",
             "{{cookiecutter.project_name}}/tests/test_dummy.py",
             "{{cookiecutter.project_name}}/db_sa/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
             "{{cookiecutter.project_name}}/db_ormar/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
@@ -112,6 +114,12 @@
         "enabled": "{{cookiecutter.orm == 'ormar'}}",
         "resources": [
             "{{cookiecutter.project_name}}/db_ormar"
+        ]
+    },
+    "PsycoPG": {
+        "enabled": "{{cookiecutter.orm == 'psycopg'}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/db_psycopg"
         ]
     },
     "Postgresql DB": {
