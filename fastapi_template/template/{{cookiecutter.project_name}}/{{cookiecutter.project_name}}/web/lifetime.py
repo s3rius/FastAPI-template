@@ -17,6 +17,20 @@ from {{cookiecutter.project_name}}.db.models import load_all_models
 {%- endif %}
 {%- endif %}
 
+
+{%- if cookiecutter.orm == "psycopg" %}
+import psycopg_pool
+
+async def _setup_db(app: FastAPI) -> None:
+    """
+    Creates connection pool for timescaledb.
+
+    :param app: current FastAPI app.
+    """
+    app.state.db_pool = psycopg_pool.AsyncConnectionPool(conninfo=str(settings.db_url))
+    await app.state.db_pool.wait()
+{%- endif %}
+
 {%- if cookiecutter.orm == "sqlalchemy" %}
 from asyncio import current_task
 from sqlalchemy.ext.asyncio import (
@@ -26,7 +40,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import sessionmaker
 
-{%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations == "False" %}
+{%- if cookiecutter.enable_migrations == "False" %}
 from {{cookiecutter.project_name}}.db.meta import meta
 from {{cookiecutter.project_name}}.db.models import load_all_models
 {%- endif %}
@@ -67,7 +81,7 @@ def _setup_redis(app: FastAPI) -> None:
     )
 {%- endif %}
 
-{%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations == "False" %}
+{%- if cookiecutter.enable_migrations == "False" %}
 {%- if cookiecutter.orm in ["ormar", "sqlalchemy"] %}
 async def _create_tables() -> None:
     """Populates tables in the database."""
@@ -102,6 +116,8 @@ def startup(app: FastAPI) -> Callable[[], Awaitable[None]]:
         _setup_db(app)
         {%- elif cookiecutter.orm == "ormar" %}
         await database.connect()
+        {%- elif cookiecutter.orm == "psycopg" %}
+        await _setup_db(app)
         {%- endif %}
         {%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations == "False" %}
         {%- if cookiecutter.orm in ["ormar", "sqlalchemy"] %}
@@ -129,6 +145,8 @@ def shutdown(app: FastAPI) -> Callable[[], Awaitable[None]]:
         await app.state.db_engine.dispose()
         {% elif cookiecutter.orm == "ormar" %}
         await database.disconnect()
+        {%- elif cookiecutter.orm == "psycopg" %}
+        await app.state.db_pool.close()
         {%- endif %}
         {%- if cookiecutter.enable_redis == "True" %}
         await app.state.redis_pool.disconnect()

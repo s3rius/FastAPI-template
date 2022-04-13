@@ -24,6 +24,7 @@ class ORM(enum.Enum):
     ormar = "ormar"
     sqlalchemy = "sqlalchemy"
     tortoise = "tortoise"
+    psycopg = "psycopg"
 
 
 class Database(BaseModel):
@@ -69,6 +70,28 @@ DB_INFO = {
     ),
 }
 
+SUPPORTED_ORMS = {
+    DatabaseType.postgresql: [
+        ORM.ormar,
+        ORM.psycopg,
+        ORM.tortoise,
+        ORM.sqlalchemy,
+    ],
+    DatabaseType.sqlite: [
+        ORM.ormar,
+        ORM.tortoise,
+        ORM.sqlalchemy,
+    ],
+    DatabaseType.mysql: [
+        ORM.ormar,
+        ORM.tortoise,
+        ORM.sqlalchemy,
+    ]
+}
+
+ORMS_WITHOUT_MIGRATIONS = [
+    ORM.psycopg,
+]
 
 class BuilderContext(BaseModel):
     """Options for project generation."""

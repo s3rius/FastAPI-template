@@ -31,6 +31,12 @@ nest_asyncio.apply()
 from sqlalchemy.engine import create_engine
 from {{cookiecutter.project_name}}.db.config import database
 from {{cookiecutter.project_name}}.db.utils import create_database, drop_database
+{%- elif cookiecutter.orm == "psycopg" %}
+from psycopg import AsyncConnection
+from psycopg_pool import AsyncConnectionPool
+
+from {{cookiecutter.project_name}}.db.dependencies import get_db_session
+
 {%- endif %}
 
 
@@ -146,6 +152,99 @@ async def initialize_db() -> AsyncGenerator[None, None]:
     await database.disconnect()
     drop_database()
 
+{%- elif cookiecutter.orm == "psycopg" %}
+
+async def drop_db() -> None:
+    """Drops database after tests."""
+    pool = AsyncConnectionPool(conninfo=str(settings.db_url.with_path("/postgres")))
+    await pool.wait()
+    async with pool.connection() as conn:
+        await conn.set_autocommit(True)
+        await conn.execute(
+            "SELECT pg_terminate_backend(pg_stat_activity.pid) "  # noqa: S608
+            "FROM pg_stat_activity "
+            "WHERE pg_stat_activity.datname = %(dbname)s "
+            "AND pid <> pg_backend_pid();",
+            params={
+                "dbname": settings.db_base,
+            }
+        )
+        await conn.execute(
+            f"DROP DATABASE {settings.db_base}",
+        )
+    await pool.close()
+
+
+async def create_db() -> None:  # noqa: WPS217
+    """Creates database for tests."""
+    pool = AsyncConnectionPool(conninfo=str(settings.db_url.with_path("/postgres")))
+    await pool.wait()
+    async with pool.connection() as conn_check:
+        res = await conn_check.execute(
+            "SELECT 1 FROM pg_database WHERE datname=%(dbname)s",
+            params={
+                "dbname": settings.db_base,
+            }
+        )
+        db_exists = False
+        row = await res.fetchone()
+        if row is not None:
+            db_exists = row[0]
+
+    if db_exists:
+        await drop_db()
+
+    async with pool.connection() as conn_create:
+        await conn_create.set_autocommit(True)
+        await conn_create.execute(
+            f"CREATE DATABASE {settings.db_base};",
+        )
+    await pool.close()
+
+
+async def create_tables(connection: AsyncConnection[Any]) -> None:
+    """
+    Create tables for your database.
+
+    Since psycopg doesn't have migration tool,
+    you must create your tables for tests.
+
+    :param connection: connection to database.
+    """
+    {%- if cookiecutter.add_dummy == 'True' %}
+    await connection.execute(
+        "CREATE TABLE dummy ("
+        "id SERIAL primary key,"
+        "name VARCHAR(200)"
+        ");"
+    )
+    {%- endif %}
+    pass  # noqa: WPS420
+
+
+@pytest.fixture
+async def dbsession() -> AsyncGenerator[AsyncConnection[Any], None]:
+    """
+    Creates connection to some test database.
+
+    This connection must be used in tests and for application.
+
+    :yield: connection to database.
+    """
+    await create_db()
+    pool = AsyncConnectionPool(conninfo=str(settings.db_url))
+    await pool.wait()
+
+    async with pool.connection() as create_conn:
+        await create_tables(create_conn)
+
+    try:
+        async with pool.connection() as conn:
+            yield conn
+    finally:
+        await pool.close()
+        await drop_db()
+
 {%- endif %}
 
 
@@ -167,6 +266,8 @@ async def fake_redis() -> AsyncGenerator[FakeRedis, None]:
 def fastapi_app(
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
+    {%- elif cookiecutter.orm == "psycopg" %}
+    dbsession: AsyncConnection[Any],
     {%- endif %}
     {% if cookiecutter.enable_redis == "True" -%}
     fake_redis: FakeRedis,
@@ -178,7 +279,7 @@ def fastapi_app(
     :return: fastapi app with mocked dependencies.
     """
     application = get_app()
-    {% if cookiecutter.orm == "sqlalchemy" -%}
+    {% if cookiecutter.orm in ["sqlalchemy", "psycopg"] -%}
     application.dependency_overrides[get_db_session] = lambda: dbsession
     {%- endif %}
     {%- if cookiecutter.enable_redis == "True" %}
