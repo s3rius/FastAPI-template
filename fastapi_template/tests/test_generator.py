@@ -39,7 +39,16 @@ def test_default_with_db(default_context: BuilderContext, db: DatabaseType, orm:
     run_default_check(init_context(default_context, db, orm))
 
 
-@pytest.mark.parametrize("orm", [ORM.sqlalchemy, ORM.tortoise, ORM.ormar])
+@pytest.mark.parametrize(
+    "orm", 
+    [
+        ORM.psycopg,
+    ]
+)
+def test_pg_drivers(default_context: BuilderContext, orm: ORM):
+    run_default_check(init_context(default_context, DatabaseType.postgresql, orm))
+
+@pytest.mark.parametrize("orm", [ORM.sqlalchemy, ORM.tortoise, ORM.ormar, ORM.psycopg])
 def test_without_routers(default_context: BuilderContext, orm: ORM):
     context = init_context(default_context, DatabaseType.postgresql, orm)
     context.enable_routers = False
@@ -58,7 +67,7 @@ def test_with_selfhosted_swagger(default_context: BuilderContext):
     run_default_check(default_context)
 
 
-@pytest.mark.parametrize("orm", [ORM.sqlalchemy, ORM.tortoise, ORM.ormar])
+@pytest.mark.parametrize("orm", [ORM.sqlalchemy, ORM.tortoise, ORM.ormar, ORM.psycopg])
 def test_without_dummy(default_context: BuilderContext, orm: ORM):
     context = init_context(default_context, DatabaseType.postgresql, orm)
     context.add_dummy = False

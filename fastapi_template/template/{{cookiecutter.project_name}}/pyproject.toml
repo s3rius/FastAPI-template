@@ -67,6 +67,9 @@ aioredis = {version = "^2.0.1", extras = ["hiredis"]}
 {%- if cookiecutter.self_hosted_swagger == 'True' %}
 aiofiles = "^0.8.0"
 {%- endif %}
+{%- if cookiecutter.orm == "psycopg" %}
+psycopg = { version = "^3.0.11", extras = ["binary", "pool"] }
+{%- endif %}
 httptools = "^0.3.0"
 
 [tool.poetry.dev-dependencies]

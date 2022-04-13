@@ -2,7 +2,12 @@ import uuid
 import pytest
 from httpx import AsyncClient
 from fastapi import FastAPI
+from typing import Any
+{%- if cookiecutter.orm == 'sqlalchemy' %}
 from sqlalchemy.ext.asyncio import AsyncSession
+{%- elif cookiecutter.orm == 'psycopg' %}
+from psycopg.connection_async import AsyncConnection
+{%- endif %}
 from starlette import status
 from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
 from {{cookiecutter.project_name}}.db.dao.dummy_dao import DummyDAO
@@ -13,6 +18,8 @@ async def test_creation(
     client: AsyncClient,
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
+    {%- elif cookiecutter.orm == "psycopg" %}
+    dbsession: AsyncConnection[Any],
     {%- endif %}
 ) -> None:
     """Tests dummy instance creation."""
@@ -22,7 +29,7 @@ async def test_creation(
         "name": test_name
     })
     assert response.status_code == status.HTTP_200_OK
-    {%- if cookiecutter.orm == "sqlalchemy" %}
+    {%- if cookiecutter.orm in ["sqlalchemy", "psycopg"] %}
     dao = DummyDAO(dbsession)
     {%- elif cookiecutter.orm in ["tortoise", "ormar"] %}
     dao = DummyDAO()
@@ -37,10 +44,12 @@ async def test_getting(
     client: AsyncClient,
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
+    {%- elif cookiecutter.orm == "psycopg" %}
+    dbsession: AsyncConnection[Any],
     {%- endif %}
 ) -> None:
     """Tests dummy instance retrieval."""
-    {%- if cookiecutter.orm == "sqlalchemy" %}
+    {%- if cookiecutter.orm in ["sqlalchemy", "psycopg"] %}
     dao = DummyDAO(dbsession)
     {%- elif cookiecutter.orm in ["tortoise", "ormar"] %}
     dao = DummyDAO()
