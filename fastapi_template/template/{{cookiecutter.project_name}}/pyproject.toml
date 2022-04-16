@@ -17,6 +17,13 @@ uvicorn = { version = "^0.17.0", extras = ["standard"] }
 pydantic = {version = "^1.9.0", extras = ["dotenv"]}
 yarl = "^1.7.2"
 ujson = "^5.1.0"
+{%- if cookiecutter.orm == "piccolo" %}
+{%- if cookiecutter.db_info.name == "postgresql" %}
+piccolo = {version = "^0.74.0", extras = ["postgres"]}
+{%- elif cookiecutter.db_info.name == "sqlite" %}
+piccolo = {version = "^0.74.0", extras = ["sqlite"]}
+{%- endif %}
+{%- endif %}
 {%- if cookiecutter.orm == "sqlalchemy" %}
 SQLAlchemy = {version = "^1.4", extras = ["mypy", "asyncio"]}
 {%- if cookiecutter.enable_migrations == "True" %}
@@ -133,6 +140,9 @@ env = [
     "{{cookiecutter.project_name | upper}}_DB_FILE=test_db.sqlite3",
     {%- else %}
     "{{cookiecutter.project_name | upper}}_DB_BASE={{cookiecutter.project_name}}_test",
+    {%- endif %}
+    {%- if cookiecutter.orm == "piccolo" %}
+    "PICCOLO_CONF={{cookiecutter.project_name}}.piccolo_conf"
     {%- endif %}
 ]
 {%- endif %}

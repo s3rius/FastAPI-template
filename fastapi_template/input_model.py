@@ -30,6 +30,7 @@ class ORM(enum.Enum):
     sqlalchemy = "sqlalchemy"
     tortoise = "tortoise"
     psycopg = "psycopg"
+    piccolo = "piccolo"
 
 
 class Database(BaseModel):
@@ -81,11 +82,13 @@ SUPPORTED_ORMS = {
         ORM.psycopg,
         ORM.tortoise,
         ORM.sqlalchemy,
+        ORM.piccolo,
     ],
     DatabaseType.sqlite: [
         ORM.ormar,
         ORM.tortoise,
         ORM.sqlalchemy,
+        ORM.piccolo,
     ],
     DatabaseType.mysql: [
         ORM.ormar,

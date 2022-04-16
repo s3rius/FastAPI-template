@@ -36,7 +36,13 @@ from psycopg import AsyncConnection
 from psycopg_pool import AsyncConnectionPool
 
 from {{cookiecutter.project_name}}.db.dependencies import get_db_session
+{%- elif cookiecutter.orm == "piccolo" %}
+{%- if cookiecutter.db_info.name == "postgresql" %}
+from piccolo.engine.postgres import PostgresEngine
+{%- endif %}
+from piccolo.table import create_tables, drop_tables
 
+from piccolo.conf.apps import Finder
 {%- endif %}
 
 
@@ -244,6 +250,62 @@ async def dbsession() -> AsyncGenerator[AsyncConnection[Any], None]:
     finally:
         await pool.close()
         await drop_db()
+
+{%- elif cookiecutter.orm == "piccolo" %}
+
+{%- if cookiecutter.db_info.name == "postgresql" %}
+async def drop_database(engine: PostgresEngine) -> None:
+    """
+    Drops test database.
+
+    :param engine: engine connected to postgres database.
+    """
+    await engine.run_ddl(
+        "SELECT pg_terminate_backend(pg_stat_activity.pid) "  # noqa: S608
+        "FROM pg_stat_activity "
+        f"WHERE pg_stat_activity.datname = '{settings.db_base}' "
+        "AND pid <> pg_backend_pid();",
+    )
+    await engine.run_ddl(
+        f"DROP DATABASE {settings.db_base};",
+    )
+{%- endif %}
+
+@pytest.fixture(autouse=True)
+async def setup_db() -> AsyncGenerator[None, None]:
+    """
+    Fixture to create all tables before test and drop them after.
+
+    :yield: nothing.
+    """
+    {%- if cookiecutter.db_info.name == "postgresql" %}
+    engine = PostgresEngine(
+        config={
+            "database": "postgres",
+            "user": settings.db_user,
+            "password": settings.db_pass,
+            "host": settings.db_host,
+            "port": settings.db_port,
+        },
+    )
+    await engine.start_connection_pool()
+
+    db_exists = await engine.run_ddl(
+        f"SELECT 1 FROM pg_database WHERE datname='{settings.db_base}'"  # noqa: S608
+    )
+    if db_exists:
+        await drop_database(engine)
+    await engine.run_ddl(f"CREATE DATABASE {settings.db_base}")
+    {%- endif %}
+    tables = Finder().get_table_classes()
+    create_tables(*tables, if_not_exists=True)
+
+    yield
+
+    drop_tables(*tables)
+    {%- if cookiecutter.db_info.name == "postgresql" %}
+    await drop_database(engine)
+    {%- endif %}
 
 {%- endif %}
 

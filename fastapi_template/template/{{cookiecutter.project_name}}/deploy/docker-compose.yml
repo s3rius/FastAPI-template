@@ -86,10 +86,15 @@ services:
     command: alembic upgrade head
     {%- elif cookiecutter.orm == 'tortoise' %}
     command: aerich upgrade
+    {%- elif cookiecutter.orm == 'piccolo' %}
+    command: piccolo migrations forwards all
     {%- endif %}
     {%- if cookiecutter.db_info.name == "sqlite" %}
     environment:
       {{cookiecutter.project_name | upper }}_DB_FILE: /db_data/db.sqlite3
+      {%- if cookiecutter.orm == 'piccolo' %}
+      PICCOLO_CONF: "{{cookiecutter.project_name}}.piccolo_conf"
+      {%- endif %}
     volumes:
       - {{cookiecutter.project_name}}-db-data:/db_data/
     {%- else %}
@@ -99,6 +104,9 @@ services:
       {{cookiecutter.project_name | upper}}_DB_USER: {{cookiecutter.project_name}}
       {{cookiecutter.project_name | upper}}_DB_PASS: {{cookiecutter.project_name}}
       {{cookiecutter.project_name | upper}}_DB_BASE: {{cookiecutter.project_name}}
+    {%- if cookiecutter.orm == 'piccolo' %}
+      PICCOLO_CONF: "{{cookiecutter.project_name}}.piccolo_conf"
+    {%- endif %}
     {%- endif %}
     {%- if cookiecutter.db_info.name != "sqlite" %}
     depends_on:
