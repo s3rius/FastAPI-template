@@ -40,4 +40,4 @@ jobs:
         env:
           POETRY_VIRTUALENVS_CREATE: false
       - name: Run tests
-        run: poetry run pytest -vv --exitfirst
+        run: poetry run pytest -vv --exitfirst -n auto

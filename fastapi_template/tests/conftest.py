@@ -9,18 +9,19 @@ from fastapi_template.input_model import DB_INFO, BuilderContext, CIType, Databa
 from fastapi_template.tests.utils import run_docker_compose_command
 
 
-@pytest.fixture(scope="session")
-def project_name() -> str:
+@pytest.fixture
+def project_name(worker_id: str) -> str:
     """
     Generate name for test project.
 
     :return: project name.
     """
     fake = Faker()
-    raw_name: str = (
-        fake.name_female().lower().replace(" ", "_").replace("-", "_").replace(".", "_")
+    raw_name = fake.name_female() + worker_id
+    clear_name: str = (
+        raw_name.lower().replace(" ", "_").replace("-", "_").replace(".", "_")
     )
-    return re.sub("_+", "_", raw_name).strip("_")
+    return re.sub("_+", "_", clear_name).strip("_")
 
 
 @pytest.fixture(scope="session", autouse=True)

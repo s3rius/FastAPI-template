@@ -46,7 +46,7 @@ DB_INFO = {
     ),
     DatabaseType.postgresql: Database(
         name=DatabaseType.postgresql.value,
-        image="postgres:13.4-buster",
+        image="postgres:13.6-bullseye",
         async_driver="postgresql+asyncpg",
         driver_short="postgres",
         driver="postgresql",
@@ -54,7 +54,7 @@ DB_INFO = {
     ),
     DatabaseType.mysql: Database(
         name=DatabaseType.mysql.value,
-        image="bitnami/mysql:8.0.26",
+        image="bitnami/mysql:8.0.28",
         async_driver="mysql+aiomysql",
         driver_short="mysql",
         driver="mysql",
