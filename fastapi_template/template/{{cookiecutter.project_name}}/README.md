@@ -7,6 +7,8 @@ Start a project with:
 docker-compose -f deploy/docker-compose.yml --project-directory . up
 ```
 
+## Local development
+
 If you want to develop in docker with autoreload, use this command:
 
 ```bash
@@ -21,6 +23,9 @@ But you have to rebuild image every time you modify `poetry.lock` or `pyproject.
 docker-compose -f deploy/docker-compose.yml --project-directory . build
 ```
 
+Docs: http://localhost:8000/api/docs
+
+Database: localhost:5432
 
 ## Pre-commit
 
