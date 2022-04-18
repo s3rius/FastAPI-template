@@ -8,3 +8,6 @@ services:
     - .:/app/src/
     environment:
       {{cookiecutter.project_name | upper}}_RELOAD: "True"
+  db:
+    ports:
+    - "5432:5432"
