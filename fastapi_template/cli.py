@@ -12,6 +12,7 @@ from fastapi_template.input_model import (
     SUPPORTED_ORMS,
     ORMS_WITHOUT_MIGRATIONS,
     ORM,
+    APIType,
     BuilderContext,
     DB_INFO,
     DatabaseType,
@@ -46,6 +47,14 @@ def parse_args():
         default=None,
         dest="project_description",
         help="Project description",
+    )
+    parser.add_argument(
+        "--api-type",
+        help="API type",
+        type=str,
+        choices=list(map(attrgetter("value"), APIType)),
+        default=None,
+        dest="api_type",
     )
     parser.add_argument(
         "--db",
@@ -186,6 +195,14 @@ def read_user_input(current_context: BuilderContext) -> BuilderContext:
     current_context.kube_name = current_context.project_name.replace("_", "-")
     if current_context.project_description is None:
         current_context.project_description = prompt("Project description: ")
+    if current_context.api_type is None:
+        current_context.api_type = radiolist_dialog(
+            "API type",
+            text="Which api type do you want?",
+            values=[(api, api.value) for api in list(APIType)],
+        ).run()
+        if current_context.api_type is None:
+            raise KeyboardInterrupt()
     if current_context.db is None:
         current_context.db = radiolist_dialog(
             "Databases",

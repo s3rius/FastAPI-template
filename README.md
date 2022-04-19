@@ -49,9 +49,10 @@ Currently SQLAlchemy1.4, TortoiseORM and Ormar are supported.
 TUI and CLI and excellent code documentation.
 
 Generator features:
+- You can choose between GraphQL and REST api;
 - Different databases support;
 - Different ORMs support;
-- Optional migrations for each ORM;
+- Optional migrations for each ORM except raw drivers;
 - redis support;
 - different CI\CD;
 - Kubernetes config generation;
@@ -67,11 +68,12 @@ $ python -m fastapi_template --help
 
 usage: FastAPI template [-h] [--version] [--name PROJECT_NAME]
                         [--description PROJECT_DESCRIPTION]
+                        [--api-type {rest,graphql}]
                         [--db {none,sqlite,mysql,postgresql}]
-                        [--orm {ormar,sqlalchemy,tortoise}]
-                        [--ci {none,gitlab,github}] [--redis] [--migrations]
-                        [--kube] [--dummy] [--routers] [--swagger] [--force]
-                        [--quite]
+                        [--orm {ormar,sqlalchemy,tortoise,psycopg,piccolo}]
+                        [--ci {none,gitlab_ci,github}] [--redis]
+                        [--migrations] [--kube] [--dummy] [--routers]
+                        [--swagger] [--force] [--quite]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -79,11 +81,13 @@ optional arguments:
   --name PROJECT_NAME   Name of your awesome project
   --description PROJECT_DESCRIPTION
                         Project description
+  --api-type {rest,graphql}
+                        API type
   --db {none,sqlite,mysql,postgresql}
                         Database
-  --orm {ormar,sqlalchemy,tortoise}
+  --orm {ormar,sqlalchemy,tortoise,psycopg,piccolo}
                         ORM
-  --ci {none,gitlab,github}
+  --ci {none,gitlab_ci,github}
                         Choose CI support
   --redis               Add redis support
   --migrations          Add migrations support

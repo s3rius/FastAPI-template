@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  api:
+    ports:
+    - "8000:8000"
+    volumes:
+    - .:/app/src/
+    environment:
+      {{cookiecutter.project_name | upper}}_RELOAD: "True"

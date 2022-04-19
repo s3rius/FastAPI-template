@@ -1,13 +1,8 @@
 name: Testing fastapi-template
 
-on: 
-  push:
-    branches-ignore:
-      - master
-    tags-ignore:
-      - "*"
+on:
   pull_request:
-    branches:    
+    branches:
       - 'release/**'
 
 jobs:
@@ -39,5 +34,9 @@ jobs:
         uses: knowsuchagency/poetry-install@v1
         env:
           POETRY_VIRTUALENVS_CREATE: false
+      - name: Setup GIT
+        run: |
+          git config --global user.name "fastapi_template"
+          git config --global user.email "fastapi_template@pytest.python"
       - name: Run tests
-        run: poetry run pytest -vv --exitfirst
+        run: poetry run pytest -vv --exitfirst -n auto
