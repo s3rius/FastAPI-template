@@ -62,6 +62,12 @@ alembic upgrade "head"
 {%- elif cookiecutter.orm == 'tortoise' %}
 # Upgrade database to the last migration.
 aerich upgrade
+
+{%- elif cookiecutter.orm == 'piccolo' %}
+# You have to set a PICCOLO_CONF variable
+export PICCOLO_CONF="{{cookiecutter.project_name}}.piccolo_conf"
+# Now you can easily run migrations usuing 
+piccolo migrations forwards all
 {%- endif %}
 ```
 

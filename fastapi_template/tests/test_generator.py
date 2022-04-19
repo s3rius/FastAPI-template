@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi_template.tests.utils import run_default_check
 import pytest
 
-from fastapi_template.input_model import ORM, APIType, BuilderContext, DatabaseType, DB_INFO
+from fastapi_template.input_model import ORM, APIType, BuilderContext, DatabaseType, DB_INFO, SUPPORTED_ORMS
 
 
 def init_context(
@@ -40,8 +40,11 @@ def test_default_without_db(default_context: BuilderContext):
     ORM.sqlalchemy,
     ORM.tortoise,
     ORM.ormar,
+    ORM.piccolo,
 ])
 def test_default_with_db(default_context: BuilderContext, db: DatabaseType, orm: ORM):
+    if orm not in SUPPORTED_ORMS[db]:
+        return
     run_default_check(init_context(default_context, db, orm))
 
 @pytest.mark.parametrize("api", [APIType.rest, APIType.graphql])
@@ -49,6 +52,7 @@ def test_default_with_db(default_context: BuilderContext, db: DatabaseType, orm:
     ORM.sqlalchemy,
     ORM.tortoise,
     ORM.ormar,
+    ORM.piccolo,
 ])
 def test_default_for_apis(default_context: BuilderContext, orm: ORM, api: APIType):
     run_default_check(init_context(default_context, DatabaseType.postgresql, orm, api))
@@ -62,14 +66,14 @@ def test_default_for_apis(default_context: BuilderContext, orm: ORM, api: APITyp
 def test_pg_drivers(default_context: BuilderContext, orm: ORM):
     run_default_check(init_context(default_context, DatabaseType.postgresql, orm))
 
-@pytest.mark.parametrize("orm", [ORM.sqlalchemy, ORM.tortoise, ORM.ormar, ORM.psycopg])
+@pytest.mark.parametrize("orm", [ORM.sqlalchemy, ORM.tortoise, ORM.ormar, ORM.psycopg, ORM.piccolo])
 def test_without_routers(default_context: BuilderContext, orm: ORM):
     context = init_context(default_context, DatabaseType.postgresql, orm)
     context.enable_routers = False
     run_default_check(context)
 
 
-@pytest.mark.parametrize("orm", [ORM.sqlalchemy, ORM.tortoise, ORM.ormar])
+@pytest.mark.parametrize("orm", [ORM.sqlalchemy, ORM.tortoise, ORM.ormar, ORM.piccolo])
 def test_without_migrations(default_context: BuilderContext, orm: ORM):
     context = init_context(default_context, DatabaseType.postgresql, orm)
     context.enable_migrations = False
@@ -81,7 +85,7 @@ def test_with_selfhosted_swagger(default_context: BuilderContext):
     run_default_check(default_context)
 
 
-@pytest.mark.parametrize("orm", [ORM.sqlalchemy, ORM.tortoise, ORM.ormar, ORM.psycopg])
+@pytest.mark.parametrize("orm", [ORM.sqlalchemy, ORM.tortoise, ORM.ormar, ORM.psycopg, ORM.piccolo])
 def test_without_dummy(default_context: BuilderContext, orm: ORM):
     context = init_context(default_context, DatabaseType.postgresql, orm)
     context.add_dummy = False

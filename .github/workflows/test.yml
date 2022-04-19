@@ -1,6 +1,6 @@
 name: Testing fastapi-template
 
-on: 
+on:
   pull_request:
     branches:
       - 'release/**'
