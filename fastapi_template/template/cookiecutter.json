@@ -5,6 +5,9 @@
   "project_description": {
     "type": "string"
   },
+  "api_type": {
+    "type": "dict"
+  },
   "db_info": {
     "type": "dict"
   },

@@ -1,8 +1,23 @@
 {
+    "GraphQL API": {
+        "enabled": "{{cookiecutter.api_type == 'graphql'}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/gql"
+        ]
+    },
+    "REST API": {
+        "enabled": "{{cookiecutter.api_type == 'rest'}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/api/dummy",
+            "{{cookiecutter.project_name}}/web/api/echo",
+            "{{cookiecutter.project_name}}/web/api/redis"
+        ]
+    },
     "Redis": {
         "enabled": "{{cookiecutter.enable_redis}}",
         "resources": [
             "{{cookiecutter.project_name}}/web/api/redis",
+            "{{cookiecutter.project_name}}/web/gql/redis",
             "{{cookiecutter.project_name}}/services/redis",
             "{{cookiecutter.project_name}}/tests/test_redis.py",
             "deploy/kube/redis.yml"
@@ -20,6 +35,7 @@
             "aerich.ini",
             "alembic.ini",
             "{{cookiecutter.project_name}}/web/api/dummy",
+            "{{cookiecutter.project_name}}/web/gql/dummy",
             "{{cookiecutter.project_name}}/db_sa",
             "{{cookiecutter.project_name}}/tests/test_dummy.py",
             "deploy/kube/db.yml"
@@ -38,7 +54,8 @@
             "alembic.ini",
             "{{cookiecutter.project_name}}/db_sa/migrations",
             "{{cookiecutter.project_name}}/db_ormar/migrations",
-            "{{cookiecutter.project_name}}/db_tortoise/migrations"
+            "{{cookiecutter.project_name}}/db_tortoise/migrations",
+            "{{cookiecutter.project_name}}/db_piccolo/migrations"
         ]
     },
     "Alembic migrations": {
@@ -83,11 +100,14 @@
             "{{cookiecutter.project_name}}/db_psycopg/dao",
             "{{cookiecutter.project_name}}/db_psycopg/models/dummy_model.py",
             "{{cookiecutter.project_name}}/tests/test_dummy.py",
+            "{{cookiecutter.project_name}}/db_piccolo/dao",
+            "{{cookiecutter.project_name}}/db_piccolo/models/dummy_model.py",
             "{{cookiecutter.project_name}}/db_sa/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
             "{{cookiecutter.project_name}}/db_ormar/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
             "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_pg.sql",
             "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_mysql.sql",
-            "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_sqlite.sql"
+            "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_sqlite.sql",
+            "{{cookiecutter.project_name}}/db_piccolo/migrations/2022-04-16T17-38-51-672827.py"
         ]
     },
     "Self-hosted swagger": {
@@ -120,6 +140,13 @@
         "enabled": "{{cookiecutter.orm == 'psycopg'}}",
         "resources": [
             "{{cookiecutter.project_name}}/db_psycopg"
+        ]
+    },
+    "Piccolo": {
+        "enabled": "{{cookiecutter.orm == 'piccolo'}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/db_piccolo",
+            "{{cookiecutter.project_name}}/piccolo_conf.py"
         ]
     },
     "Postgresql DB": {

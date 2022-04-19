@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.9'
 
 services:
   api:
@@ -53,11 +53,7 @@ services:
       - {{cookiecutter.project_name}}-db-data:/var/lib/postgresql/data
     restart: always
     healthcheck:
-      test:
-        - CMD
-        - pg_isready
-        - -U
-        - {{cookiecutter.project_name}}
+      test: pg_isready -U {{cookiecutter.project_name}}
       interval: 2s
       timeout: 3s
       retries: 40
@@ -69,21 +65,14 @@ services:
     hostname: {{cookiecutter.project_name}}-db
     restart: always
     environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
-      MYSQL_ROOT_PASSWORD: "{{cookiecutter.project_name}}"
       MYSQL_ROOT_USER: "{{cookiecutter.project_name}}"
+      MYSQL_ROOT_PASSWORD: "{{cookiecutter.project_name}}"
       MYSQL_DATABASE: "{{cookiecutter.project_name}}"
+      MYSQL_AUTHENTICATION_PLUGIN: "mysql_native_password"
     healthcheck:
-      test:
-        - CMD
-        - mysql
-        - -u
-        - {{cookiecutter.project_name}}
-        - -p{{cookiecutter.project_name}}
-        - -e
-        - SELECT 1
-      interval: 3s
-      timeout: 3s
+      test: mysqladmin ping -h localhost
+      interval: 10s
+      timeout: 5s
       retries: 40
     volumes:
       - {{cookiecutter.project_name}}-db-data:/bitnami/mysql/data
@@ -97,10 +86,15 @@ services:
     command: alembic upgrade head
     {%- elif cookiecutter.orm == 'tortoise' %}
     command: aerich upgrade
+    {%- elif cookiecutter.orm == 'piccolo' %}
+    command: piccolo migrations forwards all
     {%- endif %}
     {%- if cookiecutter.db_info.name == "sqlite" %}
     environment:
       {{cookiecutter.project_name | upper }}_DB_FILE: /db_data/db.sqlite3
+      {%- if cookiecutter.orm == 'piccolo' %}
+      PICCOLO_CONF: "{{cookiecutter.project_name}}.piccolo_conf"
+      {%- endif %}
     volumes:
       - {{cookiecutter.project_name}}-db-data:/db_data/
     {%- else %}
@@ -110,6 +104,9 @@ services:
       {{cookiecutter.project_name | upper}}_DB_USER: {{cookiecutter.project_name}}
       {{cookiecutter.project_name | upper}}_DB_PASS: {{cookiecutter.project_name}}
       {{cookiecutter.project_name | upper}}_DB_BASE: {{cookiecutter.project_name}}
+    {%- if cookiecutter.orm == 'piccolo' %}
+      PICCOLO_CONF: "{{cookiecutter.project_name}}.piccolo_conf"
+    {%- endif %}
     {%- endif %}
     {%- if cookiecutter.db_info.name != "sqlite" %}
     depends_on:
@@ -126,10 +123,7 @@ services:
     environment:
       ALLOW_EMPTY_PASSWORD: "yes"
     healthcheck:
-      test:
-        - CMD
-        - redis-cli
-        - ping
+      test: redis-cli ping
       interval: 1s
       timeout: 3s
       retries: 30

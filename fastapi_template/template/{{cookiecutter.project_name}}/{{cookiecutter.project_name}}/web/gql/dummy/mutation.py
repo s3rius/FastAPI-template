@@ -1,0 +1,35 @@
+import strawberry
+
+from {{cookiecutter.project_name}}.db.dao.dummy_dao import DummyDAO
+from {{cookiecutter.project_name}}.web.gql.context import Context
+
+from strawberry.types import Info
+
+@strawberry.type
+class Mutation:
+    """Mutations for dummies."""
+
+    @strawberry.mutation(description="Create dummy object in a database")
+    async def create_dummy_model(
+        self,
+        {%- if cookiecutter.orm in ["sqlalchemy", "psycopg"] %}
+        info: Info[Context, None],
+        {%- endif %}
+        name: str,
+    ) -> str:
+        """
+        Creates dummy model in a database.
+
+        {% if cookiecutter.orm in ["sqlalchemy", "psycopg"] -%}
+        :param info: connection info.
+        {% endif -%}
+        :param name: name of a dummy.
+        :return: name of a dummt model.
+        """
+        {%- if cookiecutter.orm in ["sqlalchemy", "psycopg"] %}
+        dao = DummyDAO(info.context.db_connection)
+        {%- else %}
+        dao = DummyDAO()
+        {%- endif %}
+        await dao.create_dummy_model(name=name)
+        return name

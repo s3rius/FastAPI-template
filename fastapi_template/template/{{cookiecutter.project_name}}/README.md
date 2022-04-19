@@ -1,10 +1,26 @@
 # {{cookiecutter.project_name}}
 
+
 Start a project with:
 
 ```bash
 docker-compose -f deploy/docker-compose.yml --project-directory . up
 ```
+
+If you want to develop in docker with autoreload, use this command:
+
+```bash
+docker-compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --project-directory . up
+```
+
+This command exposes application on port 8000, mounts current directory and enables autoreload.
+
+But you have to rebuild image every time you modify `poetry.lock` or `pyproject.toml` with this command:
+
+```bash
+docker-compose -f deploy/docker-compose.yml --project-directory . build
+```
+
 
 ## Pre-commit
 
@@ -46,6 +62,12 @@ alembic upgrade "head"
 {%- elif cookiecutter.orm == 'tortoise' %}
 # Upgrade database to the last migration.
 aerich upgrade
+
+{%- elif cookiecutter.orm == 'piccolo' %}
+# You have to set a PICCOLO_CONF variable
+export PICCOLO_CONF="{{cookiecutter.project_name}}.piccolo_conf"
+# Now you can easily run migrations usuing 
+piccolo migrations forwards all
 {%- endif %}
 ```
 

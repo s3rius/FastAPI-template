@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastapi_template"
-version = "3.3.1"
+version = "3.3.2"
 description = "Feature-rich robust FastAPI template"
 authors = ["Pavel Kirilin <win10@list.ru>"]
 packages = [{ include = "fastapi_template" }]
@@ -22,6 +22,7 @@ prompt-toolkit = "^3.0.19"
 pytest = "^6.2.5"
 pytest-env = "^0.6.2"
 Faker = "^8.14.0"
+pytest-xdist = {version = "^2.5.0", extras = ["psutil"]}
 
 
 [tool.pytest.ini_options]

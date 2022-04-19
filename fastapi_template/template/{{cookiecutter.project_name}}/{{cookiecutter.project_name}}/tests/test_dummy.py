@@ -23,15 +23,29 @@ async def test_creation(
     {%- endif %}
 ) -> None:
     """Tests dummy instance creation."""
+    {%- if cookiecutter.api_type == 'rest' %}
     url = fastapi_app.url_path_for('create_dummy_model')
+    {%- elif cookiecutter.api_type == 'graphql' %}
+    url = fastapi_app.url_path_for('handle_http_query')
+    {%- endif %}
     test_name = uuid.uuid4().hex
+    {%- if cookiecutter.api_type == 'rest' %}
     response = await client.put(url, json={
         "name": test_name
     })
+    {%- elif cookiecutter.api_type == 'graphql' %}
+    response = await client.post(
+        url,
+        json={
+            "query": "mutation($name: String!){createDummyModel(name: $name)}",
+            "variables": {"name": test_name},
+        },
+    )
+    {%- endif %}
     assert response.status_code == status.HTTP_200_OK
     {%- if cookiecutter.orm in ["sqlalchemy", "psycopg"] %}
     dao = DummyDAO(dbsession)
-    {%- elif cookiecutter.orm in ["tortoise", "ormar"] %}
+    {%- elif cookiecutter.orm in ["tortoise", "ormar", "piccolo"] %}
     dao = DummyDAO()
     {%- endif %}
     instances = await dao.filter(name=test_name)
@@ -51,16 +65,29 @@ async def test_getting(
     """Tests dummy instance retrieval."""
     {%- if cookiecutter.orm in ["sqlalchemy", "psycopg"] %}
     dao = DummyDAO(dbsession)
-    {%- elif cookiecutter.orm in ["tortoise", "ormar"] %}
+    {%- elif cookiecutter.orm in ["tortoise", "ormar", "piccolo"] %}
     dao = DummyDAO()
     {%- endif %}
     test_name = uuid.uuid4().hex
     await dao.create_dummy_model(name=test_name)
 
+    {%- if cookiecutter.api_type == 'rest' %}
     url = fastapi_app.url_path_for('get_dummy_models')
-    response = await client.get(url)
-    assert response.status_code == status.HTTP_200_OK
-    response_json = response.json()
-    assert len(response_json) == 1
-    assert response_json[0]['name'] == test_name
+    {%- elif cookiecutter.api_type == 'graphql' %}
+    url = fastapi_app.url_path_for('handle_http_query')
+    {%- endif %}
 
+    {%- if cookiecutter.api_type == 'rest' %}
+    response = await client.get(url)
+    dummies = response.json()
+    {%- elif cookiecutter.api_type == 'graphql' %}
+    response = await client.post(
+        url,
+        json={"query": "query{dumies:getDummyModels{id name}}"},
+    )
+    dummies = response.json()["data"]["dumies"]
+    {%- endif %}
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(dummies) == 1
+    assert dummies[0]['name'] == test_name
