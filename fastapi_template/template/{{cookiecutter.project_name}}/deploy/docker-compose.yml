@@ -70,7 +70,7 @@ services:
       MYSQL_DATABASE: "{{cookiecutter.project_name}}"
       MYSQL_AUTHENTICATION_PLUGIN: "mysql_native_password"
     healthcheck:
-      test: mysql -p{{cookiecutter.project_name}} -u "{{cookiecutter.project_name}}" -e 'SELECT 1'
+      test: mysqladmin ping -h localhost
       interval: 10s
       timeout: 5s
       retries: 40

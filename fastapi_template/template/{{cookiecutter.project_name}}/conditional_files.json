@@ -1,8 +1,23 @@
 {
+    "GraphQL API": {
+        "enabled": "{{cookiecutter.api_type == 'graphql'}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/gql"
+        ]
+    },
+    "REST API": {
+        "enabled": "{{cookiecutter.api_type == 'rest'}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/api/dummy",
+            "{{cookiecutter.project_name}}/web/api/echo",
+            "{{cookiecutter.project_name}}/web/api/redis"
+        ]
+    },
     "Redis": {
         "enabled": "{{cookiecutter.enable_redis}}",
         "resources": [
             "{{cookiecutter.project_name}}/web/api/redis",
+            "{{cookiecutter.project_name}}/web/gql/redis",
             "{{cookiecutter.project_name}}/services/redis",
             "{{cookiecutter.project_name}}/tests/test_redis.py",
             "deploy/kube/redis.yml"
@@ -20,6 +35,7 @@
             "aerich.ini",
             "alembic.ini",
             "{{cookiecutter.project_name}}/web/api/dummy",
+            "{{cookiecutter.project_name}}/web/gql/dummy",
             "{{cookiecutter.project_name}}/db_sa",
             "{{cookiecutter.project_name}}/tests/test_dummy.py",
             "deploy/kube/db.yml"

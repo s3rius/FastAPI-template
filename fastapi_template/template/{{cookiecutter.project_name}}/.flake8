@@ -22,6 +22,8 @@ ignore =
   D106,
   ; First line should be in imperative mood
   D401,
+  ; Found wrong variable name
+  WPS110,
   ; Found `__init__.py` module with logic
   WPS326,
   ; Found string constant over-use
@@ -64,6 +66,8 @@ ignore =
   DJ10,
   ; Model should define verbose_name_plural in its Meta inner class
   DJ11,
+  ; Found mutable module constant.
+  WPS407,
 
 per-file-ignores =
   ; all tests

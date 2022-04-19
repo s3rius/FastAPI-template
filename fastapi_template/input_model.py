@@ -5,6 +5,11 @@ from pydantic import BaseModel
 
 
 @enum.unique
+class APIType(enum.Enum):
+    rest = "rest"
+    graphql = "graphql"
+
+@enum.unique
 class DatabaseType(enum.Enum):
     none = "none"
     sqlite = "sqlite"
@@ -95,7 +100,7 @@ ORMS_WITHOUT_MIGRATIONS = [
 
 class BuilderContext(BaseModel):
     """Options for project generation."""
-
+    api_type: Optional[APIType]
     project_name: Optional[str]
     kube_name: Optional[str]
     project_description: Optional[str]

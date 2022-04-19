@@ -13,7 +13,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 fastapi = "^0.75.0"
-uvicorn = "^0.17.0"
+uvicorn = { version = "^0.17.0", extras = ["standard"] }
 pydantic = {version = "^1.9.0", extras = ["dotenv"]}
 yarl = "^1.7.2"
 ujson = "^5.1.0"
@@ -71,6 +71,9 @@ aiofiles = "^0.8.0"
 psycopg = { version = "^3.0.11", extras = ["binary", "pool"] }
 {%- endif %}
 httptools = "^0.3.0"
+{%- if cookiecutter.api_type == "graphql" %}
+strawberry-graphql = { version = "^0.106.3", extras = ["fastapi"] }
+{%- endif %}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"
