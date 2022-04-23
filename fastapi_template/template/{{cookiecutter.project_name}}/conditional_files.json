@@ -80,8 +80,11 @@
         "enabled": "{{cookiecutter.enable_routers}}",
         "resources": [
             "{{cookiecutter.project_name}}/web/api/echo",
+            "{{cookiecutter.project_name}}/web/gql/echo",
             "{{cookiecutter.project_name}}/web/api/dummy",
+            "{{cookiecutter.project_name}}/web/gql/dummy",
             "{{cookiecutter.project_name}}/web/api/redis",
+            "{{cookiecutter.project_name}}/web/gql/redis",
             "{{cookiecutter.project_name}}/tests/test_echo.py",
             "{{cookiecutter.project_name}}/tests/test_dummy.py",
             "{{cookiecutter.project_name}}/tests/test_redis.py"
@@ -91,6 +94,7 @@
         "enabled": "{{cookiecutter.add_dummy}}",
         "resources": [
             "{{cookiecutter.project_name}}/web/api/dummy",
+            "{{cookiecutter.project_name}}/web/gql/dummy",
             "{{cookiecutter.project_name}}/db_sa/dao",
             "{{cookiecutter.project_name}}/db_sa/models/dummy_model.py",
             "{{cookiecutter.project_name}}/db_ormar/dao",
