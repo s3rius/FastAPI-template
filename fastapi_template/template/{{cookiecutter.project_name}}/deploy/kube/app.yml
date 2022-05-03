@@ -52,8 +52,8 @@ spec:
             {%- endif %}
           resources:
             limits:
-              memory: "300Mi"
-              cpu: "200m"
+              memory: "200Mi"
+              cpu: "100m"
           ports:
             - containerPort: 8000
               name: api-port

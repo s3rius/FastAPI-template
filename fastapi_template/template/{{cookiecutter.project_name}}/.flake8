@@ -82,6 +82,8 @@ per-file-ignores =
   WPS432,
   ; Missing parameter(s) in Docstring
   DAR101,
+  ; Found too many arguments
+  WPS211,
 
   ; all init files
   __init__.py:
