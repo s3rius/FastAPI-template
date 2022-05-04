@@ -35,25 +35,37 @@ mypy:
 pytest:
   extends:
     - .test-template
-  {%- if cookiecutter.db_info.name != "none" %}
-  {%- if cookiecutter.db_info.name != "sqlite" %}
+  {%- if ((cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite") or
+          (cookiecutter.enable_rmq == "True")) %}
   services:
+    {%- if cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite" %}
     - name: {{ cookiecutter.db_info.image }}
+      alias: database
+    {%- endif %}
+    {%- if cookiecutter.enable_rmq == "True" %}
+    - name: rabbitmq:3.9.16-alpine
+      alias: rmq
+    {%- endif %}
   variables:
     {%- if cookiecutter.db_info.name == "postgresql" %}
-    {{ cookiecutter.project_name | upper }}_DB_HOST: localhost
+    {{ cookiecutter.project_name | upper }}_DB_HOST: database
     POSTGRES_PASSWORD: {{ cookiecutter.project_name }}
     POSTGRES_USER: {{ cookiecutter.project_name }}
     POSTGRES_DB: {{ cookiecutter.project_name }}
     {%- endif %}
     {%- if cookiecutter.db_info.name == "mysql" %}
-    {{ cookiecutter.project_name | upper }}_DB_HOST: localhost
+    {{ cookiecutter.project_name | upper }}_DB_HOST: database
     MYSQL_PASSWORD: {{ cookiecutter.project_name }}
     MYSQL_USER: {{ cookiecutter.project_name }}
     MYSQL_DATABASE: {{ cookiecutter.project_name }}
     ALLOW_EMPTY_PASSWORD: yes
     {%- endif %}
-  {%- endif %}
+    {%- if cookiecutter.enable_rmq == "True" %}
+    RABBITMQ_DEFAULT_USER: "guest"
+    RABBITMQ_DEFAULT_PASS: "guest"
+    RABBITMQ_DEFAULT_VHOST: "/"
+    {{ cookiecutter.project_name | upper }}_RABBIT_HOST: rmq
+    {%- endif %}
   {%- endif %}
   script:
     {%- if cookiecutter.db_info.name != "none" %}
@@ -63,4 +75,10 @@ pytest:
     - wait-for-it -t 180 ${{ cookiecutter.project_name | upper }}_DB_HOST:{{cookiecutter.db_info.port}}
     {%- endif %}
     {%- endif %}
-    - pytest -vv --cov="{{cookiecutter.project_name}}" .
+    - pytest -vv --junitxml=report.xml --cov="{{cookiecutter.project_name}}" .
+    - coverage xml
+  artifacts:
+    when: always
+    reports:
+      cobertura: coverage.xml
+      junit: report.xml
