@@ -9,6 +9,9 @@ from {{cookiecutter.project_name}}.web.api import dummy
 {%- if cookiecutter.enable_redis == "True" %}
 from {{cookiecutter.project_name}}.web.api import redis
 {%- endif %}
+{%- if cookiecutter.enable_rmq == "True" %}
+from {{cookiecutter.project_name}}.web.api import rabbit
+{%- endif %}
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.self_hosted_swagger == "True" %}
@@ -29,6 +32,9 @@ api_router.include_router(dummy.router, prefix="/dummy", tags=["dummy"])
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
 api_router.include_router(redis.router, prefix="/redis", tags=["redis"])
+{%- endif %}
+{%- if cookiecutter.enable_rmq == "True" %}
+api_router.include_router(rabbit.router, prefix="/rabbit", tags=["rabbit"])
 {%- endif %}
 {%- endif %}
 {%- endif %}

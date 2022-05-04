@@ -10,7 +10,8 @@ services:
     env_file:
       - .env
     {%- if ((cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite") or
-            (cookiecutter.enable_redis == "True")) %}
+            (cookiecutter.enable_redis == "True") or
+            (cookiecutter.enable_rmq == "True")) %}
     depends_on:
       {%- if cookiecutter.db_info.name != "none" %}
       {%- if cookiecutter.db_info.name != "sqlite" %}
@@ -20,6 +21,10 @@ services:
       {%- endif %}
       {%- if cookiecutter.enable_redis == "True" %}
       redis:
+        condition: service_healthy
+      {%- endif %}
+      {%- if cookiecutter.enable_rmq == "True" %}
+      rmq:
         condition: service_healthy
       {%- endif %}
     {%- endif %}
@@ -35,6 +40,9 @@ services:
       {{cookiecutter.project_name | upper}}_DB_PASS: {{cookiecutter.project_name}}
       {{cookiecutter.project_name | upper}}_DB_BASE: {{cookiecutter.project_name}}
       {%- endif %}
+      {%- endif %}
+      {%- if cookiecutter.enable_rmq == 'True' %}
+      {{cookiecutter.project_name | upper }}_RABBIT_HOST: {{cookiecutter.project_name}}-rmq
       {%- endif %}
     {%- if cookiecutter.db_info.name == "sqlite" %}
     volumes:
@@ -59,7 +67,7 @@ services:
       retries: 40
   {%- endif %}
 
-  {% if cookiecutter.db_info.name == "mysql" -%}
+  {%- if cookiecutter.db_info.name == "mysql" %}
   db:
     image: {{cookiecutter.db_info.image}}
     hostname: {{cookiecutter.project_name}}-db
@@ -78,7 +86,7 @@ services:
       - {{cookiecutter.project_name}}-db-data:/bitnami/mysql/data
   {%- endif %}
 
-  {% if cookiecutter.enable_migrations == 'True' -%}
+  {%- if cookiecutter.enable_migrations == 'True' %}
   migrator:
     image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
     restart: "no"
@@ -115,7 +123,7 @@ services:
     {%- endif %}
   {%- endif %}
 
-  {% if cookiecutter.enable_redis == "True" -%}
+  {%- if cookiecutter.enable_redis == "True" %}
   redis:
     image: bitnami/redis:6.2.5
     hostname: {{cookiecutter.project_name}}-redis
@@ -128,6 +136,23 @@ services:
       timeout: 3s
       retries: 30
   {%- endif %}
+
+  {%- if cookiecutter.enable_rmq == "True" %}
+  rmq:
+    image: rabbitmq:3.9.16-alpine
+    hostname: {{cookiecutter.project_name}}-rmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    healthcheck:
+      test: rabbitmq-diagnostics check_running -q
+      interval: 1s
+      timeout: 3s
+      retries: 30
+  {%- endif %}
+
 
 {% if cookiecutter.db_info.name != 'none' %}
 volumes:
