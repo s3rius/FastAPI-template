@@ -11,6 +11,10 @@ from {{cookiecutter.project_name}}.web.gql import dummy
 {%- if cookiecutter.enable_redis == "True" %}
 from {{cookiecutter.project_name}}.web.gql import redis
 {%- endif %}
+{%- if cookiecutter.enable_rmq == "True" %}
+from {{cookiecutter.project_name}}.web.gql import rabbit
+{%- endif %}
+
 {%- endif %}
 
 @strawberry.type
@@ -37,6 +41,9 @@ class Mutation(
     {%- endif %}
     {%- if cookiecutter.enable_redis == "True" %}
     redis.Mutation,
+    {%- endif %}
+    {%- if cookiecutter.enable_rmq == "True" %}
+    rabbit.Mutation,
     {%- endif %}
     {%- endif %}
 ):

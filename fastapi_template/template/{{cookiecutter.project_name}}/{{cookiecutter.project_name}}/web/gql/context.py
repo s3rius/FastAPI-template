@@ -6,6 +6,13 @@ from aioredis import Redis
 from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_connection
 {%- endif %}
 
+{%- if cookiecutter.enable_rmq == "True" %}
+from aio_pika.pool import Pool
+from aio_pika import Channel
+from {{cookiecutter.project_name}}.services.rabbit.dependencies import get_rmq_channel_pool
+{%- endif %}
+
+
 {%- if cookiecutter.db_info.name != 'none' %}
 from {{cookiecutter.project_name}}.db.dependencies import get_db_session
 {%- endif %}
@@ -25,6 +32,9 @@ class Context(BaseContext):
         {%- if cookiecutter.enable_redis == "True" %}
         redis: Redis = Depends(get_redis_connection),
         {%- endif %}
+        {%- if cookiecutter.enable_rmq == "True" %}
+        rabbit: Pool[Channel] = Depends(get_rmq_channel_pool),
+        {%- endif %}
         {%- if cookiecutter.orm == "sqlalchemy" %}
         db_connection: AsyncSession = Depends(get_db_session),
         {%- elif cookiecutter.orm == "psycopg" %}
@@ -33,6 +43,9 @@ class Context(BaseContext):
     ) -> None:
         {%- if cookiecutter.enable_redis == "True" %}
         self.redis = redis
+        {%- endif %}
+        {%- if cookiecutter.enable_rmq == "True" %}
+        self.rabbit = rabbit
         {%- endif %}
         {%- if cookiecutter.orm in ["sqlalchemy", "psycopg"] %}
         self.db_connection = db_connection

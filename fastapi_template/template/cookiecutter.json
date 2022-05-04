@@ -14,6 +14,9 @@
   "enable_redis": {
     "type": "bool"
   },
+  "enable_rmq": {
+    "type": "bool"
+  },
   "ci_type": {
     "type": "string"
   },

@@ -54,6 +54,7 @@ Generator features:
 - Different ORMs support;
 - Optional migrations for each ORM except raw drivers;
 - redis support;
+- rabbitmq support;
 - different CI\CD;
 - Kubernetes config generation;
 - Demo routers and models;
@@ -71,7 +72,7 @@ usage: FastAPI template [-h] [--version] [--name PROJECT_NAME]
                         [--api-type {rest,graphql}]
                         [--db {none,sqlite,mysql,postgresql}]
                         [--orm {ormar,sqlalchemy,tortoise,psycopg,piccolo}]
-                        [--ci {none,gitlab_ci,github}] [--redis]
+                        [--ci {none,gitlab_ci,github}] [--redis] [--rabbit]
                         [--migrations] [--kube] [--dummy] [--routers]
                         [--swagger] [--force] [--quite]
 
@@ -89,13 +90,14 @@ optional arguments:
                         ORM
   --ci {none,gitlab_ci,github}
                         Choose CI support
-  --redis               Add redis support
+  --redis               Add Redis support
+  --rabbit              Add RabbitMQ support
   --migrations          Add migrations support
-  --kube                Add kubernetes configs
+  --kube                Add Kubernetes configs
   --dummy, --dummy-model
                         Add dummy model
   --routers             Add example routers
-  --swagger             Enable self-hosted swagger
+  --swagger             Enable self-hosted Swagger
   --force               Owerrite directory if it exists
-  --quite               Do not ask for feature during generation
+  --quite               Do not ask for features during generation
 ```
