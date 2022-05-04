@@ -37,7 +37,18 @@ class Settings(BaseSettings):
     redis_user: Optional[str] = None
     redis_pass: Optional[str] = None
     redis_base: Optional[int] = None
-    {% endif %}
+    {%- endif %}
+
+    {%- if cookiecutter.enable_rmq == "True" %}
+    rabbit_host: str = "{{cookiecutter.project_name}}-rmq"
+    rabbit_port: int = 5672
+    rabbit_user: str = "guest"
+    rabbit_pass: str = "guest"
+    rabbit_vhost: str = "/"
+
+    rabbit_pool_size: int = 2
+    rabbit_channel_pool_size: int = 10
+    {%- endif %}
 
     {%- if cookiecutter.db_info.name != "none" %}
     @property
@@ -94,6 +105,24 @@ class Settings(BaseSettings):
             user=self.redis_user,
             password=self.redis_pass,
             path=path,
+        )
+    {%- endif %}
+
+    {%- if cookiecutter.enable_rmq == "True" %}
+    @property
+    def rabbit_url(self) -> URL:
+        """
+        Assemble RabbitMQ URL from settings.
+
+        :return: rabbit URL.
+        """
+        return URL.build(
+            scheme="amqp",
+            host=self.rabbit_host,
+            port=self.rabbit_port,
+            user=self.rabbit_user,
+            password=self.rabbit_pass,
+            path=self.rabbit_vhost,
         )
     {%- endif %}
 

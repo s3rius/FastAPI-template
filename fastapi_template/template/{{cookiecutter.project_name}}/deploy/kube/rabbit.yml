@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: "{{cookiecutter.kube_name}}"
+  name: "{{cookiecutter.kube_name}}-rmq"
+spec:
+  selector:
+    matchLabels:
+      app: "{{cookiecutter.kube_name}}-rmq"
+  template:
+    metadata:
+      labels:
+        app: "{{cookiecutter.kube_name}}-rmq"
+    spec:
+      containers:
+        - name: rabbit
+          image: rabbitmq:3.9.16-alpine
+          startupProbe:
+            exec:
+              command: ["rabbitmq-diagnostics", "check_running", "-q"]
+            failureThreshold: 30
+            periodSeconds: 5
+            timeoutSeconds: 10
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: "guest"
+            - name: RABBITMQ_DEFAULT_PASS
+              value: "guest"
+            - name: RABBITMQ_DEFAULT_VHOST
+              value: "/"
+          resources:
+            limits:
+              memory: "200Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 5672
+              name: amqp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: "{{cookiecutter.kube_name}}"
+  name: "{{cookiecutter.kube_name}}-rmq-service"
+spec:
+  selector:
+    app: "{{cookiecutter.kube_name}}-rmq"
+  ports:
+    - port: 5672
+      targetPort: amqp
+
+---

@@ -97,3 +97,10 @@ def test_redis(default_context: BuilderContext, api: APIType):
     default_context.enable_redis = True
     default_context.api_type = api
     run_default_check(default_context)
+
+
+@pytest.mark.parametrize("api", [APIType.rest, APIType.graphql])
+def test_rmq(default_context: BuilderContext, api: APIType):
+    default_context.enable_rmq = True
+    default_context.api_type = api
+    run_default_check(default_context)

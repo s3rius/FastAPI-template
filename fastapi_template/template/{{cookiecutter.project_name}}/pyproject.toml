@@ -81,6 +81,9 @@ httptools = "^0.3.0"
 {%- if cookiecutter.api_type == "graphql" %}
 strawberry-graphql = { version = "^0.106.3", extras = ["fastapi"] }
 {%- endif %}
+{%- if cookiecutter.enable_rmq == "True" %}
+aio-pika = "^7.2.0"
+{%- endif %}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"

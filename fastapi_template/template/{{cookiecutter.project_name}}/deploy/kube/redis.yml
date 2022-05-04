@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: {{cookiecutter.kube_name}}
-  name: {{cookiecutter.kube_name}}-redis
+  namespace: "{{cookiecutter.kube_name}}"
+  name: "{{cookiecutter.kube_name}}-redis"
 spec:
   selector:
     matchLabels:
-      app: {{cookiecutter.kube_name}}-redis
+      app: "{{cookiecutter.kube_name}}-redis"
   template:
     metadata:
       labels:
-        app: {{cookiecutter.kube_name}}-redis
+        app: "{{cookiecutter.kube_name}}-redis"
     spec:
       containers:
         - name: redis
@@ -26,19 +26,19 @@ spec:
               value: "yes"
           resources:
             limits:
-              memory: "300Mi"
-              cpu: "200m"
+              memory: "50Mi"
+              cpu: "50m"
           ports:
             - containerPort: 6379
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: {{cookiecutter.kube_name}}
+  namespace: "{{cookiecutter.kube_name}}"
   name: "{{cookiecutter.kube_name}}-redis-service"
 spec:
   selector:
-    app: {{cookiecutter.kube_name}}-redis
+    app: "{{cookiecutter.kube_name}}-redis"
   ports:
     - port: 6379
       targetPort: 6379

@@ -82,10 +82,17 @@ def parse_args():
     )
     parser.add_argument(
         "--redis",
-        help="Add redis support",
+        help="Add Redis support",
         action="store_true",
         default=None,
         dest="enable_redis",
+    )
+    parser.add_argument(
+        "--rabbit",
+        help="Add RabbitMQ support",
+        action="store_true",
+        default=None,
+        dest="enable_rmq",
     )
     parser.add_argument(
         "--migrations",
@@ -96,7 +103,7 @@ def parse_args():
     )
     parser.add_argument(
         "--kube",
-        help="Add kubernetes configs",
+        help="Add Kubernetes configs",
         action="store_true",
         default=None,
         dest="enable_kube",
@@ -118,7 +125,7 @@ def parse_args():
     )
     parser.add_argument(
         "--swagger",
-        help="Enable self-hosted swagger",
+        help="Enable self-hosted Swagger",
         action="store_true",
         default=None,
         dest="self_hosted_swagger",
@@ -132,7 +139,7 @@ def parse_args():
     )
     parser.add_argument(
         "--quite",
-        help="Do not ask for feature during generation",
+        help="Do not ask for features during generation",
         action="store_true",
         default=False,
         dest="quite",
@@ -158,6 +165,10 @@ def ask_features(current_context: BuilderContext) -> BuilderContext:
         "Self-hosted swagger": {
             "name": "self_hosted_swagger",
             "value": current_context.self_hosted_swagger,
+        },
+        "RabbitMQ integration": {
+            "name": "enable_rmq",
+            "value": current_context.enable_rmq,
         },
     }
     if current_context.db != DatabaseType.none:

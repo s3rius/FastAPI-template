@@ -5,7 +5,7 @@ from {{cookiecutter.project_name}}.web.api.router import api_router
 {%- if cookiecutter.api_type == 'graphql' %}
 from {{cookiecutter.project_name}}.web.gql.router import gql_router
 {%- endif %}
-from {{cookiecutter.project_name}}.web.lifetime import shutdown, startup
+from {{cookiecutter.project_name}}.web.lifetime import register_startup_event, register_shutdown_event
 from importlib import metadata
 
 {%- if cookiecutter.orm == 'tortoise' %}
@@ -46,8 +46,8 @@ def get_app() -> FastAPI:
         default_response_class=UJSONResponse,
     )
 
-    app.on_event("startup")(startup(app))
-    app.on_event("shutdown")(shutdown(app))
+    register_startup_event(app)
+    register_shutdown_event(app)
 
     app.include_router(router=api_router, prefix="/api")
     {%- if cookiecutter.api_type == 'graphql' %}

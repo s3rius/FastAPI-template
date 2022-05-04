@@ -8,6 +8,7 @@
     "REST API": {
         "enabled": "{{cookiecutter.api_type == 'rest'}}",
         "resources": [
+            "{{cookiecutter.project_name}}/web/api/rabbit",
             "{{cookiecutter.project_name}}/web/api/dummy",
             "{{cookiecutter.project_name}}/web/api/echo",
             "{{cookiecutter.project_name}}/web/api/redis"
@@ -20,6 +21,16 @@
             "{{cookiecutter.project_name}}/web/gql/redis",
             "{{cookiecutter.project_name}}/services/redis",
             "{{cookiecutter.project_name}}/tests/test_redis.py",
+            "deploy/kube/redis.yml"
+        ]
+    },
+    "RabbitMQ support": {
+        "enabled": "{{cookiecutter.enable_rmq}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/api/rabbit",
+            "{{cookiecutter.project_name}}/web/gql/rabbit",
+            "{{cookiecutter.project_name}}/services/rabbit",
+            "{{cookiecutter.project_name}}/tests/test_rabbit.py",
             "deploy/kube/redis.yml"
         ]
     },

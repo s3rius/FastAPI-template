@@ -5,8 +5,13 @@ from fastapi import FastAPI
 from {{cookiecutter.project_name}}.settings import settings
 
 {%- if cookiecutter.enable_redis == "True" %}
-import aioredis
+from {{cookiecutter.project_name}}.services.redis.lifetime import init_redis, shutdown_redis
 {%- endif %}
+
+{%- if cookiecutter.enable_rmq == "True" %}
+from {{cookiecutter.project_name}}.services.rabbit.lifetime import init_rabbit, shutdown_rabbit
+{%- endif %}
+
 
 {%- if cookiecutter.orm == "ormar" %}
 from {{cookiecutter.project_name}}.db.config import database
@@ -69,18 +74,6 @@ def _setup_db(app: FastAPI) -> None:
     app.state.db_session_factory = session_factory
 {%- endif %}
 
-{% if cookiecutter.enable_redis == "True" %}
-def _setup_redis(app: FastAPI) -> None:
-    """
-    Initialize redis connection.
-
-    :param app: current FastAPI app.
-    """
-    app.state.redis_pool = aioredis.ConnectionPool.from_url(
-        str(settings.redis_url),
-    )
-{%- endif %}
-
 {%- if cookiecutter.enable_migrations == "False" %}
 {%- if cookiecutter.orm in ["ormar", "sqlalchemy"] %}
 async def _create_tables() -> None:
@@ -100,7 +93,7 @@ async def _create_tables() -> None:
 {%- endif %}
 {%- endif %}
 
-def startup(app: FastAPI) -> Callable[[], Awaitable[None]]:
+def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:
     """
     Actions to run on application startup.
 
@@ -111,6 +104,7 @@ def startup(app: FastAPI) -> Callable[[], Awaitable[None]]:
     :return: function that actually performs actions.
     """
 
+    @app.on_event("startup")
     async def _startup() -> None:  # noqa: WPS430
         {%- if cookiecutter.orm == "sqlalchemy" %}
         _setup_db(app)
@@ -125,14 +119,17 @@ def startup(app: FastAPI) -> Callable[[], Awaitable[None]]:
         {%- endif %}
         {%- endif %}
         {%- if cookiecutter.enable_redis == "True" %}
-        _setup_redis(app)
+        init_redis(app)
+        {%- endif %}
+        {%- if cookiecutter.enable_rmq == "True" %}
+        init_rabbit(app)
         {%- endif %}
         pass  # noqa: WPS420
 
     return _startup
 
 
-def shutdown(app: FastAPI) -> Callable[[], Awaitable[None]]:
+def register_shutdown_event(app: FastAPI) -> Callable[[], Awaitable[None]]:
     """
     Actions to run on application's shutdown.
 
@@ -140,6 +137,7 @@ def shutdown(app: FastAPI) -> Callable[[], Awaitable[None]]:
     :return: function that actually performs actions.
     """
 
+    @app.on_event("shutdown")
     async def _shutdown() -> None:  # noqa: WPS430
         {%- if cookiecutter.orm == "sqlalchemy" %}
         await app.state.db_engine.dispose()
@@ -149,7 +147,10 @@ def shutdown(app: FastAPI) -> Callable[[], Awaitable[None]]:
         await app.state.db_pool.close()
         {%- endif %}
         {%- if cookiecutter.enable_redis == "True" %}
-        await app.state.redis_pool.disconnect()
+        await shutdown_redis(app)
+        {%- endif %}
+        {%- if cookiecutter.enable_rmq == "True" %}
+        await shutdown_rabbit(app)
         {%- endif %}
         pass  # noqa: WPS420
 
