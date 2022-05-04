@@ -47,9 +47,10 @@ jobs:
         run: poetry run mypy .
   pytest:
     runs-on: ubuntu-latest
-    {%- if cookiecutter.db_info.name != "none" %}
-    {%- if cookiecutter.db_info.name != "sqlite" %}
+    {%- if ((cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite") or
+          (cookiecutter.enable_rmq == "True")) %}
     services:
+      {%- if cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite" %}
       {{cookiecutter.project_name}}-db:
         image: {{ cookiecutter.db_info.image }}
         env:
@@ -72,7 +73,18 @@ jobs:
         {%- endif %}
         ports:
           - {{ cookiecutter.db_info.port }}
-    {%- endif %}
+        {%- endif %}
+      {%- if cookiecutter.enable_rmq == "True" %}
+      {{cookiecutter.project_name}}-rmq:
+        image: rabbitmq:3.9.16-alpine
+        env:
+          RABBITMQ_DEFAULT_USER: "guest"
+          RABBITMQ_DEFAULT_PASS: "guest"
+          RABBITMQ_DEFAULT_VHOST: "/"
+        options: --health-cmd="rabbitmq-diagnostics check_running -q" --health-interval=10s --health-timeout=5s --health-retries=8
+        ports:
+          - 5672
+      {%- endif %}
     {%- endif %}
     steps:
       - uses: actions/checkout@v2
@@ -86,10 +98,15 @@ jobs:
           POETRY_VIRTUALENVS_CREATE: false
       - name: Run pytest check
         run: poetry run pytest -vv --cov="{{cookiecutter.project_name}}" .
+        env:
+          {{ cookiecutter.project_name | upper }}_HOST: "0.0.0.0"
         {%- if cookiecutter.db_info.name != "none" %}
         {%- if cookiecutter.db_info.name != "sqlite" %}
-        env:
           {{ cookiecutter.project_name | upper }}_DB_HOST: localhost
           {{ cookiecutter.project_name | upper }}_DB_PORT: {{'${{'}}job.services.{{cookiecutter.project_name}}-db.ports['{{cookiecutter.db_info.port}}']{{'}}'}}
         {%- endif %}
+        {%- endif %}
+        {%- if cookiecutter.enable_rmq == "True" %}
+          {{ cookiecutter.project_name | upper }}_RABBIT_HOST: localhost
+          {{ cookiecutter.project_name | upper }}_RABBIT_PORT: {{'${{'}}job.services.{{cookiecutter.project_name}}-rmq.ports['5672']{{'}}'}}
         {%- endif %}
