@@ -26,7 +26,7 @@ async def test_creation(
     {%- if cookiecutter.api_type == 'rest' %}
     url = fastapi_app.url_path_for('create_dummy_model')
     {%- elif cookiecutter.api_type == 'graphql' %}
-    url = fastapi_app.url_path_for('handle_http_query')
+    url = fastapi_app.url_path_for('handle_http_post')
     {%- endif %}
     test_name = uuid.uuid4().hex
     {%- if cookiecutter.api_type == 'rest' %}
@@ -74,7 +74,7 @@ async def test_getting(
     {%- if cookiecutter.api_type == 'rest' %}
     url = fastapi_app.url_path_for('get_dummy_models')
     {%- elif cookiecutter.api_type == 'graphql' %}
-    url = fastapi_app.url_path_for('handle_http_query')
+    url = fastapi_app.url_path_for('handle_http_post')
     {%- endif %}
 
     {%- if cookiecutter.api_type == 'rest' %}

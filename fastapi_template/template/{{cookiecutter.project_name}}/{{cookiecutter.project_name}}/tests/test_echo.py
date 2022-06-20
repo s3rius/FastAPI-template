@@ -15,7 +15,7 @@ async def test_echo(fastapi_app: FastAPI, client: AsyncClient) -> None:
     {%- if cookiecutter.api_type == 'rest' %}
     url = fastapi_app.url_path_for('send_echo_message')
     {%- elif cookiecutter.api_type == 'graphql' %}
-    url = fastapi_app.url_path_for('handle_http_query')
+    url = fastapi_app.url_path_for('handle_http_post')
     {%- endif %}
     message = uuid.uuid4().hex
     {%- if cookiecutter.api_type == 'rest' %}
