@@ -1,4 +1,4 @@
-from aioredis import Redis
+from redis.asyncio import Redis
 from fastapi import APIRouter
 from fastapi.param_functions import Depends
 

@@ -69,7 +69,7 @@ mysqlclient = "^2.1.0"
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
-aioredis = {version = "^2.0.1", extras = ["hiredis"]}
+redis = {version = "^4.3.3", extras = ["hiredis"]}
 {%- endif %}
 {%- if cookiecutter.self_hosted_swagger == 'True' %}
 aiofiles = "^0.8.0"
@@ -79,19 +79,19 @@ psycopg = { version = "^3.0.11", extras = ["binary", "pool"] }
 {%- endif %}
 httptools = "^0.3.0"
 {%- if cookiecutter.api_type == "graphql" %}
-strawberry-graphql = { version = "^0.106.3", extras = ["fastapi"] }
+strawberry-graphql = { version = "^0.114.2", extras = ["fastapi"] }
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
-aio-pika = "^7.2.0"
+aio-pika = "^8.0.3"
 {%- endif %}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"
 flake8 = "^4.0.1"
 mypy = "^0.910"
-isort = "^5.9.3"
-yesqa = "^1.2.3"
-pre-commit = "^2.11.0"
+isort = "^5.10.1"
+yesqa = "^1.3.0"
+pre-commit = "^2.19.0"
 wemake-python-styleguide = "^0.16.1"
 black = "^22.3.0"
 autoflake = "^1.4"
@@ -99,17 +99,19 @@ autoflake = "^1.4"
 SQLAlchemy = {version = "^1.4", extras = ["mypy"]}
 {%- endif %}
 pytest-cov = "^3.0.0"
-anyio = "^3.5.0"
+anyio = "^3.6.1"
 pytest-env = "^0.6.2"
 {%- if cookiecutter.enable_redis == "True" %}
-fakeredis = "^1.7.1"
+fakeredis = "^1.8.1"
 {%- endif %}
-requests = "^2.26.0"
 {%- if cookiecutter.orm == "tortoise" %}
 asynctest = "^0.13.0"
 nest-asyncio = "^1.5.5"
 {%- endif %}
 httpx = "^0.22.0"
+{%- if cookiecutter.enable_redis == "True" %}
+types-redis = "^4.2.6"
+{%- endif %}
 
 
 [tool.isort]
