@@ -88,6 +88,9 @@ aio-pika = "^8.0.3"
 prometheus-client = "^0.14.1"
 prometheus-fastapi-instrumentator = "5.8.1"
 {%- endif %}
+{%- if cookiecutter.sentry_enabled == "True" %}
+sentry-sdk = "^1.5.12"
+{%- endif %}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"
@@ -151,7 +154,10 @@ env = [
     "{{cookiecutter.project_name | upper}}_DB_BASE={{cookiecutter.project_name}}_test",
     {%- endif %}
     {%- if cookiecutter.orm == "piccolo" %}
-    "PICCOLO_CONF={{cookiecutter.project_name}}.piccolo_conf"
+    "PICCOLO_CONF={{cookiecutter.project_name}}.piccolo_conf",
+    {%- endif %}
+    {%- if cookiecutter.sentry_enabled == "True" %}
+    "{{cookiecutter.project_name | upper}}_SENTRY_DSN=",
     {%- endif %}
 ]
 {%- endif %}

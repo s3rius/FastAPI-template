@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     # Enable uvicorn reloading
     reload: bool = False
 
+    # Current environment
+    environment: str = "dev"
+
     {%- if cookiecutter.db_info.name != "none" %}
     {%- if cookiecutter.db_info.name == "sqlite" %}
     db_file: Path = TEMP_DIR / "db.sqlite3"
@@ -54,6 +57,10 @@ class Settings(BaseSettings):
     prometheus_dir: Path = TEMP_DIR / "prom"
     {%- endif %}
 
+    {%- if cookiecutter.sentry_enabled == "True" %}
+    sentry_dsn: Optional[str] = None
+    sentry_sample_rate: float = 1.0
+    {%- endif %}
 
     {%- if cookiecutter.db_info.name != "none" %}
     @property

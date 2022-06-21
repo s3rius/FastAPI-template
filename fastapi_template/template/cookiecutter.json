@@ -44,6 +44,9 @@
     "prometheus_enabled": {
         "type": "bool"
     },
+    "sentry_enabled": {
+        "type": "bool"
+    },
     "_extensions": [
         "cookiecutter.extensions.RandomStringExtension"
     ],

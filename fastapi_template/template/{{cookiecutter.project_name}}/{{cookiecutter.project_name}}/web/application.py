@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.responses import UJSONResponse
-
+import logging
 from {{cookiecutter.project_name}}.web.api.router import api_router
+from {{cookiecutter.project_name}}.settings import settings
 {%- if cookiecutter.api_type == 'graphql' %}
 from {{cookiecutter.project_name}}.web.gql.router import gql_router
 {%- endif %}
@@ -11,6 +12,15 @@ from importlib import metadata
 {%- if cookiecutter.orm == 'tortoise' %}
 from tortoise.contrib.fastapi import register_tortoise
 from {{cookiecutter.project_name}}.db.config import TORTOISE_CONFIG
+{%- endif %}
+
+{%- if cookiecutter.sentry_enabled == "True" %}
+import sentry_sdk
+from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
+from sentry_sdk.integrations.logging import LoggingIntegration
+{%- if cookiecutter.orm == "sqlalchemy" %}
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+{%- endif %}
 {%- endif %}
 
 
@@ -71,6 +81,25 @@ def get_app() -> FastAPI:
         generate_schemas=True,
         {%- endif %}
     )
+    {%- endif %}
+
+    {%- if cookiecutter.sentry_enabled == "True" %}
+    if settings.sentry_dsn:
+        sentry_sdk.init(
+            dsn=settings.sentry_dsn,
+            traces_sample_rate=settings.sentry_sample_rate,
+            environment=settings.environment,
+            integrations=[
+                LoggingIntegration(
+                    level=logging.INFO,
+                    event_level=logging.ERROR,
+                ),
+                {%- if cookiecutter.orm == "sqlalchemy" %}
+                SqlalchemyIntegration(),
+                {%- endif %}
+            ],
+        )
+        app = SentryAsgiMiddleware(app)  # type: ignore
     {%- endif %}
 
     return app
