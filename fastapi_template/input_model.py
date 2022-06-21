@@ -117,6 +117,7 @@ class BuilderContext(BaseModel):
     enable_routers: Optional[bool]
     add_dummy: Optional[bool] = False
     self_hosted_swagger: Optional[bool]
+    prometheus_enabled: Optional[bool] = False
     enable_rmq: Optional[bool]
     force: bool = False
     quite: bool = False
