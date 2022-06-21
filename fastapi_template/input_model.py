@@ -115,9 +115,10 @@ class BuilderContext(BaseModel):
     enable_migrations: Optional[bool]
     enable_kube: Optional[bool]
     enable_routers: Optional[bool]
-    add_dummy: Optional[bool] = False
+    add_dummy: Optional[bool]
     self_hosted_swagger: Optional[bool]
-    prometheus_enabled: Optional[bool] = False
+    prometheus_enabled: Optional[bool]
+    sentry_enabled: Optional[bool]
     enable_rmq: Optional[bool]
     force: bool = False
     quite: bool = False
