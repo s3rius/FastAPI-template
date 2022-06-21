@@ -50,6 +50,11 @@ class Settings(BaseSettings):
     rabbit_channel_pool_size: int = 10
     {%- endif %}
 
+    {%- if cookiecutter.prometheus_enabled == "True" %}
+    prometheus_dir: Path = TEMP_DIR / "prom"
+    {%- endif %}
+
+
     {%- if cookiecutter.db_info.name != "none" %}
     @property
     def db_url(self) -> URL:

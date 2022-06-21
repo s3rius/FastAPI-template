@@ -84,6 +84,10 @@ strawberry-graphql = { version = "^0.114.2", extras = ["fastapi"] }
 {%- if cookiecutter.enable_rmq == "True" %}
 aio-pika = "^8.0.3"
 {%- endif %}
+{%- if cookiecutter.prometheus_enabled == "True" %}
+prometheus-client = "^0.14.1"
+prometheus-fastapi-instrumentator = "5.8.1"
+{%- endif %}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"

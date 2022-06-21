@@ -4,6 +4,10 @@ from fastapi import FastAPI
 
 from {{cookiecutter.project_name}}.settings import settings
 
+{%- if cookiecutter.prometheus_enabled == "True" %}
+from prometheus_fastapi_instrumentator import Instrumentator
+{%- endif %}
+
 {%- if cookiecutter.enable_redis == "True" %}
 from {{cookiecutter.project_name}}.services.redis.lifetime import init_redis, shutdown_redis
 {%- endif %}
@@ -93,6 +97,20 @@ async def _create_tables() -> None:
 {%- endif %}
 {%- endif %}
 
+{%- if cookiecutter.prometheus_enabled == "True" %}
+def setup_prometheus(app: FastAPI) -> None:
+    """
+    Enables prometheus integration.
+
+    :param app: current application.
+    """
+    Instrumentator(should_group_status_codes=False).instrument(app).expose(
+        app,
+        should_gzip=True,
+    )
+{%- endif %}
+
+
 def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:
     """
     Actions to run on application startup.
@@ -123,6 +141,9 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:
         {%- endif %}
         {%- if cookiecutter.enable_rmq == "True" %}
         init_rabbit(app)
+        {%- endif %}
+        {%- if cookiecutter.prometheus_enabled == "True" %}
+        setup_prometheus(app)
         {%- endif %}
         pass  # noqa: WPS420
 
