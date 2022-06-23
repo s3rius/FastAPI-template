@@ -63,6 +63,10 @@ def default_context(project_name: str) -> None:
         enable_routers=True,
         add_dummy=False,
         self_hosted_swagger=False,
+        enable_rmq=False,
+        prometheus_enabled=False,
+        otlp_enabled=False,
+        sentry_enabled=False,
         force=True,
     )
 

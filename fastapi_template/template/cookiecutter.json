@@ -47,6 +47,9 @@
     "sentry_enabled": {
         "type": "bool"
     },
+    "otlp_enabled": {
+        "type": "bool"
+    },
     "_extensions": [
         "cookiecutter.extensions.RandomStringExtension"
     ],
