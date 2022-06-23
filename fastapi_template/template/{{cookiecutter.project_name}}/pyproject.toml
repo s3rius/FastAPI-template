@@ -92,14 +92,11 @@ prometheus-fastapi-instrumentator = "5.8.1"
 sentry-sdk = "^1.5.12"
 {%- endif %}
 {%- if cookiecutter.otlp_enabled == "True" %}
-
 protobuf = "~3.20.0"
 opentelemetry-api = {version = "^1.12.0rc1", allow-prereleases = true}
 opentelemetry-sdk = {version = "^1.12.0rc1", allow-prereleases = true}
 opentelemetry-exporter-otlp = {version = "^1.12.0rc1", allow-prereleases = true}
-opentelemetry-util-http = "^0.31b0"
 opentelemetry-instrumentation = "^0.31b0"
-opentelemetry-semantic-conventions = "^0.31b0"
 opentelemetry-instrumentation-logging = "^0.31b0"
 opentelemetry-instrumentation-fastapi = "^0.31b0"
 {%- if cookiecutter.enable_redis == "True" %}
@@ -111,7 +108,6 @@ opentelemetry-instrumentation-asyncpg = "^0.31b0"
 {%- if cookiecutter.orm == "sqlalchemy" %}
 opentelemetry-instrumentation-sqlalchemy = "^0.31b0"
 {%- endif %}
-
 {%- endif %}
 
 [tool.poetry.dev-dependencies]

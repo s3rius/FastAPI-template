@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from {{cookiecutter.project_name}}.settings import settings
 
 {%- if cookiecutter.prometheus_enabled == "True" %}
-from prometheus_fastapi_instrumentator import Instrumentator
+from prometheus_fastapi_instrumentator.instrumentation import PrometheusFastApiInstrumentator
 {%- endif %}
 
 {%- if cookiecutter.enable_redis == "True" %}
@@ -34,10 +34,12 @@ from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor  # type: i
 from opentelemetry.sdk.resources import (  # type: ignore
     SERVICE_NAME,
     TELEMETRY_SDK_LANGUAGE,
+    DEPLOYMENT_ENVIRONMENT,
     Resource,
 )
 from opentelemetry.sdk.trace import TracerProvider  # type: ignore
 from opentelemetry.sdk.trace.export import BatchSpanProcessor  # type: ignore
+from opentelemetry.trace import set_tracer_provider  # type: ignore
 {%- if cookiecutter.enable_redis == "True" %}
 from opentelemetry.instrumentation.redis import RedisInstrumentor  # type: ignore
 {%- endif %}
@@ -135,6 +137,7 @@ def setup_opentelemetry(app: FastAPI) -> None:
             attributes={
                 SERVICE_NAME: "{{cookiecutter.project_name}}",
                 TELEMETRY_SDK_LANGUAGE: "python",
+                DEPLOYMENT_ENVIRONMENT: settings.environment,
             }
         )
     )
@@ -181,6 +184,7 @@ def setup_opentelemetry(app: FastAPI) -> None:
     )
     {%- endif %}
 
+    set_tracer_provider(tracer_provider=tracer_provider)
 
 
 def stop_opentelemetry(app: FastAPI) -> None:
@@ -212,10 +216,9 @@ def setup_prometheus(app: FastAPI) -> None:
 
     :param app: current application.
     """
-    Instrumentator(should_group_status_codes=False).instrument(app).expose(
+    PrometheusFastApiInstrumentator(should_group_status_codes=False).instrument(
         app,
-        should_gzip=True,
-    )
+    ).expose(app, should_gzip=True, name="prometheus_metrics")
 {%- endif %}
 
 
