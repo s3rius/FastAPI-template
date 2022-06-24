@@ -24,7 +24,7 @@ async def test_setting_value(
     {%- if cookiecutter.api_type == 'rest' %}
     url = fastapi_app.url_path_for('set_redis_value')
     {%- elif cookiecutter.api_type == 'graphql' %}
-    url = fastapi_app.url_path_for('handle_http_query')
+    url = fastapi_app.url_path_for('handle_http_post')
     {%- endif %}
 
     test_key = uuid.uuid4().hex
@@ -77,7 +77,7 @@ async def test_getting_value(
     {%- if cookiecutter.api_type == 'rest' %}
     url = fastapi_app.url_path_for('get_redis_value')
     {%- elif cookiecutter.api_type == 'graphql' %}
-    url = fastapi_app.url_path_for('handle_http_query')
+    url = fastapi_app.url_path_for('handle_http_post')
     {%- endif %}
 
     {%- if cookiecutter.api_type == 'rest' %}

@@ -104,3 +104,12 @@ def test_rmq(default_context: BuilderContext, api: APIType):
     default_context.enable_rmq = True
     default_context.api_type = api
     run_default_check(default_context)
+
+
+def test_telemetry_pre_commit(default_context: BuilderContext):
+    default_context.enable_rmq = True
+    default_context.enable_redis = True
+    default_context.prometheus_enabled = True
+    default_context.otlp_enabled = True
+    default_context.sentry_enabled = True
+    run_default_check(default_context, without_pytest=True)
