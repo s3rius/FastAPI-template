@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from {{cookiecutter.project_name}}.settings import settings
 
 {%- if cookiecutter.prometheus_enabled == "True" %}
-from prometheus_fastapi_instrumentator import Instrumentator
+from prometheus_fastapi_instrumentator.instrumentation import PrometheusFastApiInstrumentator
 {%- endif %}
 
 {%- if cookiecutter.enable_redis == "True" %}
@@ -26,6 +26,31 @@ from {{cookiecutter.project_name}}.db.models import load_all_models
 {%- endif %}
 {%- endif %}
 
+{%- if cookiecutter.otlp_enabled == "True" %}
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (  # type: ignore
+    OTLPSpanExporter,
+)
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor  # type: ignore
+from opentelemetry.sdk.resources import (  # type: ignore
+    SERVICE_NAME,
+    TELEMETRY_SDK_LANGUAGE,
+    DEPLOYMENT_ENVIRONMENT,
+    Resource,
+)
+from opentelemetry.sdk.trace import TracerProvider  # type: ignore
+from opentelemetry.sdk.trace.export import BatchSpanProcessor  # type: ignore
+from opentelemetry.trace import set_tracer_provider  # type: ignore
+{%- if cookiecutter.enable_redis == "True" %}
+from opentelemetry.instrumentation.redis import RedisInstrumentor  # type: ignore
+{%- endif %}
+{%- if cookiecutter.db_info.name == "postgresql" and cookiecutter.orm in ["ormar", "tortoise"] %}
+from opentelemetry.instrumentation.asyncpg import AsyncPGInstrumentor  # type: ignore
+{%- endif %}
+{%- if cookiecutter.orm == "sqlalchemy" %}
+from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor  # type: ignore
+{%- endif %}
+
+{%- endif %}
 
 {%- if cookiecutter.orm == "psycopg" %}
 import psycopg_pool
@@ -97,6 +122,93 @@ async def _create_tables() -> None:
 {%- endif %}
 {%- endif %}
 
+{%- if cookiecutter.otlp_enabled == "True" %}
+def setup_opentelemetry(app: FastAPI) -> None:
+    """
+    Enables opentelemetry instrumetnation.
+
+    :param app: current application.
+    """
+    if not settings.opentelemetry_endpoint:
+        return
+
+    tracer_provider = TracerProvider(
+        resource=Resource(
+            attributes={
+                SERVICE_NAME: "{{cookiecutter.project_name}}",
+                TELEMETRY_SDK_LANGUAGE: "python",
+                DEPLOYMENT_ENVIRONMENT: settings.environment,
+            }
+        )
+    )
+
+    tracer_provider.add_span_processor(
+        BatchSpanProcessor(
+            OTLPSpanExporter(
+                endpoint=settings.opentelemetry_endpoint,
+                insecure=True,
+            )
+        )
+    )
+
+    excluded_endpoints = [
+        app.url_path_for('health_check'),
+        app.url_path_for('openapi'),
+        app.url_path_for('swagger_ui_html'),
+        app.url_path_for('swagger_ui_redirect'),
+        app.url_path_for('redoc_html'),
+        {%- if cookiecutter.prometheus_enabled == "True" %}
+        "/metrics",
+        {%- endif %}
+    ]
+
+    FastAPIInstrumentor().instrument_app(
+        app,
+        tracer_provider=tracer_provider,
+        excluded_urls=",".join(excluded_endpoints),
+    )
+    {%- if cookiecutter.enable_redis == "True" %}
+    RedisInstrumentor().instrument(
+        tracer_provider=tracer_provider,
+    )
+    {%- endif %}
+    {%- if cookiecutter.db_info.name == "postgresql" and cookiecutter.orm in ["ormar", "tortoise"] %}
+    AsyncPGInstrumentor().instrument(
+        tracer_provider=tracer_provider,
+    )
+    {%- endif %}
+    {%- if cookiecutter.orm == "sqlalchemy" %}
+    SQLAlchemyInstrumentor().instrument(
+        tracer_provider=tracer_provider,
+        engine=app.state.db_engine.sync_engine,
+    )
+    {%- endif %}
+
+    set_tracer_provider(tracer_provider=tracer_provider)
+
+
+def stop_opentelemetry(app: FastAPI) -> None:
+    """
+    Disables opentelemetry instrumentation.
+
+    :param app: current application.
+    """
+    if not settings.opentelemetry_endpoint:
+        return
+
+    FastAPIInstrumentor().uninstrument_app(app)
+    {%- if cookiecutter.enable_redis == "True" %}
+    RedisInstrumentor().uninstrument()
+    {%- endif %}
+    {%- if cookiecutter.db_info.name == "postgresql" and cookiecutter.orm in ["ormar", "tortoise"] %}
+    AsyncPGInstrumentor().uninstrument()
+    {%- endif %}
+    {%- if cookiecutter.orm == "sqlalchemy" %}
+    SQLAlchemyInstrumentor().uninstrument()
+    {%- endif %}
+
+{%- endif %}
+
 {%- if cookiecutter.prometheus_enabled == "True" %}
 def setup_prometheus(app: FastAPI) -> None:
     """
@@ -104,10 +216,9 @@ def setup_prometheus(app: FastAPI) -> None:
 
     :param app: current application.
     """
-    Instrumentator(should_group_status_codes=False).instrument(app).expose(
+    PrometheusFastApiInstrumentator(should_group_status_codes=False).instrument(
         app,
-        should_gzip=True,
-    )
+    ).expose(app, should_gzip=True, name="prometheus_metrics")
 {%- endif %}
 
 
@@ -135,6 +246,9 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:
         {%- if cookiecutter.orm in ["ormar", "sqlalchemy"] %}
         await _create_tables()
         {%- endif %}
+        {%- endif %}
+        {%- if cookiecutter.otlp_enabled == "True" %}
+        setup_opentelemetry(app)
         {%- endif %}
         {%- if cookiecutter.enable_redis == "True" %}
         init_redis(app)
@@ -172,6 +286,9 @@ def register_shutdown_event(app: FastAPI) -> Callable[[], Awaitable[None]]:
         {%- endif %}
         {%- if cookiecutter.enable_rmq == "True" %}
         await shutdown_rabbit(app)
+        {%- endif %}
+        {%- if cookiecutter.otlp_enabled == "True" %}
+        stop_opentelemetry(app)
         {%- endif %}
         pass  # noqa: WPS420
 

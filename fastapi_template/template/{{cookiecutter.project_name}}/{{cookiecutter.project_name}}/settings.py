@@ -62,6 +62,10 @@ class Settings(BaseSettings):
     sentry_sample_rate: float = 1.0
     {%- endif %}
 
+    {%- if cookiecutter.otlp_enabled == "True" %}
+    opentelemetry_endpoint: Optional[str] = None
+    {%- endif %}
+
     {%- if cookiecutter.db_info.name != "none" %}
     @property
     def db_url(self) -> URL:

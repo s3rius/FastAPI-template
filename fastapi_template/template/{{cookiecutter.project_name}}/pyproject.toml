@@ -91,6 +91,24 @@ prometheus-fastapi-instrumentator = "5.8.1"
 {%- if cookiecutter.sentry_enabled == "True" %}
 sentry-sdk = "^1.5.12"
 {%- endif %}
+{%- if cookiecutter.otlp_enabled == "True" %}
+protobuf = "~3.20.0"
+opentelemetry-api = {version = "^1.12.0rc1", allow-prereleases = true}
+opentelemetry-sdk = {version = "^1.12.0rc1", allow-prereleases = true}
+opentelemetry-exporter-otlp = {version = "^1.12.0rc1", allow-prereleases = true}
+opentelemetry-instrumentation = "^0.31b0"
+opentelemetry-instrumentation-logging = "^0.31b0"
+opentelemetry-instrumentation-fastapi = "^0.31b0"
+{%- if cookiecutter.enable_redis == "True" %}
+opentelemetry-instrumentation-redis = "^0.31b0"
+{%- endif %}
+{%- if cookiecutter.db_info.name == "postgresql" and cookiecutter.orm in ["ormar", "tortoise"] %}
+opentelemetry-instrumentation-asyncpg = "^0.31b0"
+{%- endif %}
+{%- if cookiecutter.orm == "sqlalchemy" %}
+opentelemetry-instrumentation-sqlalchemy = "^0.31b0"
+{%- endif %}
+{%- endif %}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"
@@ -135,6 +153,7 @@ pretty = true
 show_error_codes = true
 implicit_reexport = true
 allow_untyped_decorators = true
+warn_unused_ignores = false
 warn_return_any = false
 {%- if cookiecutter.orm == "sqlalchemy" %}
 plugins = ["sqlalchemy.ext.mypy.plugin"]

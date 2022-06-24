@@ -119,6 +119,7 @@ class BuilderContext(BaseModel):
     self_hosted_swagger: Optional[bool]
     prometheus_enabled: Optional[bool]
     sentry_enabled: Optional[bool]
+    otlp_enabled: Optional[bool]
     enable_rmq: Optional[bool]
     force: bool = False
     quite: bool = False
