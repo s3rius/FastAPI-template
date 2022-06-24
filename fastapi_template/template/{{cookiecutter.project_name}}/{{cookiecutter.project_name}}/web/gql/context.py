@@ -2,7 +2,7 @@ from fastapi import Depends
 from strawberry.fastapi import BaseContext
 
 {%- if cookiecutter.enable_redis == "True" %}
-from aioredis import Redis
+from redis.asyncio import Redis
 from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_connection
 {%- endif %}
 

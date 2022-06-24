@@ -131,6 +131,27 @@ def parse_args():
         dest="self_hosted_swagger",
     )
     parser.add_argument(
+        "--prometheus",
+        help="Add prometheus integration",
+        action="store_true",
+        default=None,
+        dest="prometheus_enabled",
+    )
+    parser.add_argument(
+        "--sentry",
+        help="Add sentry integration",
+        action="store_true",
+        default=None,
+        dest="sentry_enabled",
+    )
+    parser.add_argument(
+        "--opentelemetry",
+        help="Add opentelemetry integration",
+        action="store_true",
+        default=None,
+        dest="otlp_enabled",
+    )
+    parser.add_argument(
         "--force",
         help="Owerrite directory if it exists",
         action="store_true",
@@ -169,6 +190,18 @@ def ask_features(current_context: BuilderContext) -> BuilderContext:
         "RabbitMQ integration": {
             "name": "enable_rmq",
             "value": current_context.enable_rmq,
+        },
+        "Prometheus integration": {
+            "name": "prometheus_enabled",
+            "value": current_context.prometheus_enabled,
+        },
+        "Sentry integration": {
+            "name": "sentry_enabled",
+            "value": current_context.sentry_enabled,
+        },
+        "Opentelemetry integration": {
+            "name": "otlp_enabled",
+            "value": current_context.otlp_enabled,
         },
     }
     if current_context.db != DatabaseType.none:

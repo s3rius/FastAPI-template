@@ -178,6 +178,13 @@
             "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_mysql.sql"
         ]
     },
+    "Opentelemetry support": {
+        "enabled": "{{cookiecutter.otlp_enabled}}",
+        "resources": [
+            "deploy/docker-compose.otlp.yml",
+            "deploy/otel-collector-config.yml"
+        ]
+    },
     "SQLite DB": {
         "enabled": "{{cookiecutter.db_info.name == 'sqlite'}}",
         "resources": [

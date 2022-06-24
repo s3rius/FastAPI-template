@@ -35,7 +35,7 @@ async def test_message_publishing(
         },
     )
     {%- elif cookiecutter.api_type == 'graphql' %}
-    url = fastapi_app.url_path_for('handle_http_query')
+    url = fastapi_app.url_path_for('handle_http_post')
     await client.post(
         url,
         json={
@@ -87,7 +87,7 @@ async def test_message_wrong_exchange(
         },
     )
     {%- elif cookiecutter.api_type == 'graphql' %}
-    url = fastapi_app.url_path_for('handle_http_query')
+    url = fastapi_app.url_path_for('handle_http_post')
     await client.post(
         url,
         json={

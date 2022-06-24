@@ -9,7 +9,7 @@ from fastapi.openapi.docs import (
 router = APIRouter()
 
 @router.get("/docs", include_in_schema=False)
-async def custom_swagger_ui_html(request: Request) -> HTMLResponse:
+async def swagger_ui_html(request: Request) -> HTMLResponse:
     """
     Swagger UI.
 

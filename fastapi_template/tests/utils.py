@@ -34,9 +34,13 @@ def run_docker_compose_command(command: Optional[str] = None) -> subprocess.Comp
     return subprocess.run(docker_command)
 
 
-def run_default_check(context: BuilderContext):
+def run_default_check(context: BuilderContext, without_pytest=False):
     generate_project_and_chdir(context)
     assert run_pre_commit() == 0
+
+    if without_pytest:
+        return
+
     build = run_docker_compose_command("build")
     assert build.returncode == 0
     tests = run_docker_compose_command("run --rm api pytest -vv .")

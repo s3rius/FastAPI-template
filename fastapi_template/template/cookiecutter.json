@@ -1,51 +1,60 @@
 {
-  "project_name": {
-    "type": "string"
-  },
-  "project_description": {
-    "type": "string"
-  },
-  "api_type": {
-    "type": "dict"
-  },
-  "db_info": {
-    "type": "dict"
-  },
-  "enable_redis": {
-    "type": "bool"
-  },
-  "enable_rmq": {
-    "type": "bool"
-  },
-  "ci_type": {
-    "type": "string"
-  },
-  "enable_migrations": {
-    "type": "bool"
-  },
-  "enable_kube": {
-    "type": "bool"
-  },
-  "kube_name": {
-    "type": "string"
-  },
-  "enable_routers": {
-    "type": "bool"
-  },
-  "add_dummy": {
-    "type": "bool"
-  },
-  "orm": {
-    "type": "str"
-  },
-  "self_hosted_swagger": {
-    "type": "bool"
-  },
-  "_extensions": [
-    "cookiecutter.extensions.RandomStringExtension"
-  ],
-  "_copy_without_render": [
-    "*.js",
-    "*.css"
-  ]
+    "project_name": {
+        "type": "string"
+    },
+    "project_description": {
+        "type": "string"
+    },
+    "api_type": {
+        "type": "dict"
+    },
+    "db_info": {
+        "type": "dict"
+    },
+    "enable_redis": {
+        "type": "bool"
+    },
+    "enable_rmq": {
+        "type": "bool"
+    },
+    "ci_type": {
+        "type": "string"
+    },
+    "enable_migrations": {
+        "type": "bool"
+    },
+    "enable_kube": {
+        "type": "bool"
+    },
+    "kube_name": {
+        "type": "string"
+    },
+    "enable_routers": {
+        "type": "bool"
+    },
+    "add_dummy": {
+        "type": "bool"
+    },
+    "orm": {
+        "type": "str"
+    },
+    "self_hosted_swagger": {
+        "type": "bool"
+    },
+    "prometheus_enabled": {
+        "type": "bool"
+    },
+    "sentry_enabled": {
+        "type": "bool"
+    },
+    "otlp_enabled": {
+        "type": "bool"
+    },
+    "_extensions": [
+        "cookiecutter.extensions.RandomStringExtension"
+    ],
+    "_copy_without_render": [
+        "*.js",
+        "*.css"
+    ]
 }
