@@ -43,6 +43,52 @@ But you have to rebuild image every time you modify `poetry.lock` or `pyproject.
 docker-compose -f deploy/docker-compose.yml --project-directory . build
 ```
 
+## Project structure
+
+```bash
+$ tree "{{cookiecutter.project_name}}"
+{{cookiecutter.project_name}}
+├── conftest.py  # Fixtures for all tests. 
+{%- if cookiecutter.db_info.name != "none" %}
+├── db  # module contains db configurations
+│   ├── dao  # Data Access Objects. Contains different classes to inteact with database.
+│   └── models  # Package contains different models for ORMs.
+{%- endif %}
+├── __main__.py  # Startup script. Starts uvicorn.
+├── services  # Package for different external services such as rabbit or redis etc.
+├── settings.py  # Main configuration settings for project.
+├── static  # Static content.
+├── tests  # Tests for project.
+└── web  # Package contains web server. Handlers, startup config.
+    ├── api  # Package with all handlers.
+    │   └── router.py  # Main router.
+    ├── application.py  # FastAPI application configuration.
+    └── lifetime.py  # Contains actions to perform on startup and shutdown.
+```
+
+## Configuration
+
+This application can be configured with environment variables.
+
+You can create `.env` file in the root directory and place all
+environment variables here. 
+
+All environment variabels should start with "{{cookiecutter.project_name | upper}}_" prefix.
+
+For example if you see in your "{{cookiecutter.project_name}}/settings.py" a variable named like
+`random_parameter`, you should provide the "{{cookiecutter.project_name | upper}}_RANDOM_PARAMETER" 
+variable to configure the value. This behaviour can be changed by overriding `env_prefix` property
+in `{{cookiecutter.project_name}}.settings.Settings.Config`.
+
+An exmaple of .env file:
+```bash
+{{cookiecutter.project_name | upper}}_RELOAD="True"
+{{cookiecutter.project_name | upper}}_PORT="8000"
+{{cookiecutter.project_name | upper}}_ENVIRONMENT="dev"
+```
+
+You can read more about BaseSettings class here: https://pydantic-docs.helpmanual.io/usage/settings/
+
 {%- if cookiecutter.otlp_enabled == "True" %}
 ## Opentelemetry 
 
@@ -64,28 +110,6 @@ It's only for demo purpose.
 
 You can read more about opentelemetry here: https://opentelemetry.io/
 {%- endif %}
-
-## Configuration
-
-This application can be configured with environment variables.
-
-You can create `.env` file in the root directory and place all
-environment variables here. 
-
-All environment variabels should start with "{{cookiecutter.project_name | upper}}_" prefix.
-
-For example if you see in your "{{cookiecutter.project_name}}/settings.py" a variable named like
-`random_parameter`, you should provide the "{{cookiecutter.project_name | upper}}_RANDOM_PARAMETER" 
-variable to configure the value.
-
-An exmaple of .env file:
-```bash
-{{cookiecutter.project_name | upper}}_RELOAD="True"
-{{cookiecutter.project_name | upper}}_PORT="8000"
-{{cookiecutter.project_name | upper}}_ENVIRONMENT="dev"
-```
-
-You can read more about BaseSettings class here: https://pydantic-docs.helpmanual.io/usage/settings/
 
 ## Pre-commit
 

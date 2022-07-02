@@ -14,7 +14,7 @@ async def send_rabbit_message(
     pool: Pool[Channel] = Depends(get_rmq_channel_pool),
 ) -> None:
     """
-    Post a message in a rabbitMQ's exchange.
+    Posts a message in a rabbitMQ's exchange.
 
     :param message: message to publish to rabbitmq.
     :param pool: rabbitmq channel pool

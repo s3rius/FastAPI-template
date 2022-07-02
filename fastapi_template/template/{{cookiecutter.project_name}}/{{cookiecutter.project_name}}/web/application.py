@@ -56,15 +56,20 @@ def get_app() -> FastAPI:
         default_response_class=UJSONResponse,
     )
 
+    # Adds startup and shutdown events.
     register_startup_event(app)
     register_shutdown_event(app)
 
+    # Main router for the API.
     app.include_router(router=api_router, prefix="/api")
     {%- if cookiecutter.api_type == 'graphql' %}
+    # Graphql router
     app.include_router(router=gql_router, prefix="/graphql")
     {%- endif %}
 
     {%- if cookiecutter.self_hosted_swagger == 'True' %}
+    # Adds static directory.
+    # This directory is used to access swagger files.
     app.mount(
         "/static",
         StaticFiles(directory=APP_ROOT / "static"),
@@ -73,6 +78,7 @@ def get_app() -> FastAPI:
     {% endif %}
 
     {%- if cookiecutter.orm == 'tortoise' %}
+    # Configures tortoise orm.
     register_tortoise(
         app,
         config=TORTOISE_CONFIG,
@@ -85,6 +91,7 @@ def get_app() -> FastAPI:
 
     {%- if cookiecutter.sentry_enabled == "True" %}
     if settings.sentry_dsn:
+        # Enables sentry integration.
         sentry_sdk.init(
             dsn=settings.sentry_dsn,
             traces_sample_rate=settings.sentry_sample_rate,

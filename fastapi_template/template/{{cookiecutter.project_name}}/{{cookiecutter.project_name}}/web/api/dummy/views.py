@@ -17,7 +17,7 @@ async def get_dummy_models(
     dummy_dao: DummyDAO = Depends(),
 ) -> List[DummyModel]:
     """
-    Retrieve all dummy objects from database.
+    Retrieve all dummy objects from the database.
 
     :param limit: limit of dummy objects, defaults to 10.
     :param offset: offset of dummy objects, defaults to 0.
@@ -33,7 +33,7 @@ async def create_dummy_model(
     dummy_dao: DummyDAO = Depends(),
 ) -> None:
     """
-    Create dummy model in database.
+    Creates dummy model in the database.
 
     :param new_dummy_object: new dummy model item.
     :param dummy_dao: DAO for dummy models.

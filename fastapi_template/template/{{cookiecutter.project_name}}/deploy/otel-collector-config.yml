@@ -1,16 +1,20 @@
+# Receives all info with OpenTelemetry protocol.
 receivers:
   otlp:
     protocols:
       grpc:
       http:
 
+# Batch all spans.
 processors:
   batch:
 
 exporters:
+  # Exports spans to log.
   logging:
     logLevel: info
 
+  # Exports spans to jaeger.
   jaeger:
     endpoint: "jaeger:14250"
     tls:

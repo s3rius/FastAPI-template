@@ -2,7 +2,7 @@
 [![](https://img.shields.io/pypi/dm/fastapi_template?style=for-the-badge)](https://pypi.org/project/fastapi-template/)
 <div align="center">
 <img src="https://raw.githubusercontent.com/s3rius/FastAPI-template/master/images/logo.png" width=700>
-<div><i>Flexible and Lightweight general-purpose template for FastAPI.</i></div>
+<div><i>Flexible general-purpose template for FastAPI.</i></div>
 </div>
 
 ## Usage
@@ -42,11 +42,12 @@ docker run --rm -it -v "$(pwd):/projects" s3rius/fastapi_template
 
 ## Features
 
-One of the coolest features is that this project is extremely small and handy.
+One of the coolest features is that this project is extremely handy.
 You can choose between different databases and even ORMs. 
-Currently SQLAlchemy1.4, TortoiseORM and Ormar are supported.
+Currently SQLAlchemy1.4, TortoiseORM, Piccolo and Ormar are supported.
 
-TUI and CLI and excellent code documentation.
+
+This project can be run as TUI or CLI and has excellent code documentation.
 
 Generator features:
 - You can choose between GraphQL and REST api;
@@ -57,10 +58,13 @@ Generator features:
 - rabbitmq support;
 - different CI\CD;
 - Kubernetes config generation;
-- Demo routers and models;
-- Pre-commit integrations;
-- Generated tests;
-- Tests for the generator itself.
+- Demo routers and models (This helps you to see how project is structured);
+- Pre-commit integration;
+- Generated tests with almost 90% coverage;
+- Tests for the generator itself;
+- Prometheus integration;
+- Sentry integration;
+- Opentelemetry integration.
 
 This project can handle arguments passed through command line.
 
@@ -74,7 +78,8 @@ usage: FastAPI template [-h] [--version] [--name PROJECT_NAME]
                         [--orm {ormar,sqlalchemy,tortoise,psycopg,piccolo}]
                         [--ci {none,gitlab_ci,github}] [--redis] [--rabbit]
                         [--migrations] [--kube] [--dummy] [--routers]
-                        [--swagger] [--force] [--quite]
+                        [--swagger] [--prometheus] [--sentry]
+                        [--opentelemetry] [--force] [--quite]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -98,6 +103,9 @@ optional arguments:
                         Add dummy model
   --routers             Add example routers
   --swagger             Enable self-hosted Swagger
+  --prometheus          Add prometheus integration
+  --sentry              Add sentry integration
+  --opentelemetry       Add opentelemetry integration
   --force               Owerrite directory if it exists
   --quite               Do not ask for features during generation
 ```

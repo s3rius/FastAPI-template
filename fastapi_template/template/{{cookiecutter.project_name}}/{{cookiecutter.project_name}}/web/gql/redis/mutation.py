@@ -16,7 +16,7 @@ class Mutation:
         info: Info[Context, None],
     ) -> RedisDTO:
         """
-        Set value in redis.
+        Sets value in redis.
 
         :param data: key and value to insert.
         :param info: connection info.
