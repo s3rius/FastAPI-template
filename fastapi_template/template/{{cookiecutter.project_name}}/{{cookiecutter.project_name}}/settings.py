@@ -9,7 +9,12 @@ TEMP_DIR = Path(gettempdir())
 
 
 class Settings(BaseSettings):
-    """Application settings."""
+    """
+    Application settings.
+
+    These parameters can be configured
+    with environment variables.
+    """
 
     host: str = "127.0.0.1"
     port: int = 8000
@@ -20,6 +25,7 @@ class Settings(BaseSettings):
 
     # Current environment
     environment: str = "dev"
+
 
     {%- if cookiecutter.db_info.name != "none" %}
     {%- if cookiecutter.db_info.name == "sqlite" %}
@@ -34,6 +40,7 @@ class Settings(BaseSettings):
     db_echo: bool = False
     {%- endif %}
 
+
     {%- if cookiecutter.enable_redis == "True" %}
     redis_host: str = "{{cookiecutter.project_name}}-redis"
     redis_port: int = 6379
@@ -41,6 +48,7 @@ class Settings(BaseSettings):
     redis_pass: Optional[str] = None
     redis_base: Optional[int] = None
     {%- endif %}
+
 
     {%- if cookiecutter.enable_rmq == "True" %}
     rabbit_host: str = "{{cookiecutter.project_name}}-rmq"
@@ -53,18 +61,22 @@ class Settings(BaseSettings):
     rabbit_channel_pool_size: int = 10
     {%- endif %}
 
+
     {%- if cookiecutter.prometheus_enabled == "True" %}
     prometheus_dir: Path = TEMP_DIR / "prom"
     {%- endif %}
+
 
     {%- if cookiecutter.sentry_enabled == "True" %}
     sentry_dsn: Optional[str] = None
     sentry_sample_rate: float = 1.0
     {%- endif %}
 
+
     {%- if cookiecutter.otlp_enabled == "True" %}
     opentelemetry_endpoint: Optional[str] = None
     {%- endif %}
+
 
     {%- if cookiecutter.db_info.name != "none" %}
     @property

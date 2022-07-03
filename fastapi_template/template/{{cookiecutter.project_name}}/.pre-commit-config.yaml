@@ -61,9 +61,3 @@ repos:
             pass_filenames: false
             args:
               - "{{cookiecutter.project_name}}"
-
-          - id: yesqa
-            name: Remove usless noqa
-            entry: poetry run yesqa
-            language: system
-            types: [python]

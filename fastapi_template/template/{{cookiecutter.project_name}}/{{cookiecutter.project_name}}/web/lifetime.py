@@ -82,7 +82,7 @@ from {{cookiecutter.project_name}}.db.models import load_all_models
 
 def _setup_db(app: FastAPI) -> None:
     """
-    Create connection to the database.
+    Creates connection to the database.
 
     This function creates SQLAlchemy engine instance,
     session_factory for creating sessions
@@ -226,8 +226,8 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:
     """
     Actions to run on application startup.
 
-    This function use fastAPI app to store data,
-    such as db_engine.
+    This function uses fastAPI app to store data
+    inthe state, such as db_engine.
 
     :param app: the fastAPI application.
     :return: function that actually performs actions.

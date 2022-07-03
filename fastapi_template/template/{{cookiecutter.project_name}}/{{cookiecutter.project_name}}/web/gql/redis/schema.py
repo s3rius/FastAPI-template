@@ -5,7 +5,7 @@ import strawberry
 
 @strawberry.type
 class RedisDTO:
-    """Type for redis queries."""
+    """Output type for redis queries."""
 
     key: str
     value: Optional[str]

@@ -22,7 +22,7 @@ class Query:
         offset: int = 0,
     ) -> List[DummyModelDTO]:
         """
-        Retrieve all dummy objects from database.
+        Retrieves all dummy objects from database.
 
         {% if cookiecutter.orm in ["sqlalchemy", "psycopg"] -%}
         :param info: connection info.
