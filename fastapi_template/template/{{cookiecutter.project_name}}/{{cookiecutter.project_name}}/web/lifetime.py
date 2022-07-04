@@ -47,7 +47,9 @@ from opentelemetry.instrumentation.redis import RedisInstrumentor  # type: ignor
 from opentelemetry.instrumentation.asyncpg import AsyncPGInstrumentor  # type: ignore
 {%- endif %}
 {%- if cookiecutter.orm == "sqlalchemy" %}
-from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor  # type: ignore
+from opentelemetry.instrumentation.sqlalchemy import (  # type: ignore
+    SQLAlchemyInstrumentor,
+)
 {%- endif %}
 
 {%- endif %}
