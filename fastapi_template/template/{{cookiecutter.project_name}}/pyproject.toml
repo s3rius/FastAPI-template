@@ -96,8 +96,10 @@ opentelemetry-api = {version = "^1.12.0rc2", allow-prereleases = true}
 opentelemetry-sdk = {version = "^1.12.0rc2", allow-prereleases = true}
 opentelemetry-exporter-otlp = {version = "^1.12.0rc2", allow-prereleases = true}
 opentelemetry-instrumentation = "^0.32b0"
-opentelemetry-instrumentation-logging = "^0.32b0"
 opentelemetry-instrumentation-fastapi = "^0.32b0"
+{%- if cookiecutter.enable_loguru != "True" %}
+opentelemetry-instrumentation-logging = "^0.32b0"
+{%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
 opentelemetry-instrumentation-redis = "^0.32b0"
 {%- endif %}
@@ -110,6 +112,9 @@ opentelemetry-instrumentation-sqlalchemy = "^0.32b0"
 {%- if cookiecutter.enable_rmq == "True" %}
 opentelemetry-instrumentation-aio-pika = "^0.32b0"
 {%- endif %}
+{%- endif %}
+{%- if cookiecutter.enable_loguru == "True" %}
+loguru = "^0.6.0"
 {%- endif %}
 
 [tool.poetry.dev-dependencies]

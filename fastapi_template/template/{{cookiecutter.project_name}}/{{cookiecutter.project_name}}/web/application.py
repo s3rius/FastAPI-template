@@ -23,6 +23,9 @@ from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 {%- endif %}
 {%- endif %}
 
+{%- if cookiecutter.enable_loguru == "True" %}
+from {{cookiecutter.project_name}}.logging import configure_logging
+{%- endif %}
 
 {%- if cookiecutter.self_hosted_swagger == 'True' %}
 from fastapi.staticfiles import StaticFiles
@@ -41,6 +44,9 @@ def get_app() -> FastAPI:
 
     :return: application.
     """
+    {%- if cookiecutter.enable_loguru == "True" %}
+    configure_logging()
+    {%- endif %}
     app = FastAPI(
         title="{{cookiecutter.project_name}}",
         description="{{cookiecutter.project_description}}",
@@ -98,7 +104,9 @@ def get_app() -> FastAPI:
             environment=settings.environment,
             integrations=[
                 LoggingIntegration(
-                    level=logging.INFO,
+                    level=logging.getLevelName(
+                        settings.log_level.value,
+                    ),
                     event_level=logging.ERROR,
                 ),
                 {%- if cookiecutter.orm == "sqlalchemy" %}

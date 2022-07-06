@@ -1,5 +1,5 @@
 from typing import Awaitable, Callable
-
+import logging
 from fastapi import FastAPI
 
 from {{cookiecutter.project_name}}.settings import settings
@@ -53,6 +53,9 @@ from opentelemetry.instrumentation.sqlalchemy import (
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
 from opentelemetry.instrumentation.aio_pika import AioPikaInstrumentor
+{%- endif %}
+{%- if cookiecutter.enable_loguru != "True" %}
+from opentelemetry.instrumentation.logging import LoggingInstrumentor
 {%- endif %}
 {%- endif %}
 
@@ -190,6 +193,13 @@ def setup_opentelemetry(app: FastAPI) -> None:
     {%- if cookiecutter.enable_rmq == "True" %}
     AioPikaInstrumentor().instrument(
         tracer_provider=tracer_provider,
+    )
+    {%- endif %}
+    {%- if cookiecutter.enable_loguru != "True" %}
+    LoggingInstrumentor().instrument(
+        tracer_provider=tracer_provider,
+        set_logging_format=True,
+        log_level=logging.getLevelName(settings.log_level.value),
     )
     {%- endif %}
 
