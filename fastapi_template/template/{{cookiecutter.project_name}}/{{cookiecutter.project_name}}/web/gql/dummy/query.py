@@ -36,4 +36,4 @@ class Query:
         {%- else %}
         dao = DummyDAO()
         {%- endif %}
-        return await dao.get_all_dummies(limit=limit, offset=offset)
+        return await dao.get_all_dummies(limit=limit, offset=offset)  # type: ignore
