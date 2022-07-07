@@ -112,4 +112,5 @@ def test_telemetry_pre_commit(default_context: BuilderContext):
     default_context.prometheus_enabled = True
     default_context.otlp_enabled = True
     default_context.sentry_enabled = True
+    default_context.enable_loguru = True
     run_default_check(default_context, without_pytest=True)
