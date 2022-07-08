@@ -11,6 +11,12 @@
 
 Poetry version must be greater or equal than 1.1.8. Otherwise it won't be able to install SQLAlchemy.
 
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/18153319/137182689-ce714440-7576-46a0-8f96-862a8469a28c.gif"/>
+  <p>Templator in action</p>
+</div>
+
+You can install it directly from pypi with pip.
 ```bash
 python3 -m pip install fastapi_template
 python3 -m fastapi_template
@@ -22,7 +28,7 @@ docker-compose -f deploy/docker-compose.yml --project-directory . build
 docker-compose -f deploy/docker-compose.yml --project-directory . up --build
 ```
 
-If you want to install in from sources then try this:
+If you want to install it from sources, try this:
 ```shell
 python3 -m pip install poetry
 python3 -m pip install .
@@ -34,37 +40,33 @@ Also you can use it with docker.
 docker run --rm -it -v "$(pwd):/projects" s3rius/fastapi_template
 ```
 
-<div align="center">
-  <img src="https://user-images.githubusercontent.com/18153319/137182689-ce714440-7576-46a0-8f96-862a8469a28c.gif"/>
-  <p>Templator in action</p>
-</div>
-
-
 ## Features
 
-One of the coolest features is that this project is extremely handy.
-You can choose between different databases and even ORMs. 
+One of the coolest features is that this project is extremely configurable.
+You can choose between different databases and even ORMs, or
+you can even generate a project without a database!
 Currently SQLAlchemy1.4, TortoiseORM, Piccolo and Ormar are supported.
 
-
-This project can be run as TUI or CLI and has excellent code documentation.
+This project can run as TUI or CLI and has excellent code documentation.
 
 Generator features:
 - You can choose between GraphQL and REST api;
 - Different databases support;
 - Different ORMs support;
 - Optional migrations for each ORM except raw drivers;
-- redis support;
-- rabbitmq support;
+- Optional redis support;
+- Optional rabbitmq support;
 - different CI\CD;
-- Kubernetes config generation;
-- Demo routers and models (This helps you to see how project is structured);
+- Optional Kubernetes config generation;
+- Optional Demo routers and models (This helps you to see how project is structured);
 - Pre-commit integration;
 - Generated tests with almost 90% coverage;
 - Tests for the generator itself;
-- Prometheus integration;
-- Sentry integration;
-- Opentelemetry integration.
+- Optional Prometheus integration;
+- Optional Sentry integration;
+- Optional Loguru logger;
+- Optional Opentelemetry integration.
+
 
 This project can handle arguments passed through command line.
 
@@ -78,7 +80,7 @@ usage: FastAPI template [-h] [--version] [--name PROJECT_NAME]
                         [--orm {ormar,sqlalchemy,tortoise,psycopg,piccolo}]
                         [--ci {none,gitlab_ci,github}] [--redis] [--rabbit]
                         [--migrations] [--kube] [--dummy] [--routers]
-                        [--swagger] [--prometheus] [--sentry]
+                        [--swagger] [--prometheus] [--sentry] [--loguru]
                         [--opentelemetry] [--force] [--quite]
 
 optional arguments:
@@ -105,6 +107,7 @@ optional arguments:
   --swagger             Enable self-hosted Swagger
   --prometheus          Add prometheus integration
   --sentry              Add sentry integration
+  --loguru              Add loguru logger
   --opentelemetry       Add opentelemetry integration
   --force               Owerrite directory if it exists
   --quite               Do not ask for features during generation
