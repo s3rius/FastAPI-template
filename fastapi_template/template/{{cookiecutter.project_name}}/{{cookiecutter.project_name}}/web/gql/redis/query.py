@@ -12,7 +12,7 @@ class Query:
     @strawberry.field(description="Get value from redis")
     async def get_redis_value(self, key: str, info: Info[Context, None]) -> RedisDTO:
         """
-        Get value from redis.
+        Gets value from redis.
 
         :param key: key to search for.
         :param info: resolver context.

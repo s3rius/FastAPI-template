@@ -32,6 +32,9 @@
     "enable_routers": {
         "type": "bool"
     },
+    "enable_loguru": {
+        "type": "bool"
+    },
     "add_dummy": {
         "type": "bool"
     },
