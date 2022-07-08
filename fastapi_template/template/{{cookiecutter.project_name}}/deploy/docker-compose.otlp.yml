@@ -1,11 +1,13 @@
 services:
   api:
     environment:
+      # Adds opentelemetry endpoint.
       {{cookiecutter.project_name | upper}}_OPENTELEMETRY_ENDPOINT: "http://otel-collector:4317"
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.53.0
     volumes:
+      # Adds config for opentelemetry.
       - ./deploy/otel-collector-config.yml:/config.yml
     command: --config config.yml
     ports:

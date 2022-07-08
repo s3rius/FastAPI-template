@@ -1,3 +1,4 @@
+import enum
 from pathlib import Path
 from tempfile import gettempdir
 from typing import Optional
@@ -7,9 +8,24 @@ from yarl import URL
 
 TEMP_DIR = Path(gettempdir())
 
+class LogLevel(str, enum.Enum):  # noqa: WPS600
+    """Possible log levels."""
+
+    NOTSET = "NOTSET"
+    DEBUG = "DEBUG"
+    INFO = "INFO"
+    WARNING = "WARNING"
+    ERROR = "ERROR"
+    FATAL = "FATAL"
+
 
 class Settings(BaseSettings):
-    """Application settings."""
+    """
+    Application settings.
+
+    These parameters can be configured
+    with environment variables.
+    """
 
     host: str = "127.0.0.1"
     port: int = 8000
@@ -21,7 +37,11 @@ class Settings(BaseSettings):
     # Current environment
     environment: str = "dev"
 
-    {%- if cookiecutter.db_info.name != "none" %}
+    log_level: LogLevel = LogLevel.INFO
+
+    {% if cookiecutter.db_info.name != "none" -%}
+
+    # Variables for the database
     {%- if cookiecutter.db_info.name == "sqlite" %}
     db_file: Path = TEMP_DIR / "db.sqlite3"
     {%- else %}
@@ -32,17 +52,25 @@ class Settings(BaseSettings):
     db_base: str = "{{cookiecutter.project_name}}"
     {%- endif %}
     db_echo: bool = False
+
     {%- endif %}
 
+
     {%- if cookiecutter.enable_redis == "True" %}
+
+    # Variables for Redis
     redis_host: str = "{{cookiecutter.project_name}}-redis"
     redis_port: int = 6379
     redis_user: Optional[str] = None
     redis_pass: Optional[str] = None
     redis_base: Optional[int] = None
+
     {%- endif %}
 
+
     {%- if cookiecutter.enable_rmq == "True" %}
+
+    # Variables for RabbitMQ
     rabbit_host: str = "{{cookiecutter.project_name}}-rmq"
     rabbit_port: int = 5672
     rabbit_user: str = "guest"
@@ -51,22 +79,40 @@ class Settings(BaseSettings):
 
     rabbit_pool_size: int = 2
     rabbit_channel_pool_size: int = 10
+
     {%- endif %}
+
 
     {%- if cookiecutter.prometheus_enabled == "True" %}
+
+    # This variable is used to define
+    # multiproc_dir. It's required for [uvi|guni]corn projects.
     prometheus_dir: Path = TEMP_DIR / "prom"
+
     {%- endif %}
+
 
     {%- if cookiecutter.sentry_enabled == "True" %}
+
+    # Sentry's configuration.
     sentry_dsn: Optional[str] = None
     sentry_sample_rate: float = 1.0
+
     {%- endif %}
+
 
     {%- if cookiecutter.otlp_enabled == "True" %}
+
+    # Grpc endpoint for opentelemetry.
+    # E.G. http://localhost:4317
     opentelemetry_endpoint: Optional[str] = None
+
     {%- endif %}
 
+
     {%- if cookiecutter.db_info.name != "none" %}
+
+
     @property
     def db_url(self) -> URL:
         """

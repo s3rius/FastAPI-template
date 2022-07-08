@@ -121,6 +121,7 @@ class BuilderContext(BaseModel):
     sentry_enabled: Optional[bool]
     otlp_enabled: Optional[bool]
     enable_rmq: Optional[bool]
+    enable_loguru: Optional[bool]
     force: bool = False
     quite: bool = False
 

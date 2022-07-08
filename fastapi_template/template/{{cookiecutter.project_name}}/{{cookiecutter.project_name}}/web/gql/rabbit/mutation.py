@@ -15,7 +15,7 @@ class Mutation:
         self, message: RabbitMessageDTO, info: Info[Context, None]
     ) -> None:
         """
-        Send a message in RabbitMQ.
+        Sends a message in RabbitMQ.
 
         :param message: message to publish.
         :param info: current context.

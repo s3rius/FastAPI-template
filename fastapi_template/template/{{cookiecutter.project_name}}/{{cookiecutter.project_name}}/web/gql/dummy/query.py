@@ -22,7 +22,7 @@ class Query:
         offset: int = 0,
     ) -> List[DummyModelDTO]:
         """
-        Retrieve all dummy objects from database.
+        Retrieves all dummy objects from database.
 
         {% if cookiecutter.orm in ["sqlalchemy", "psycopg"] -%}
         :param info: connection info.
@@ -36,4 +36,4 @@ class Query:
         {%- else %}
         dao = DummyDAO()
         {%- endif %}
-        return await dao.get_all_dummies(limit=limit, offset=offset)
+        return await dao.get_all_dummies(limit=limit, offset=offset)  # type: ignore

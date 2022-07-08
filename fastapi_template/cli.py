@@ -145,6 +145,13 @@ def parse_args():
         dest="sentry_enabled",
     )
     parser.add_argument(
+        "--loguru",
+        help="Add loguru logger",
+        action="store_true",
+        default=None,
+        dest="enable_loguru",
+    )
+    parser.add_argument(
         "--opentelemetry",
         help="Add opentelemetry integration",
         action="store_true",
@@ -202,6 +209,10 @@ def ask_features(current_context: BuilderContext) -> BuilderContext:
         "Opentelemetry integration": {
             "name": "otlp_enabled",
             "value": current_context.otlp_enabled,
+        },
+        "Loguru logger": {
+            "name": "enable_loguru",
+            "value": current_context.enable_loguru,
         },
     }
     if current_context.db != DatabaseType.none:

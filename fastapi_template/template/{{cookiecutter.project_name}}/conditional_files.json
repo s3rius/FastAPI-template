@@ -87,6 +87,12 @@
             ".github"
         ]
     },
+    "Loguru": {
+        "enabled": "{{cookiecutter.enable_loguru}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/logging.py"
+        ]
+    },
     "Routers": {
         "enabled": "{{cookiecutter.enable_routers}}",
         "resources": [
