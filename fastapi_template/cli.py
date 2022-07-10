@@ -159,6 +159,13 @@ def parse_args():
         dest="otlp_enabled",
     )
     parser.add_argument(
+        "--traefik",
+        help="Adds traefik labels to docker container",
+        action="store_true",
+        default=None,
+        dest="traefik_labels",
+    )
+    parser.add_argument(
         "--force",
         help="Owerrite directory if it exists",
         action="store_true",
@@ -182,7 +189,7 @@ def ask_features(current_context: BuilderContext) -> BuilderContext:
             "name": "enable_redis",
             "value": current_context.enable_redis,
         },
-        "Kubernetes": {
+        "Kubernetes config (deprecated)": {
             "name": "enable_kube",
             "value": current_context.enable_kube,
         },
@@ -213,6 +220,10 @@ def ask_features(current_context: BuilderContext) -> BuilderContext:
         "Loguru logger": {
             "name": "enable_loguru",
             "value": current_context.enable_loguru,
+        },
+        "Traefik labels for docker": {
+            "name": "traefik_labels",
+            "value": current_context.traefik_labels,
         },
     }
     if current_context.db != DatabaseType.none:

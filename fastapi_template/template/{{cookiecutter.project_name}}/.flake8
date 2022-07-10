@@ -95,7 +95,17 @@ per-file-ignores =
   WPS410,
 
 exclude =
+  ./.cache,
   ./.git,
+  ./.idea,
+  ./.mypy_cache,
+  ./.pytest_cache,
+  ./.venv,
   ./venv,
-  migrations,
+  ./env,
+  ./cached_venv,
+  ./docs,
+  ./deploy,
   ./var,
+  ./.vscode,
+  *migrations*,
