@@ -122,6 +122,7 @@ class BuilderContext(BaseModel):
     otlp_enabled: Optional[bool]
     enable_rmq: Optional[bool]
     enable_loguru: Optional[bool]
+    traefik_labels: Optional[bool]
     force: bool = False
     quite: bool = False
 

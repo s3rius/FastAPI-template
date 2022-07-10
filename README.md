@@ -81,7 +81,7 @@ usage: FastAPI template [-h] [--version] [--name PROJECT_NAME]
                         [--ci {none,gitlab_ci,github}] [--redis] [--rabbit]
                         [--migrations] [--kube] [--dummy] [--routers]
                         [--swagger] [--prometheus] [--sentry] [--loguru]
-                        [--opentelemetry] [--force] [--quite]
+                        [--opentelemetry] [--traefik] [--force] [--quite]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -109,6 +109,7 @@ optional arguments:
   --sentry              Add sentry integration
   --loguru              Add loguru logger
   --opentelemetry       Add opentelemetry integration
+  --traefik             Adds traefik labels to docker container
   --force               Owerrite directory if it exists
   --quite               Do not ask for features during generation
 ```
