@@ -31,7 +31,7 @@ jobs:
         with:
           python-version: '3.9'
       - name: Install deps
-      - run: |
+        run: |
           pip install -U pip
           pip install poetry==1.1.13
           poetry install
