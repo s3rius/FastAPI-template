@@ -9,6 +9,18 @@ services:
     restart: always
     env_file:
       - .env
+    {%- if cookiecutter.traefik_labels == "True" %}
+    labels:
+      # Enables traefik for this container.
+      - traefik.enable=true
+      - traefik.http.routers.{{cookiecutter.project_name}}.rule=Host(`{{ "${" }}{{cookiecutter.project_name | upper}}_TRAEFIK_HOST:-{{cookiecutter.project_name}}.localhost{{ "}" }}`)
+      - traefik.http.routers.{{cookiecutter.project_name}}.entrypoints=http
+      - traefik.http.routers.{{cookiecutter.project_name}}.service={{cookiecutter.project_name}}
+      - traefik.http.services.{{cookiecutter.project_name}}.loadbalancer.server.port={{ "${" }}{{cookiecutter.project_name | upper}}_PORT:-8000{{ "}" }}
+    networks:
+      - default
+      - traefik-shared
+    {%- endif %}
     {%- if ((cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite") or
             (cookiecutter.enable_redis == "True") or
             (cookiecutter.enable_rmq == "True")) %}
@@ -158,4 +170,11 @@ services:
 volumes:
   {{cookiecutter.project_name}}-db-data:
     name: {{cookiecutter.project_name}}-db-data
+{% endif %}
+
+{%- if cookiecutter.traefik_labels == "True" %}
+networks:
+  # Network for traefik.
+  traefik-shared:
+    name: traefik-shared
 {% endif %}
