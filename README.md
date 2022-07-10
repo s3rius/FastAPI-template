@@ -9,7 +9,7 @@
 
 ⚠️ [Git](https://git-scm.com/downloads), [Python](https://www.python.org/) and [Poetry](https://python-poetry.org/) must be installed and accessible ⚠️
 
-Poetry version must be greater or equal than 1.1.8. Otherwise it won't be able to install SQLAlchemy.
+Poetry version must be greater or equal than 1.1.13. Otherwise it won't be able to install SQLAlchemy.
 
 <div align="center">
   <img src="https://user-images.githubusercontent.com/18153319/137182689-ce714440-7576-46a0-8f96-862a8469a28c.gif"/>
