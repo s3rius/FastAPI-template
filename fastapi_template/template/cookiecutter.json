@@ -35,6 +35,9 @@
     "enable_loguru": {
         "type": "bool"
     },
+    "traefik_labels": {
+        "type": "bool"
+    },
     "add_dummy": {
         "type": "bool"
     },
