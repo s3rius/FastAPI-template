@@ -95,6 +95,13 @@ def parse_args():
         dest="enable_rmq",
     )
     parser.add_argument(
+        "--kafka",
+        help="Add Kafka support",
+        action="store_true",
+        default=None,
+        dest="enable_kafka",
+    )
+    parser.add_argument(
         "--migrations",
         help="Add migrations support",
         action="store_true",
@@ -184,62 +191,31 @@ def parse_args():
 
 
 def ask_features(current_context: BuilderContext) -> BuilderContext:
+    # List of features and associated cookiecutter values.
     features = {
-        "Redis support": {
-            "name": "enable_redis",
-            "value": current_context.enable_redis,
-        },
-        "Kubernetes config (deprecated)": {
-            "name": "enable_kube",
-            "value": current_context.enable_kube,
-        },
-        "Demo routers": {
-            "name": "enable_routers",
-            "value": current_context.enable_routers,
-        },
-        "Self-hosted swagger": {
-            "name": "self_hosted_swagger",
-            "value": current_context.self_hosted_swagger,
-        },
-        "RabbitMQ integration": {
-            "name": "enable_rmq",
-            "value": current_context.enable_rmq,
-        },
-        "Prometheus integration": {
-            "name": "prometheus_enabled",
-            "value": current_context.prometheus_enabled,
-        },
-        "Sentry integration": {
-            "name": "sentry_enabled",
-            "value": current_context.sentry_enabled,
-        },
-        "Opentelemetry integration": {
-            "name": "otlp_enabled",
-            "value": current_context.otlp_enabled,
-        },
-        "Loguru logger": {
-            "name": "enable_loguru",
-            "value": current_context.enable_loguru,
-        },
-        "Traefik labels for docker": {
-            "name": "traefik_labels",
-            "value": current_context.traefik_labels,
-        },
+        "Redis support": "enable_redis",
+        "Kubernetes config (deprecated)": "enable_kube",
+        "Demo routers": "enable_routers",
+        "Self-hosted swagger": "self_hosted_swagger",
+        "RabbitMQ integration": "enable_rmq",
+        "Kafka integration": "enable_kafka",
+        "Prometheus integration": "prometheus_enabled",
+        "Sentry integration": "sentry_enabled",
+        "Opentelemetry integration": "otlp_enabled",
+        "Loguru logger": "enable_loguru",
+        "Traefik labels for docker": "traefik_labels",
     }
     if current_context.db != DatabaseType.none:
-        features["Migrations support"] = {
-            "name": "enable_migrations",
-            "value": current_context.enable_migrations,
-        }
-        features["Add dummy model"] = {
-            "name": "add_dummy",
-            "value": current_context.add_dummy,
-        }
+        features.update({
+            "Migrations support": "enable_migrations",
+            "Add dummy model": "add_dummy"
+        })
     checkbox_values = []
-    for feature_name, feature in features.items():
-        if feature["value"] is None:
-            setattr(current_context, feature["name"], False)
-            checkbox_values.append((feature["name"], feature_name))
+    for feature_display_name, feature_key in features.items():
+        value = getattr(current_context, feature_key, None)
+        if value is None:
+            setattr(current_context, feature_key, False)
+            checkbox_values.append((feature_key, feature_display_name))
     if checkbox_values and not current_context.quite:
         results = checkboxlist_dialog(
             title="Features",
@@ -248,8 +224,8 @@ def ask_features(current_context: BuilderContext) -> BuilderContext:
         ).run()
         if results is None:
             raise KeyboardInterrupt()
-        for feature in results:
-            setattr(current_context, feature, True)
+        for feature_key in results:
+            setattr(current_context, feature_key, True)
     return current_context
 
 

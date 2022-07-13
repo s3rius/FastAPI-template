@@ -12,6 +12,9 @@ from {{cookiecutter.project_name}}.web.api import redis
 {%- if cookiecutter.enable_rmq == "True" %}
 from {{cookiecutter.project_name}}.web.api import rabbit
 {%- endif %}
+{%- if cookiecutter.enable_kafka == "True" %}
+from {{cookiecutter.project_name}}.web.api import kafka
+{%- endif %}
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.self_hosted_swagger == "True" %}
@@ -35,6 +38,9 @@ api_router.include_router(redis.router, prefix="/redis", tags=["redis"])
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
 api_router.include_router(rabbit.router, prefix="/rabbit", tags=["rabbit"])
+{%- endif %}
+{%- if cookiecutter.enable_kafka == "True" %}
+api_router.include_router(kafka.router, prefix="/kafka", tags=["kafka"])
 {%- endif %}
 {%- endif %}
 {%- endif %}

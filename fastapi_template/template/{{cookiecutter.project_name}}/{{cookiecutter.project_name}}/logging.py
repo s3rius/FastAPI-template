@@ -22,7 +22,7 @@ class InterceptHandler(logging.Handler):
     https://loguru.readthedocs.io/en/stable/overview.html#entirely-compatible-with-standard-logging
     """
 
-    def emit(self, record: logging.LogRecord) -> None:
+    def emit(self, record: logging.LogRecord) -> None:  # pragma: no cover
         """
         Propagates logs to loguru.
 
@@ -46,7 +46,7 @@ class InterceptHandler(logging.Handler):
 
 {%- if cookiecutter.otlp_enabled == "True" %}
 
-def record_formatter(record: dict[str, Any]) -> str:
+def record_formatter(record: dict[str, Any]) -> str:  # pragma: no cover
     """
     Formats the record.
 
@@ -81,7 +81,7 @@ def record_formatter(record: dict[str, Any]) -> str:
 
 {%- endif %}
 
-def configure_logging() -> None:
+def configure_logging() -> None:  # pragma: no cover
     """Configures logging."""
     loggers = (
         logging.getLogger(name)
