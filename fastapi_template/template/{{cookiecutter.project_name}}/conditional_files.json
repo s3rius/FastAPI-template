@@ -11,7 +11,8 @@
             "{{cookiecutter.project_name}}/web/api/rabbit",
             "{{cookiecutter.project_name}}/web/api/dummy",
             "{{cookiecutter.project_name}}/web/api/echo",
-            "{{cookiecutter.project_name}}/web/api/redis"
+            "{{cookiecutter.project_name}}/web/api/redis",
+            "{{cookiecutter.project_name}}/web/api/kafka"
         ]
     },
     "Redis": {
@@ -32,6 +33,15 @@
             "{{cookiecutter.project_name}}/services/rabbit",
             "{{cookiecutter.project_name}}/tests/test_rabbit.py",
             "deploy/kube/redis.yml"
+        ]
+    },
+    "Kafka support": {
+        "enabled": "{{cookiecutter.enable_kafka}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/api/kafka",
+            "{{cookiecutter.project_name}}/web/gql/kafka",
+            "{{cookiecutter.project_name}}/services/kafka",
+            "{{cookiecutter.project_name}}/tests/test_kafka.py"
         ]
     },
     "Kubernetes": {
@@ -102,6 +112,8 @@
             "{{cookiecutter.project_name}}/web/gql/dummy",
             "{{cookiecutter.project_name}}/web/api/redis",
             "{{cookiecutter.project_name}}/web/gql/redis",
+            "{{cookiecutter.project_name}}/web/api/kafka",
+            "{{cookiecutter.project_name}}/web/gql/kafka",
             "{{cookiecutter.project_name}}/tests/test_echo.py",
             "{{cookiecutter.project_name}}/tests/test_dummy.py",
             "{{cookiecutter.project_name}}/tests/test_redis.py"

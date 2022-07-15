@@ -3,7 +3,7 @@ from redis.asyncio import ConnectionPool
 from {{cookiecutter.project_name}}.settings import settings
 
 
-def init_redis(app: FastAPI) -> None:
+def init_redis(app: FastAPI) -> None:  # pragma: no cover
     """
     Creates connection pool for redis.
 
@@ -14,7 +14,7 @@ def init_redis(app: FastAPI) -> None:
     )
 
 
-async def shutdown_redis(app: FastAPI) -> None:
+async def shutdown_redis(app: FastAPI) -> None:  # pragma: no cover
     """
     Closes redis connection pool.
 

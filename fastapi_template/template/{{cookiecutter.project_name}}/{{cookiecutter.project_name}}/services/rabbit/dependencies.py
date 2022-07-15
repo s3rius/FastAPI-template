@@ -3,7 +3,7 @@ from aio_pika.pool import Pool
 from fastapi import Request
 
 
-def get_rmq_channel_pool(request: Request) -> Pool[Channel]:
+def get_rmq_channel_pool(request: Request) -> Pool[Channel]:  # pragma: no cover
     """
     Get channel pool from the state.
 

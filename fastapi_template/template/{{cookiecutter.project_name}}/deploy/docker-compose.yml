@@ -23,7 +23,8 @@ services:
     {%- endif %}
     {%- if ((cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite") or
             (cookiecutter.enable_redis == "True") or
-            (cookiecutter.enable_rmq == "True")) %}
+            (cookiecutter.enable_rmq == "True") or
+            (cookiecutter.enable_kafka == "True")) %}
     depends_on:
       {%- if cookiecutter.db_info.name != "none" %}
       {%- if cookiecutter.db_info.name != "sqlite" %}
@@ -37,6 +38,10 @@ services:
       {%- endif %}
       {%- if cookiecutter.enable_rmq == "True" %}
       rmq:
+        condition: service_healthy
+      {%- endif %}
+      {%- if cookiecutter.enable_kafka == "True" %}
+      kafka:
         condition: service_healthy
       {%- endif %}
     {%- endif %}
@@ -56,12 +61,16 @@ services:
       {%- if cookiecutter.enable_rmq == 'True' %}
       {{cookiecutter.project_name | upper }}_RABBIT_HOST: {{cookiecutter.project_name}}-rmq
       {%- endif %}
+      {%- if cookiecutter.enable_kafka == "True" %}
+      TESTKAFKA_KAFKA_BOOTSTRAP_SERVERS: '["{{cookiecutter.project_name}}-kafka:9092"]'
+      {%- endif %}
     {%- if cookiecutter.db_info.name == "sqlite" %}
     volumes:
       - {{cookiecutter.project_name}}-db-data:/db_data/
     {%- endif %}
 
   {%- if cookiecutter.db_info.name == "postgresql" %}
+
   db:
     image: {{cookiecutter.db_info.image}}
     hostname: {{cookiecutter.project_name}}-db
@@ -80,6 +89,7 @@ services:
   {%- endif %}
 
   {%- if cookiecutter.db_info.name == "mysql" %}
+
   db:
     image: {{cookiecutter.db_info.image}}
     hostname: {{cookiecutter.project_name}}-db
@@ -99,6 +109,7 @@ services:
   {%- endif %}
 
   {%- if cookiecutter.enable_migrations == 'True' %}
+
   migrator:
     image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
     restart: "no"
@@ -136,9 +147,10 @@ services:
   {%- endif %}
 
   {%- if cookiecutter.enable_redis == "True" %}
+
   redis:
     image: bitnami/redis:6.2.5
-    hostname: {{cookiecutter.project_name}}-redis
+    hostname: "{{cookiecutter.project_name}}-redis"
     restart: always
     environment:
       ALLOW_EMPTY_PASSWORD: "yes"
@@ -146,13 +158,14 @@ services:
       test: redis-cli ping
       interval: 1s
       timeout: 3s
-      retries: 30
+      retries: 50
   {%- endif %}
 
   {%- if cookiecutter.enable_rmq == "True" %}
+
   rmq:
     image: rabbitmq:3.9.16-alpine
-    hostname: {{cookiecutter.project_name}}-rmq
+    hostname: "{{cookiecutter.project_name}}-rmq"
     restart: always
     environment:
       RABBITMQ_DEFAULT_USER: "guest"
@@ -160,21 +173,55 @@ services:
       RABBITMQ_DEFAULT_VHOST: "/"
     healthcheck:
       test: rabbitmq-diagnostics check_running -q
+      interval: 3s
+      timeout: 3s
+      retries: 50
+  {%- endif %}
+
+  {%- if cookiecutter.enable_kafka == "True" %}
+
+  zookeeper:
+    image: "bitnami/zookeeper:3.7.1"
+    hostname: "{{cookiecutter.project_name}}-zookeeper"
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+      ZOO_LOG_LEVEL: "ERROR"
+    healthcheck:
+      test: zkServer.sh status
       interval: 1s
       timeout: 3s
       retries: 30
+
+  kafka:
+    image: "bitnami/kafka:3.2.0"
+    hostname: "{{cookiecutter.project_name}}-kafka"
+    environment:
+      KAFKA_BROKER_ID: "1"
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_CFG_LISTENERS: "PLAINTEXT://0.0.0.0:9092"
+      KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://{{cookiecutter.project_name}}-kafka:9092"
+      KAFKA_CFG_ZOOKEEPER_CONNECT: "{{cookiecutter.project_name}}-zookeeper:2181"
+    healthcheck:
+      test: kafka-topics.sh --list --bootstrap-server localhost:9092
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    depends_on:
+      zookeeper:
+        condition: service_healthy
   {%- endif %}
 
-
 {% if cookiecutter.db_info.name != 'none' %}
+
 volumes:
   {{cookiecutter.project_name}}-db-data:
     name: {{cookiecutter.project_name}}-db-data
-{% endif %}
+{%- endif %}
 
 {%- if cookiecutter.traefik_labels == "True" %}
+
 networks:
   # Network for traefik.
   traefik-shared:
     name: traefik-shared
-{% endif %}
+{%- endif %}

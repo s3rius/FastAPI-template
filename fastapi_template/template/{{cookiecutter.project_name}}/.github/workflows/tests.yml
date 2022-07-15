@@ -48,9 +48,11 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
     {%- if ((cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite") or
-          (cookiecutter.enable_rmq == "True")) %}
+          (cookiecutter.enable_rmq == "True") or
+          (cookiecutter.enable_kafka == "True")) %}
     services:
       {%- if cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite" %}
+
       {{cookiecutter.project_name}}-db:
         image: {{ cookiecutter.db_info.image }}
         env:
@@ -66,24 +68,66 @@ jobs:
           ALLOW_EMPTY_PASSWORD: yes
           {%- endif %}
         {%- if cookiecutter.db_info.name == "mysql" %}
-        options: --health-cmd="mysqladmin ping -u root" --health-interval=15s --health-timeout=5s --health-retries=5
+        options: >-
+          --health-cmd="mysqladmin ping -u root"
+          --health-interval=15s
+          --health-timeout=5s
+          --health-retries=5
         {%- endif %}
         {%- if cookiecutter.db_info.name == "postgresql" %}
-        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=5
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
         {%- endif %}
         ports:
-          - {{ cookiecutter.db_info.port }}
+          - {{ cookiecutter.db_info.port }}:{{ cookiecutter.db_info.port }}
         {%- endif %}
       {%- if cookiecutter.enable_rmq == "True" %}
+
       {{cookiecutter.project_name}}-rmq:
         image: rabbitmq:3.9.16-alpine
         env:
           RABBITMQ_DEFAULT_USER: "guest"
           RABBITMQ_DEFAULT_PASS: "guest"
           RABBITMQ_DEFAULT_VHOST: "/"
-        options: --health-cmd="rabbitmq-diagnostics check_running -q" --health-interval=10s --health-timeout=5s --health-retries=8
+        options: >-
+          --health-cmd="rabbitmq-diagnostics check_running -q"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=8
         ports:
-          - 5672
+          - 5672:5672
+      {%- endif %}
+      {%- if cookiecutter.enable_kafka == "True" %}
+
+      {{cookiecutter.project_name}}-zookeeper:
+        image: "bitnami/zookeeper:3.7.1"
+        env:
+          ALLOW_ANONYMOUS_LOGIN: "yes"
+          ZOO_LOG_LEVEL: "ERROR"
+        options: >-
+          --health-cmd="zkServer.sh status"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=8
+
+      {{cookiecutter.project_name}}-kafka:
+        image: bitnami/kafka:3.2.0
+        env:
+          KAFKA_BROKER_ID: "1"
+          ALLOW_PLAINTEXT_LISTENER: "yes"
+          KAFKA_CFG_LISTENERS: "PLAINTEXT://0.0.0.0:9092"
+          KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092"
+          KAFKA_CFG_ZOOKEEPER_CONNECT: "{{cookiecutter.project_name}}-zookeeper:2181"
+        options: >-
+          --health-cmd="kafka-topics.sh --list --bootstrap-server localhost:9092"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=8
+        ports:
+          - 9092:9092
       {%- endif %}
     {%- endif %}
     steps:
@@ -103,10 +147,12 @@ jobs:
         {%- if cookiecutter.db_info.name != "none" %}
         {%- if cookiecutter.db_info.name != "sqlite" %}
           {{ cookiecutter.project_name | upper }}_DB_HOST: localhost
-          {{ cookiecutter.project_name | upper }}_DB_PORT: {{'${{'}}job.services.{{cookiecutter.project_name}}-db.ports['{{cookiecutter.db_info.port}}']{{'}}'}}
         {%- endif %}
         {%- endif %}
         {%- if cookiecutter.enable_rmq == "True" %}
           {{ cookiecutter.project_name | upper }}_RABBIT_HOST: localhost
-          {{ cookiecutter.project_name | upper }}_RABBIT_PORT: {{'${{'}}job.services.{{cookiecutter.project_name}}-rmq.ports['5672']{{'}}'}}
         {%- endif %}
+        {%- if cookiecutter.enable_kafka == "True" %}
+          {{ cookiecutter.project_name | upper }}_KAFKA_BOOTSTRAP_SERVERS: '["localhost:9092"]'
+        {%- endif %}
+

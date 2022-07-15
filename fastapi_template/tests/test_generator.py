@@ -105,6 +105,11 @@ def test_rmq(default_context: BuilderContext, api: APIType):
     default_context.api_type = api
     run_default_check(default_context)
 
+@pytest.mark.parametrize("api", [APIType.rest, APIType.graphql])
+def test_kafka(default_context: BuilderContext, api: APIType):
+    default_context.enable_kafka = True
+    default_context.api_type = api
+    run_default_check(default_context)
 
 def test_telemetry_pre_commit(default_context: BuilderContext):
     default_context.enable_rmq = True

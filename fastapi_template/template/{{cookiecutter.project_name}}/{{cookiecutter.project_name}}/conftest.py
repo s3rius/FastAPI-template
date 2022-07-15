@@ -21,6 +21,12 @@ from {{cookiecutter.project_name}}.services.rabbit.dependencies import get_rmq_c
 from {{cookiecutter.project_name}}.services.rabbit.lifetime import init_rabbit, shutdown_rabbit
 
 {%- endif %}
+{%- if cookiecutter.enable_kafka == "True" %}
+from aiokafka import AIOKafkaProducer
+from {{cookiecutter.project_name}}.services.kafka.dependencies import get_kafka_producer
+from {{cookiecutter.project_name}}.services.kafka.lifetime import init_kafka, shutdown_kafka
+{%- endif %}
+
 from {{cookiecutter.project_name}}.settings import settings
 from {{cookiecutter.project_name}}.web.application import get_app
 
@@ -402,6 +408,22 @@ async def test_queue(
 
 {%- endif %}
 
+{%- if cookiecutter.enable_kafka == "True" %}
+
+@pytest.fixture
+async def test_kafka_producer() -> AsyncGenerator[AIOKafkaProducer, None]:
+    """
+    Creates kafka's producer.
+
+    :yields: kafka's producer.
+    """
+    app_mock = Mock()
+    await init_kafka(app_mock)
+    yield app_mock.state.kafka_producer
+    await shutdown_kafka(app_mock)
+
+{%- endif %}
+
 {% if cookiecutter.enable_redis == "True" -%}
 @pytest.fixture
 async def fake_redis() -> AsyncGenerator[FakeRedis, None]:
@@ -429,6 +451,9 @@ def fastapi_app(
     {%- if cookiecutter.enable_rmq == 'True' %}
     test_rmq_pool: Pool[Channel],
     {%- endif %}
+    {%- if cookiecutter.enable_kafka == "True" %}
+    test_kafka_producer: AIOKafkaProducer,
+    {%- endif %}
 ) -> FastAPI:
     """
     Fixture for creating FastAPI app.
@@ -444,6 +469,9 @@ def fastapi_app(
     {%- endif %}
     {%- if cookiecutter.enable_rmq == 'True' %}
     application.dependency_overrides[get_rmq_channel_pool] = lambda: test_rmq_pool
+    {%- endif %}
+    {%- if cookiecutter.enable_kafka == "True" %}
+    application.dependency_overrides[get_kafka_producer] = lambda: test_kafka_producer
     {%- endif %}
     return application  # noqa: WPS331
 

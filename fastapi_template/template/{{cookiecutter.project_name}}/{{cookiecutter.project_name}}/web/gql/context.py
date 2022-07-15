@@ -12,6 +12,11 @@ from aio_pika import Channel
 from {{cookiecutter.project_name}}.services.rabbit.dependencies import get_rmq_channel_pool
 {%- endif %}
 
+{%- if cookiecutter.enable_kafka == "True" %}
+from aiokafka import AIOKafkaProducer
+from {{cookiecutter.project_name}}.services.kafka.dependencies import get_kafka_producer
+{%- endif %}
+
 
 {%- if cookiecutter.db_info.name != 'none' %}
 from {{cookiecutter.project_name}}.db.dependencies import get_db_session
@@ -40,6 +45,9 @@ class Context(BaseContext):
         {%- elif cookiecutter.orm == "psycopg" %}
         db_connection: AsyncConnection[Any] = Depends(get_db_session),
         {%- endif %}
+        {%- if cookiecutter.enable_kafka == "True" %}
+        kafka_producer: AIOKafkaProducer = Depends(get_kafka_producer),
+        {%- endif %}
     ) -> None:
         {%- if cookiecutter.enable_redis == "True" %}
         self.redis = redis
@@ -49,6 +57,9 @@ class Context(BaseContext):
         {%- endif %}
         {%- if cookiecutter.orm in ["sqlalchemy", "psycopg"] %}
         self.db_connection = db_connection
+        {%- endif %}
+        {%- if cookiecutter.enable_kafka == "True" %}
+        self.kafka_producer = kafka_producer
         {%- endif %}
         pass  # noqa: WPS420
 

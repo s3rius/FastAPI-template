@@ -4,7 +4,7 @@ from redis.asyncio import Redis
 from starlette.requests import Request
 
 
-async def get_redis_connection(request: Request) -> AsyncGenerator[Redis, None]:
+async def get_redis_connection(request: Request) -> AsyncGenerator[Redis, None]:  # pragma: no cover
     """
     Get redis client.
 
