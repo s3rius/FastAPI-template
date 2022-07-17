@@ -1,20 +1,12 @@
-from typing import Any, AsyncGenerator
-
-from psycopg import AsyncConnection
+from psycopg_pool import ConnectionPool
 from starlette.requests import Request
 
 
-async def get_db_session(
-    request: Request,
-) -> AsyncGenerator[AsyncConnection[Any], None]:
+async def get_db_pool(request: Request) -> ConnectionPool:
     """
-    Create and get database connection.
+    Return database connections pool.
 
     :param request: current request.
-    :yield: database connection.
+    :returns: database connections pool.
     """
-    async with request.app.state.db_pool.connection() as conn:
-        try:
-            yield conn
-        except Exception:  # noqa: S110
-            pass  # noqa: WPS420
+    return request.app.state.db_pool
