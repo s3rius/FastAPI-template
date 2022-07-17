@@ -41,7 +41,7 @@ class DummyDAO:
         :param offset: offset of dummies.
         :return: stream of dummies.
         """
-        async with self.db_pool as connection:
+        async with self.db_pool.connection() as connection:
             async with connection.cursor(
                 binary=True,
                 row_factory=class_row(DummyModel)
@@ -65,7 +65,7 @@ class DummyDAO:
         :param name: name of dummy instance.
         :return: dummy models.
         """
-        async with self.db_pool as connection:
+        async with self.db_pool.connection() as connection:
             async with connection.cursor(
                 binary=True,
                 row_factory=class_row(DummyModel)
