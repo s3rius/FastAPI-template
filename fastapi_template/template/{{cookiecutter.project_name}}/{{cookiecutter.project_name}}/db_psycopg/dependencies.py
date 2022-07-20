@@ -1,8 +1,8 @@
-from psycopg_pool import ConnectionPool
+from psycopg_pool import AsyncConnectionPool
 from starlette.requests import Request
 
 
-async def get_db_pool(request: Request) -> ConnectionPool:
+async def get_db_pool(request: Request) -> AsyncConnectionPool:
     """
     Return database connections pool.
 

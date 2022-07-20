@@ -3,7 +3,7 @@ from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
 from typing import Any
 
 from fastapi import Depends
-from psycopg_pool import ConnectionPool
+from psycopg_pool import AsyncConnectionPool
 from psycopg.rows import class_row
 from {{cookiecutter.project_name}}.db.dependencies import get_db_pool
 from typing import List, Optional
@@ -13,7 +13,7 @@ class DummyDAO:
 
     def __init__(
         self,
-        db_pool: ConnectionPool = Depends(get_db_pool),
+        db_pool: AsyncConnectionPool = Depends(get_db_pool),
     ):
         self.db_pool = db_pool
 
