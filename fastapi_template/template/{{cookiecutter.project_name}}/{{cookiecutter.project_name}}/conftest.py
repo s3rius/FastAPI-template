@@ -51,7 +51,7 @@ from {{cookiecutter.project_name}}.db.utils import create_database, drop_databas
 from psycopg import AsyncConnection
 from psycopg_pool import AsyncConnectionPool
 
-from {{cookiecutter.project_name}}.db.dependencies import get_db_session
+from {{cookiecutter.project_name}}.db.dependencies import get_db_pool
 {%- elif cookiecutter.orm == "piccolo" %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
 from piccolo.engine.postgres import PostgresEngine
@@ -245,13 +245,13 @@ async def create_tables(connection: AsyncConnection[Any]) -> None:
 
 
 @pytest.fixture
-async def dbsession() -> AsyncGenerator[AsyncConnection[Any], None]:
+async def dbpool() -> AsyncGenerator[AsyncConnectionPool, None]:
     """
-    Creates connection to some test database.
+    Creates database connections pool to test database.
 
     This connection must be used in tests and for application.
 
-    :yield: connection to database.
+    :yield: database connections pool.
     """
     await create_db()
     pool = AsyncConnectionPool(conninfo=str(settings.db_url))
@@ -261,8 +261,7 @@ async def dbsession() -> AsyncGenerator[AsyncConnection[Any], None]:
         await create_tables(create_conn)
 
     try:
-        async with pool.connection() as conn:
-            yield conn
+        yield pool
     finally:
         await pool.close()
         await drop_db()
@@ -443,7 +442,7 @@ def fastapi_app(
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
     {%- elif cookiecutter.orm == "psycopg" %}
-    dbsession: AsyncConnection[Any],
+    dbpool: AsyncConnectionPool,
     {%- endif %}
     {% if cookiecutter.enable_redis == "True" -%}
     fake_redis: FakeRedis,
@@ -461,8 +460,10 @@ def fastapi_app(
     :return: fastapi app with mocked dependencies.
     """
     application = get_app()
-    {% if cookiecutter.orm in ["sqlalchemy", "psycopg"] -%}
+    {%- if cookiecutter.orm == "sqlalchemy" %}
     application.dependency_overrides[get_db_session] = lambda: dbsession
+    {%- elif cookiecutter.orm == "psycopg" %}
+    application.dependency_overrides[get_db_pool] = lambda: dbpool
     {%- endif %}
     {%- if cookiecutter.enable_redis == "True" %}
     application.dependency_overrides[get_redis_connection] = lambda: fake_redis
