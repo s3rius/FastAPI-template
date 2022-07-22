@@ -114,9 +114,12 @@
             "{{cookiecutter.project_name}}/web/gql/redis",
             "{{cookiecutter.project_name}}/web/api/kafka",
             "{{cookiecutter.project_name}}/web/gql/kafka",
+            "{{cookiecutter.project_name}}/web/api/rabbit",
+            "{{cookiecutter.project_name}}/web/gql/rabbit",
             "{{cookiecutter.project_name}}/tests/test_echo.py",
             "{{cookiecutter.project_name}}/tests/test_dummy.py",
-            "{{cookiecutter.project_name}}/tests/test_redis.py"
+            "{{cookiecutter.project_name}}/tests/test_redis.py",
+            "{{cookiecutter.project_name}}/tests/test_rabbit.py"
         ]
     },
     "Dummy model": {
