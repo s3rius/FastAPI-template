@@ -2,8 +2,8 @@ from fastapi import Depends
 from strawberry.fastapi import BaseContext
 
 {%- if cookiecutter.enable_redis == "True" %}
-from redis.asyncio import Redis
-from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_connection
+from redis.asyncio import ConnectionPool
+from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_pool
 {%- endif %}
 
 {%- if cookiecutter.enable_rmq == "True" %}
@@ -35,7 +35,7 @@ class Context(BaseContext):
     def __init__(
         self,
         {%- if cookiecutter.enable_redis == "True" %}
-        redis: Redis = Depends(get_redis_connection),
+        redis_pool: ConnectionPool = Depends(get_redis_pool),
         {%- endif %}
         {%- if cookiecutter.enable_rmq == "True" %}
         rabbit: Pool[Channel] = Depends(get_rmq_channel_pool),
@@ -50,7 +50,7 @@ class Context(BaseContext):
         {%- endif %}
     ) -> None:
         {%- if cookiecutter.enable_redis == "True" %}
-        self.redis = redis
+        self.redis_pool = redis_pool
         {%- endif %}
         {%- if cookiecutter.enable_rmq == "True" %}
         self.rabbit = rabbit
