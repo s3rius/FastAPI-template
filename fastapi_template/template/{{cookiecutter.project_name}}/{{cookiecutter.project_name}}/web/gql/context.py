@@ -18,14 +18,12 @@ from {{cookiecutter.project_name}}.services.kafka.dependencies import get_kafka_
 {%- endif %}
 
 
-{%- if cookiecutter.db_info.name != 'none' %}
-from {{cookiecutter.project_name}}.db.dependencies import get_db_session
-{%- endif %}
-
 {%- if cookiecutter.orm == "sqlalchemy" %}
 from sqlalchemy.ext.asyncio import AsyncSession
+from {{cookiecutter.project_name}}.db.dependencies import get_db_session
 {%- elif cookiecutter.orm == "psycopg" %}
-from psycopg import AsyncConnection
+from psycopg_pool import AsyncConnectionPool
+from {{cookiecutter.project_name}}.db.dependencies import get_db_pool
 {%- endif %}
 
 
@@ -43,7 +41,7 @@ class Context(BaseContext):
         {%- if cookiecutter.orm == "sqlalchemy" %}
         db_connection: AsyncSession = Depends(get_db_session),
         {%- elif cookiecutter.orm == "psycopg" %}
-        db_connection: AsyncConnection[Any] = Depends(get_db_session),
+        db_pool: AsyncConnectionPool = Depends(get_db_pool),
         {%- endif %}
         {%- if cookiecutter.enable_kafka == "True" %}
         kafka_producer: AIOKafkaProducer = Depends(get_kafka_producer),
@@ -55,8 +53,11 @@ class Context(BaseContext):
         {%- if cookiecutter.enable_rmq == "True" %}
         self.rabbit = rabbit
         {%- endif %}
-        {%- if cookiecutter.orm in ["sqlalchemy", "psycopg"] %}
+        {%- if cookiecutter.orm  == "sqlalchemy" %}
         self.db_connection = db_connection
+        {%- endif %}
+        {%- if cookiecutter.orm == "psycopg" %}
+        self.db_pool = db_pool
         {%- endif %}
         {%- if cookiecutter.enable_kafka == "True" %}
         self.kafka_producer = kafka_producer
