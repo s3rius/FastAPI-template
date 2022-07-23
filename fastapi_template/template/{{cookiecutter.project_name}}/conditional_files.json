@@ -53,7 +53,6 @@
     "Database support": {
         "enabled": "{{cookiecutter.db_info.name != 'none'}}",
         "resources": [
-            "aerich.ini",
             "alembic.ini",
             "{{cookiecutter.project_name}}/web/api/dummy",
             "{{cookiecutter.project_name}}/web/gql/dummy",
@@ -71,7 +70,6 @@
     "Migrations": {
         "enabled": "{{cookiecutter.enable_migrations}}",
         "resources": [
-            "aerich.ini",
             "alembic.ini",
             "{{cookiecutter.project_name}}/db_sa/migrations",
             "{{cookiecutter.project_name}}/db_ormar/migrations",
@@ -162,7 +160,6 @@
     "Tortoise ORM": {
         "enabled": "{{cookiecutter.orm == 'tortoise'}}",
         "resources": [
-            "aerich.ini",
             "{{cookiecutter.project_name}}/db_tortoise"
         ]
     },
