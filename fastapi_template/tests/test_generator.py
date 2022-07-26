@@ -35,13 +35,6 @@ def test_default_without_db(default_context: BuilderContext):
     run_default_check(init_context(default_context, DatabaseType.none, None))
 
 
-@pytest.mark.parametrize("api", [APIType.rest, APIType.graphql])
-def test_kafka(default_context: BuilderContext, api: APIType):
-    default_context.enable_kafka = True
-    default_context.api_type = api
-    run_default_check(default_context)
-
-
 @pytest.mark.parametrize(
     "db",
     [
@@ -141,3 +134,9 @@ def test_telemetry_pre_commit(default_context: BuilderContext):
     default_context.sentry_enabled = True
     default_context.enable_loguru = True
     run_default_check(default_context, without_pytest=True)
+
+# @pytest.mark.parametrize("api", [APIType.rest, APIType.graphql])
+# def test_kafka(default_context: BuilderContext, api: APIType):
+#     default_context.enable_kafka = True
+#     default_context.api_type = api
+#     run_default_check(default_context)
