@@ -3,9 +3,9 @@ from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
 from typing import Any
 
 from fastapi import Depends
-from psycopg import AsyncConnection
+from psycopg_pool import AsyncConnectionPool
 from psycopg.rows import class_row
-from {{cookiecutter.project_name}}.db.dependencies import get_db_session
+from {{cookiecutter.project_name}}.db.dependencies import get_db_pool
 from typing import List, Optional
 
 class DummyDAO:
@@ -13,9 +13,9 @@ class DummyDAO:
 
     def __init__(
         self,
-        connection: AsyncConnection[Any] = Depends(get_db_session),
+        db_pool: AsyncConnectionPool = Depends(get_db_pool),
     ):
-        self.connection = connection
+        self.db_pool = db_pool
 
 
     async def create_dummy_model(self, name: str) -> None:
@@ -24,15 +24,14 @@ class DummyDAO:
 
         :param name: name of a dummy.
         """
-        async with self.connection.cursor(
-            binary=True,
-        ) as cur:
-            await cur.execute(
-                "INSERT INTO dummy (name) VALUES (%(name)s);",
-                params={
-                    "name": name,
-                }
-            )
+        async with self.db_pool.connection() as connection:
+            async with connection.cursor(binary=True) as cur:
+                await cur.execute(
+                    "INSERT INTO dummy (name) VALUES (%(name)s);",
+                    params={
+                        "name": name,
+                    }
+                )
 
     async def get_all_dummies(self, limit: int, offset: int) -> List[DummyModel]:
         """
@@ -42,18 +41,19 @@ class DummyDAO:
         :param offset: offset of dummies.
         :return: stream of dummies.
         """
-        async with self.connection.cursor(
-            binary=True,
-            row_factory=class_row(DummyModel)
-        ) as cur:
-            res = await cur.execute(
-                "SELECT id, name FROM dummy LIMIT %(limit)s OFFSET %(offset)s;",
-                params={
-                    "limit": limit,
-                    "offset": offset,
-                }
-            )
-            return await res.fetchall()
+        async with self.db_pool.connection() as connection:
+            async with connection.cursor(
+                binary=True,
+                row_factory=class_row(DummyModel)
+            ) as cur:
+                res = await cur.execute(
+                    "SELECT id, name FROM dummy LIMIT %(limit)s OFFSET %(offset)s;",
+                    params={
+                        "limit": limit,
+                        "offset": offset,
+                    }
+                )
+                return await res.fetchall()
 
     async def filter(
         self,
@@ -65,17 +65,18 @@ class DummyDAO:
         :param name: name of dummy instance.
         :return: dummy models.
         """
-        async with self.connection.cursor(
-            binary=True,
-            row_factory=class_row(DummyModel)
-        ) as cur:
-            if name is not None:
-                res = await cur.execute(
-                    "SELECT id, name FROM dummy WHERE name=%(name)s;",
-                    params={
-                        "name": name,
-                    }
-                )
-            else:
-                res = await cur.execute("SELECT id, name FROM dummy;")
-            return await res.fetchall()
+        async with self.db_pool.connection() as connection:
+            async with connection.cursor(
+                binary=True,
+                row_factory=class_row(DummyModel)
+            ) as cur:
+                if name is not None:
+                    res = await cur.execute(
+                        "SELECT id, name FROM dummy WHERE name=%(name)s;",
+                        params={
+                            "name": name,
+                        }
+                    )
+                else:
+                    res = await cur.execute("SELECT id, name FROM dummy;")
+                return await res.fetchall()

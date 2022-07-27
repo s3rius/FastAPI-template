@@ -14,11 +14,14 @@ from {{cookiecutter.project_name}}.web.gql import redis
 {%- if cookiecutter.enable_rmq == "True" %}
 from {{cookiecutter.project_name}}.web.gql import rabbit
 {%- endif %}
+{%- if cookiecutter.enable_kafka == "True" %}
+from {{cookiecutter.project_name}}.web.gql import kafka
+{%- endif %}
 
 {%- endif %}
 
 @strawberry.type
-class Query(
+class Query(  # noqa: WPS215
     {%- if cookiecutter.enable_routers == "True" %}
     echo.Query,
     {%- if cookiecutter.add_dummy == 'True' %}
@@ -33,7 +36,7 @@ class Query(
 
 
 @strawberry.type
-class Mutation(
+class Mutation(  # noqa: WPS215
     {%- if cookiecutter.enable_routers == "True" %}
     echo.Mutation,
     {%- if cookiecutter.add_dummy == 'True' %}
@@ -44,6 +47,9 @@ class Mutation(
     {%- endif %}
     {%- if cookiecutter.enable_rmq == "True" %}
     rabbit.Mutation,
+    {%- endif %}
+    {%- if cookiecutter.enable_kafka == "True" %}
+    kafka.Mutation,
     {%- endif %}
     {%- endif %}
 ):

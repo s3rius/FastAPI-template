@@ -109,6 +109,11 @@ class Settings(BaseSettings):
 
     {%- endif %}
 
+    {%- if cookiecutter.enable_kafka == "True" %}
+
+    kafka_bootstrap_servers: list[str] = ["{{cookiecutter.project_name}}-kafka:9092"]
+
+    {%- endif %}
 
     {%- if cookiecutter.db_info.name != "none" %}
 

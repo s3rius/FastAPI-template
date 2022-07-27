@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from {{cookiecutter.project_name}}.settings import settings
 
 
-def init_rabbit(app: FastAPI) -> None:
+def init_rabbit(app: FastAPI) -> None:  # pragma: no cover
     """
     Initialize rabbitmq pools.
 
@@ -48,7 +48,7 @@ def init_rabbit(app: FastAPI) -> None:
     app.state.rmq_channel_pool = channel_pool
 
 
-async def shutdown_rabbit(app: FastAPI) -> None:
+async def shutdown_rabbit(app: FastAPI) -> None:  # pragma: no cover
     """
     Close all connection and pools.
 

@@ -32,6 +32,9 @@
     "enable_routers": {
         "type": "bool"
     },
+    "enable_kafka": {
+        "type": "bool"
+    },
     "enable_loguru": {
         "type": "bool"
     },

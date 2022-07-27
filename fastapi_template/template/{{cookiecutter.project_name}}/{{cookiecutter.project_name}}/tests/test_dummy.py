@@ -7,6 +7,7 @@ from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession
 {%- elif cookiecutter.orm == 'psycopg' %}
 from psycopg.connection_async import AsyncConnection
+from psycopg_pool import AsyncConnectionPool
 {%- endif %}
 from starlette import status
 from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
@@ -19,7 +20,7 @@ async def test_creation(
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
     {%- elif cookiecutter.orm == "psycopg" %}
-    dbsession: AsyncConnection[Any],
+    dbpool: AsyncConnectionPool,
     {%- endif %}
 ) -> None:
     """Tests dummy instance creation."""
@@ -43,8 +44,10 @@ async def test_creation(
     )
     {%- endif %}
     assert response.status_code == status.HTTP_200_OK
-    {%- if cookiecutter.orm in ["sqlalchemy", "psycopg"] %}
+    {%- if cookiecutter.orm == "sqlalchemy" %}
     dao = DummyDAO(dbsession)
+    {%- elif cookiecutter.orm == "psycopg" %}
+    dao = DummyDAO(dbpool)
     {%- elif cookiecutter.orm in ["tortoise", "ormar", "piccolo"] %}
     dao = DummyDAO()
     {%- endif %}
@@ -59,12 +62,14 @@ async def test_getting(
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
     {%- elif cookiecutter.orm == "psycopg" %}
-    dbsession: AsyncConnection[Any],
+    dbpool: AsyncConnectionPool,
     {%- endif %}
 ) -> None:
     """Tests dummy instance retrieval."""
-    {%- if cookiecutter.orm in ["sqlalchemy", "psycopg"] %}
+    {%- if cookiecutter.orm == "sqlalchemy" %}
     dao = DummyDAO(dbsession)
+    {%- elif cookiecutter.orm == "psycopg" %}
+    dao = DummyDAO(dbpool)
     {%- elif cookiecutter.orm in ["tortoise", "ormar", "piccolo"] %}
     dao = DummyDAO()
     {%- endif %}
