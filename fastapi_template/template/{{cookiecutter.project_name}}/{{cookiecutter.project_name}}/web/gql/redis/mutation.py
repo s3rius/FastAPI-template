@@ -3,7 +3,7 @@ from strawberry.types import Info
 
 from {{cookiecutter.project_name}}.web.gql.context import Context
 from {{cookiecutter.project_name}}.web.gql.redis.schema import RedisDTO, RedisDTOInput
-
+from redis.asyncio import Redis
 
 @strawberry.type
 class Mutation:
@@ -22,5 +22,6 @@ class Mutation:
         :param info: connection info.
         :return: key and value.
         """
-        await info.context.redis.set(name=data.key, value=data.value)
+        async with Redis(connection_pool=info.context.redis_pool) as redis:
+            await redis.set(name=data.key, value=data.value)
         return RedisDTO(key=data.key, value=data.value)  # type: ignore

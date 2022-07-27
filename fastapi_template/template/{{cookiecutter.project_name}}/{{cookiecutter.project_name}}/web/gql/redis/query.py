@@ -3,7 +3,7 @@ from strawberry.types import Info
 
 from {{cookiecutter.project_name}}.web.gql.context import Context
 from {{cookiecutter.project_name}}.web.gql.redis.schema import RedisDTO
-
+from redis.asyncio import Redis
 
 @strawberry.type
 class Query:
@@ -18,7 +18,8 @@ class Query:
         :param info: resolver context.
         :return: information from redis.
         """
-        val = await info.context.redis.get(name=key)
+        async with Redis(connection_pool=info.context.redis_pool) as redis:
+            val = await redis.get(name=key)
         if isinstance(val, bytes):
             val = val.decode("utf-8")
         return RedisDTO(key=key, value=val)  # type: ignore

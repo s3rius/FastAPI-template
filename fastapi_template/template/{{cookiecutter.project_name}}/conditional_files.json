@@ -11,7 +11,8 @@
             "{{cookiecutter.project_name}}/web/api/rabbit",
             "{{cookiecutter.project_name}}/web/api/dummy",
             "{{cookiecutter.project_name}}/web/api/echo",
-            "{{cookiecutter.project_name}}/web/api/redis"
+            "{{cookiecutter.project_name}}/web/api/redis",
+            "{{cookiecutter.project_name}}/web/api/kafka"
         ]
     },
     "Redis": {
@@ -34,6 +35,15 @@
             "deploy/kube/redis.yml"
         ]
     },
+    "Kafka support": {
+        "enabled": "{{cookiecutter.enable_kafka}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/api/kafka",
+            "{{cookiecutter.project_name}}/web/gql/kafka",
+            "{{cookiecutter.project_name}}/services/kafka",
+            "{{cookiecutter.project_name}}/tests/test_kafka.py"
+        ]
+    },
     "Kubernetes": {
         "enabled": "{{cookiecutter.enable_kube}}",
         "resources": [
@@ -43,7 +53,6 @@
     "Database support": {
         "enabled": "{{cookiecutter.db_info.name != 'none'}}",
         "resources": [
-            "aerich.ini",
             "alembic.ini",
             "{{cookiecutter.project_name}}/web/api/dummy",
             "{{cookiecutter.project_name}}/web/gql/dummy",
@@ -61,7 +70,6 @@
     "Migrations": {
         "enabled": "{{cookiecutter.enable_migrations}}",
         "resources": [
-            "aerich.ini",
             "alembic.ini",
             "{{cookiecutter.project_name}}/db_sa/migrations",
             "{{cookiecutter.project_name}}/db_ormar/migrations",
@@ -102,9 +110,14 @@
             "{{cookiecutter.project_name}}/web/gql/dummy",
             "{{cookiecutter.project_name}}/web/api/redis",
             "{{cookiecutter.project_name}}/web/gql/redis",
+            "{{cookiecutter.project_name}}/web/api/kafka",
+            "{{cookiecutter.project_name}}/web/gql/kafka",
+            "{{cookiecutter.project_name}}/web/api/rabbit",
+            "{{cookiecutter.project_name}}/web/gql/rabbit",
             "{{cookiecutter.project_name}}/tests/test_echo.py",
             "{{cookiecutter.project_name}}/tests/test_dummy.py",
-            "{{cookiecutter.project_name}}/tests/test_redis.py"
+            "{{cookiecutter.project_name}}/tests/test_redis.py",
+            "{{cookiecutter.project_name}}/tests/test_rabbit.py"
         ]
     },
     "Dummy model": {
@@ -147,7 +160,6 @@
     "Tortoise ORM": {
         "enabled": "{{cookiecutter.orm == 'tortoise'}}",
         "resources": [
-            "aerich.ini",
             "{{cookiecutter.project_name}}/db_tortoise"
         ]
     },

@@ -10,8 +10,10 @@ import uuid
 from unittest.mock import Mock
 
 {%- if cookiecutter.enable_redis == "True" %}
-from fakeredis.aioredis import FakeRedis
-from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_connection
+from fakeredis import FakeServer
+from fakeredis.aioredis import FakeConnection
+from redis.asyncio import ConnectionPool
+from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_pool
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
 from aio_pika import Channel
@@ -21,6 +23,12 @@ from {{cookiecutter.project_name}}.services.rabbit.dependencies import get_rmq_c
 from {{cookiecutter.project_name}}.services.rabbit.lifetime import init_rabbit, shutdown_rabbit
 
 {%- endif %}
+{%- if cookiecutter.enable_kafka == "True" %}
+from aiokafka import AIOKafkaProducer
+from {{cookiecutter.project_name}}.services.kafka.dependencies import get_kafka_producer
+from {{cookiecutter.project_name}}.services.kafka.lifetime import init_kafka, shutdown_kafka
+{%- endif %}
+
 from {{cookiecutter.project_name}}.settings import settings
 from {{cookiecutter.project_name}}.web.application import get_app
 
@@ -45,7 +53,7 @@ from {{cookiecutter.project_name}}.db.utils import create_database, drop_databas
 from psycopg import AsyncConnection
 from psycopg_pool import AsyncConnectionPool
 
-from {{cookiecutter.project_name}}.db.dependencies import get_db_session
+from {{cookiecutter.project_name}}.db.dependencies import get_db_pool
 {%- elif cookiecutter.orm == "piccolo" %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
 from piccolo.engine.postgres import PostgresEngine
@@ -239,13 +247,13 @@ async def create_tables(connection: AsyncConnection[Any]) -> None:
 
 
 @pytest.fixture
-async def dbsession() -> AsyncGenerator[AsyncConnection[Any], None]:
+async def dbpool() -> AsyncGenerator[AsyncConnectionPool, None]:
     """
-    Creates connection to some test database.
+    Creates database connections pool to test database.
 
     This connection must be used in tests and for application.
 
-    :yield: connection to database.
+    :yield: database connections pool.
     """
     await create_db()
     pool = AsyncConnectionPool(conninfo=str(settings.db_url))
@@ -255,8 +263,7 @@ async def dbsession() -> AsyncGenerator[AsyncConnection[Any], None]:
         await create_tables(create_conn)
 
     try:
-        async with pool.connection() as conn:
-            yield conn
+        yield pool
     finally:
         await pool.close()
         await drop_db()
@@ -402,17 +409,37 @@ async def test_queue(
 
 {%- endif %}
 
+{%- if cookiecutter.enable_kafka == "True" %}
+
+@pytest.fixture
+async def test_kafka_producer() -> AsyncGenerator[AIOKafkaProducer, None]:
+    """
+    Creates kafka's producer.
+
+    :yields: kafka's producer.
+    """
+    app_mock = Mock()
+    await init_kafka(app_mock)
+    yield app_mock.state.kafka_producer
+    await shutdown_kafka(app_mock)
+
+{%- endif %}
+
 {% if cookiecutter.enable_redis == "True" -%}
 @pytest.fixture
-async def fake_redis() -> AsyncGenerator[FakeRedis, None]:
+async def fake_redis_pool() -> AsyncGenerator[ConnectionPool, None]:
     """
     Get instance of a fake redis.
 
     :yield: FakeRedis instance.
     """
-    redis = FakeRedis(decode_responses=True)
-    yield redis
-    await redis.close()
+    server = FakeServer()
+    server.connected = True
+    pool = ConnectionPool(connection_class=FakeConnection, server=server)
+
+    yield pool
+
+    await pool.disconnect()
 
 {%- endif %}
 
@@ -421,13 +448,16 @@ def fastapi_app(
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
     {%- elif cookiecutter.orm == "psycopg" %}
-    dbsession: AsyncConnection[Any],
+    dbpool: AsyncConnectionPool,
     {%- endif %}
     {% if cookiecutter.enable_redis == "True" -%}
-    fake_redis: FakeRedis,
+    fake_redis_pool: ConnectionPool,
     {%- endif %}
     {%- if cookiecutter.enable_rmq == 'True' %}
     test_rmq_pool: Pool[Channel],
+    {%- endif %}
+    {%- if cookiecutter.enable_kafka == "True" %}
+    test_kafka_producer: AIOKafkaProducer,
     {%- endif %}
 ) -> FastAPI:
     """
@@ -436,14 +466,19 @@ def fastapi_app(
     :return: fastapi app with mocked dependencies.
     """
     application = get_app()
-    {% if cookiecutter.orm in ["sqlalchemy", "psycopg"] -%}
+    {%- if cookiecutter.orm == "sqlalchemy" %}
     application.dependency_overrides[get_db_session] = lambda: dbsession
+    {%- elif cookiecutter.orm == "psycopg" %}
+    application.dependency_overrides[get_db_pool] = lambda: dbpool
     {%- endif %}
     {%- if cookiecutter.enable_redis == "True" %}
-    application.dependency_overrides[get_redis_connection] = lambda: fake_redis
+    application.dependency_overrides[get_redis_pool] = lambda: fake_redis_pool
     {%- endif %}
     {%- if cookiecutter.enable_rmq == 'True' %}
     application.dependency_overrides[get_rmq_channel_pool] = lambda: test_rmq_pool
+    {%- endif %}
+    {%- if cookiecutter.enable_kafka == "True" %}
+    application.dependency_overrides[get_kafka_producer] = lambda: test_kafka_producer
     {%- endif %}
     return application  # noqa: WPS331
 

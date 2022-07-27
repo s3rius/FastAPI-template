@@ -123,6 +123,7 @@ class BuilderContext(BaseModel):
     enable_rmq: Optional[bool]
     enable_loguru: Optional[bool]
     traefik_labels: Optional[bool]
+    enable_kafka: Optional[bool]
     force: bool = False
     quite: bool = False
 

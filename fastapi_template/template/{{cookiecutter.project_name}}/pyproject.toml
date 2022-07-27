@@ -116,6 +116,9 @@ opentelemetry-instrumentation-aio-pika = "^0.32b0"
 {%- if cookiecutter.enable_loguru == "True" %}
 loguru = "^0.6.0"
 {%- endif %}
+{%- if cookiecutter.enable_kafka == "True" %}
+aiokafka = "^0.7.2"
+{%- endif %}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"

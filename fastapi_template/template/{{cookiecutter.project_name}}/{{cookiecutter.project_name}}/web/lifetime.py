@@ -16,6 +16,10 @@ from {{cookiecutter.project_name}}.services.redis.lifetime import init_redis, sh
 from {{cookiecutter.project_name}}.services.rabbit.lifetime import init_rabbit, shutdown_rabbit
 {%- endif %}
 
+{%- if cookiecutter.enable_kafka == "True" %}
+from {{cookiecutter.project_name}}.services.kafka.lifetime import init_kafka, shutdown_kafka
+{%- endif %}
+
 
 {%- if cookiecutter.orm == "ormar" %}
 from {{cookiecutter.project_name}}.db.config import database
@@ -87,7 +91,7 @@ from {{cookiecutter.project_name}}.db.models import load_all_models
 {%- endif %}
 
 
-def _setup_db(app: FastAPI) -> None:
+def _setup_db(app: FastAPI) -> None:  # pragma: no cover
     """
     Creates connection to the database.
 
@@ -112,7 +116,7 @@ def _setup_db(app: FastAPI) -> None:
 
 {%- if cookiecutter.enable_migrations == "False" %}
 {%- if cookiecutter.orm in ["ormar", "sqlalchemy"] %}
-async def _create_tables() -> None:
+async def _create_tables() -> None:  # pragma: no cover
     """Populates tables in the database."""
     load_all_models()
     {%- if cookiecutter.orm == "ormar" %}
@@ -130,7 +134,7 @@ async def _create_tables() -> None:
 {%- endif %}
 
 {%- if cookiecutter.otlp_enabled == "True" %}
-def setup_opentelemetry(app: FastAPI) -> None:
+def setup_opentelemetry(app: FastAPI) -> None:  # pragma: no cover
     """
     Enables opentelemetry instrumetnation.
 
@@ -206,7 +210,7 @@ def setup_opentelemetry(app: FastAPI) -> None:
     set_tracer_provider(tracer_provider=tracer_provider)
 
 
-def stop_opentelemetry(app: FastAPI) -> None:
+def stop_opentelemetry(app: FastAPI) -> None:  # pragma: no cover
     """
     Disables opentelemetry instrumentation.
 
@@ -232,7 +236,7 @@ def stop_opentelemetry(app: FastAPI) -> None:
 {%- endif %}
 
 {%- if cookiecutter.prometheus_enabled == "True" %}
-def setup_prometheus(app: FastAPI) -> None:
+def setup_prometheus(app: FastAPI) -> None:  # pragma: no cover
     """
     Enables prometheus integration.
 
@@ -244,7 +248,7 @@ def setup_prometheus(app: FastAPI) -> None:
 {%- endif %}
 
 
-def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:
+def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pragma: no cover
     """
     Actions to run on application startup.
 
@@ -278,6 +282,9 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:
         {%- if cookiecutter.enable_rmq == "True" %}
         init_rabbit(app)
         {%- endif %}
+        {%- if cookiecutter.enable_kafka == "True" %}
+        await init_kafka(app)
+        {%- endif %}
         {%- if cookiecutter.prometheus_enabled == "True" %}
         setup_prometheus(app)
         {%- endif %}
@@ -286,7 +293,7 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:
     return _startup
 
 
-def register_shutdown_event(app: FastAPI) -> Callable[[], Awaitable[None]]:
+def register_shutdown_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pragma: no cover
     """
     Actions to run on application's shutdown.
 
@@ -308,6 +315,9 @@ def register_shutdown_event(app: FastAPI) -> Callable[[], Awaitable[None]]:
         {%- endif %}
         {%- if cookiecutter.enable_rmq == "True" %}
         await shutdown_rabbit(app)
+        {%- endif %}
+        {%- if cookiecutter.enable_kafka == "True" %}
+        await shutdown_kafka(app)
         {%- endif %}
         {%- if cookiecutter.otlp_enabled == "True" %}
         stop_opentelemetry(app)
