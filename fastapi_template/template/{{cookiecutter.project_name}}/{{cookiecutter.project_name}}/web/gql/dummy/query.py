@@ -31,8 +31,10 @@ class Query:
         :param offset: offset of dummy objects, defaults to 0.
         :return: list of dummy obbjects from database.
         """
-        {%- if cookiecutter.orm in ["sqlalchemy", "psycopg"] %}
+        {%- if cookiecutter.orm == "sqlalchemy" %}
         dao = DummyDAO(info.context.db_connection)
+        {%- elif cookiecutter.orm == "psycopg" %}
+        dao = DummyDAO(info.context.db_pool)
         {%- else %}
         dao = DummyDAO()
         {%- endif %}

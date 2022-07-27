@@ -10,8 +10,10 @@ import uuid
 from unittest.mock import Mock
 
 {%- if cookiecutter.enable_redis == "True" %}
-from fakeredis.aioredis import FakeRedis
-from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_connection
+from fakeredis import FakeServer
+from fakeredis.aioredis import FakeConnection
+from redis.asyncio import ConnectionPool
+from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_pool
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
 from aio_pika import Channel
@@ -425,15 +427,19 @@ async def test_kafka_producer() -> AsyncGenerator[AIOKafkaProducer, None]:
 
 {% if cookiecutter.enable_redis == "True" -%}
 @pytest.fixture
-async def fake_redis() -> AsyncGenerator[FakeRedis, None]:
+async def fake_redis_pool() -> AsyncGenerator[ConnectionPool, None]:
     """
     Get instance of a fake redis.
 
     :yield: FakeRedis instance.
     """
-    redis = FakeRedis(decode_responses=True)
-    yield redis
-    await redis.close()
+    server = FakeServer()
+    server.connected = True
+    pool = ConnectionPool(connection_class=FakeConnection, server=server)
+
+    yield pool
+
+    await pool.disconnect()
 
 {%- endif %}
 
@@ -445,7 +451,7 @@ def fastapi_app(
     dbpool: AsyncConnectionPool,
     {%- endif %}
     {% if cookiecutter.enable_redis == "True" -%}
-    fake_redis: FakeRedis,
+    fake_redis_pool: ConnectionPool,
     {%- endif %}
     {%- if cookiecutter.enable_rmq == 'True' %}
     test_rmq_pool: Pool[Channel],
@@ -466,7 +472,7 @@ def fastapi_app(
     application.dependency_overrides[get_db_pool] = lambda: dbpool
     {%- endif %}
     {%- if cookiecutter.enable_redis == "True" %}
-    application.dependency_overrides[get_redis_connection] = lambda: fake_redis
+    application.dependency_overrides[get_redis_pool] = lambda: fake_redis_pool
     {%- endif %}
     {%- if cookiecutter.enable_rmq == 'True' %}
     application.dependency_overrides[get_rmq_channel_pool] = lambda: test_rmq_pool
