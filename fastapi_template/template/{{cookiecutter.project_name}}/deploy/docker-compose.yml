@@ -203,9 +203,9 @@ services:
       KAFKA_CFG_ZOOKEEPER_CONNECT: "{{cookiecutter.project_name}}-zookeeper:2181"
     healthcheck:
       test: kafka-topics.sh --list --bootstrap-server localhost:9092
-      interval: 1s
+      interval: 10s
       timeout: 3s
-      retries: 30
+      retries: 40
     depends_on:
       zookeeper:
         condition: service_healthy
