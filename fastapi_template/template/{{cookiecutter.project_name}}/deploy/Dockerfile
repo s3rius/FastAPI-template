@@ -1,6 +1,6 @@
 FROM python:3.9.6-slim-buster
 
-{%- if cookiecutter.db_info.name == "mysql" or cookiecutter.db_info.name == "postgresql" %}
+{%- if cookiecutter.db_info.name == "mysql" %}
 RUN apt-get update && apt-get install -y \
   default-libmysqlclient-dev \
   gcc \
