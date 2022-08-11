@@ -1,11 +1,19 @@
 FROM python:3.9.6-slim-buster
 
-{%- if cookiecutter.db_info.name == "mysql" %}
+{%- if cookiecutter.db_info.name == "mysql" or cookiecutter.db_info.name == "postgresql" %}
 RUN apt-get update && apt-get install -y \
   default-libmysqlclient-dev \
   gcc \
   && rm -rf /var/lib/apt/lists/*
 {%- endif %}
+
+
+{%- if cookiecutter.db_info.name == "postgresql" %}
+RUN apt-get update && apt-get install -y \
+  gcc \
+  && rm -rf /var/lib/apt/lists/*
+{%- endif %}
+
 
 RUN pip install poetry==1.1.13
 
@@ -19,7 +27,7 @@ WORKDIR /app/src
 # Installing requirements
 RUN poetry install
 
-{%- if cookiecutter.db_info.name == "mysql" %}
+{%- if cookiecutter.db_info.name == "mysql" or cookiecutter.db_info.name == "postgresql" %}
 # Removing gcc
 RUN apt-get purge -y \
   gcc \
