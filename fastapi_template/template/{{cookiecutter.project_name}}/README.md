@@ -11,6 +11,7 @@ To run the project use this set of commands:
 
 ```bash
 poetry install
+ poetry run alembic upgrade head
 poetry run python -m {{cookiecutter.project_name}}
 ```
 
