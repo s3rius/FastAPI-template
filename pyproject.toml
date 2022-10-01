@@ -23,7 +23,7 @@ pytest = "^6.2.5"
 pytest-env = "^0.6.2"
 Faker = "^8.14.0"
 pytest-xdist = {version = "^2.5.0", extras = ["psutil"]}
-
+requests = "^2.28.1"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
