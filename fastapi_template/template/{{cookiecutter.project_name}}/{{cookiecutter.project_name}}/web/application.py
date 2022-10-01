@@ -68,7 +68,6 @@ def get_app() -> FastAPI:
             ],
         )
     {%- endif %}
-
     app = FastAPI(
         title="{{cookiecutter.project_name}}",
         description="{{cookiecutter.project_description}}",
