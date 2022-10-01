@@ -136,7 +136,7 @@ async def _create_tables() -> None:  # pragma: no cover
 {%- if cookiecutter.otlp_enabled == "True" %}
 def setup_opentelemetry(app: FastAPI) -> None:  # pragma: no cover
     """
-    Enables opentelemetry instrumetnation.
+    Enables opentelemetry instrumentation.
 
     :param app: current application.
     """

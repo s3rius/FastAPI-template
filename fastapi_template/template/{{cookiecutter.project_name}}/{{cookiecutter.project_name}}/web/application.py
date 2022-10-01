@@ -16,8 +16,8 @@ from {{cookiecutter.project_name}}.db.config import TORTOISE_CONFIG
 
 {%- if cookiecutter.sentry_enabled == "True" %}
 import sentry_sdk
-from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from sentry_sdk.integrations.logging import LoggingIntegration
+from sentry_sdk.integrations.fastapi import FastApiIntegration
 {%- if cookiecutter.orm == "sqlalchemy" %}
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 {%- endif %}
@@ -46,6 +46,27 @@ def get_app() -> FastAPI:
     """
     {%- if cookiecutter.enable_loguru == "True" %}
     configure_logging()
+    {%- endif %}
+    {%- if cookiecutter.sentry_enabled == "True" %}
+    if settings.sentry_dsn:
+        # Enables sentry integration.
+        sentry_sdk.init(
+            dsn=settings.sentry_dsn,
+            traces_sample_rate=settings.sentry_sample_rate,
+            environment=settings.environment,
+            integrations=[
+                FastApiIntegration(transaction_style="endpoint"),
+                LoggingIntegration(
+                    level=logging.getLevelName(
+                        settings.log_level.value,
+                    ),
+                    event_level=logging.ERROR,
+                ),
+                {%- if cookiecutter.orm == "sqlalchemy" %}
+                SqlalchemyIntegration(),
+                {%- endif %}
+            ],
+        )
     {%- endif %}
     app = FastAPI(
         title="{{cookiecutter.project_name}}",
@@ -93,28 +114,6 @@ def get_app() -> FastAPI:
         generate_schemas=True,
         {%- endif %}
     )
-    {%- endif %}
-
-    {%- if cookiecutter.sentry_enabled == "True" %}
-    if settings.sentry_dsn:
-        # Enables sentry integration.
-        sentry_sdk.init(
-            dsn=settings.sentry_dsn,
-            traces_sample_rate=settings.sentry_sample_rate,
-            environment=settings.environment,
-            integrations=[
-                LoggingIntegration(
-                    level=logging.getLevelName(
-                        settings.log_level.value,
-                    ),
-                    event_level=logging.ERROR,
-                ),
-                {%- if cookiecutter.orm == "sqlalchemy" %}
-                SqlalchemyIntegration(),
-                {%- endif %}
-            ],
-        )
-        app = SentryAsgiMiddleware(app)  # type: ignore
     {%- endif %}
 
     return app
