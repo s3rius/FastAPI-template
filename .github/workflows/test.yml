@@ -33,7 +33,7 @@ jobs:
       - name: Install deps
         run: |
           pip install -U pip
-          pip install poetry==1.1.13
+          pip install poetry==1.2.2
           poetry install
         env:
           POETRY_VIRTUALENVS_CREATE: false
