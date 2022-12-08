@@ -16,7 +16,10 @@ cookiecutter = "^1.7.3"
 pre-commit = "^2.14.0"
 termcolor = "^1.1.0"
 pydantic = "^1.8.2"
-prompt-toolkit = "^3.0.19"
+typer = {version = "^0.7.0", extras = ["all"]}
+simple-term-menu = "^1.5.2"
+click = "^8.1.3"
+prompt-toolkit = "^3.0.36"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

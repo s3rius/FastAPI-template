@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "{{cookiecutter.project_name}}"
 version = "0.1.0"
-description = "{{cookiecutter.project_description}}"
+description = ""
 authors = [
 
 ]
@@ -137,7 +137,7 @@ pytest-cov = "^4.0.0"
 anyio = "^3.6.1"
 pytest-env = "^0.6.2"
 {%- if cookiecutter.enable_redis == "True" %}
-fakeredis = "^1.9.3"
+fakeredis = "^2.2.0"
 {%- endif %}
 {%- if cookiecutter.orm == "tortoise" %}
 asynctest = "^0.13.0"

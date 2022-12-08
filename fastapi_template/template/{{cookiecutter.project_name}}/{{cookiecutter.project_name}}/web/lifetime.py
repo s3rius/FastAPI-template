@@ -23,7 +23,7 @@ from {{cookiecutter.project_name}}.services.kafka.lifetime import init_kafka, sh
 
 {%- if cookiecutter.orm == "ormar" %}
 from {{cookiecutter.project_name}}.db.config import database
-{%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations == "False" %}
+{%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations != "True" %}
 from sqlalchemy.engine import create_engine
 from {{cookiecutter.project_name}}.db.meta import meta
 from {{cookiecutter.project_name}}.db.models import load_all_models
@@ -85,7 +85,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import sessionmaker
 
-{%- if cookiecutter.enable_migrations == "False" %}
+{%- if cookiecutter.enable_migrations != "True" %}
 from {{cookiecutter.project_name}}.db.meta import meta
 from {{cookiecutter.project_name}}.db.models import load_all_models
 {%- endif %}
@@ -114,7 +114,7 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
     app.state.db_session_factory = session_factory
 {%- endif %}
 
-{%- if cookiecutter.enable_migrations == "False" %}
+{%- if cookiecutter.enable_migrations != "True" %}
 {%- if cookiecutter.orm in ["ormar", "sqlalchemy"] %}
 async def _create_tables() -> None:  # pragma: no cover
     """Populates tables in the database."""
@@ -268,7 +268,7 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pr
         {%- elif cookiecutter.orm == "psycopg" %}
         await _setup_db(app)
         {%- endif %}
-        {%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations == "False" %}
+        {%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations != "True" %}
         {%- if cookiecutter.orm in ["ormar", "sqlalchemy"] %}
         await _create_tables()
         {%- endif %}

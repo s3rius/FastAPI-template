@@ -2,9 +2,6 @@
     "project_name": {
         "type": "string"
     },
-    "project_description": {
-        "type": "string"
-    },
     "api_type": {
         "type": "dict"
     },
