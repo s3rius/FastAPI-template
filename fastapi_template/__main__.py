@@ -5,7 +5,7 @@ from cookiecutter.exceptions import FailedHookException, OutputDirExistsExceptio
 from cookiecutter.main import cookiecutter
 from termcolor import cprint
 
-from fastapi_template.cli import get_context
+from fastapi_template.cli import run_command
 from fastapi_template.input_model import BuilderContext
 
 script_dir = Path(__file__).parent
@@ -20,7 +20,7 @@ def generate_project(context: BuilderContext) -> None:
     try:
         cookiecutter(
             template=f"{script_dir}/template",
-            extra_context=json.loads(context.json()),
+            extra_context=context.dict(),
             default_config=BuilderContext().dict(),
             no_input=True,
             overwrite_if_exists=context.force,
@@ -36,12 +36,7 @@ def generate_project(context: BuilderContext) -> None:
 
 def main() -> None:
     """Starting point."""
-    try:
-        context = get_context()
-    except KeyboardInterrupt:
-        print("Goodbye!")
-        return
-    generate_project(context)
+    run_command(generate_project)
 
 
 if __name__ == "__main__":
