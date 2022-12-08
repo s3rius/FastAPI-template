@@ -70,7 +70,6 @@ def get_app() -> FastAPI:
     {%- endif %}
     app = FastAPI(
         title="{{cookiecutter.project_name}}",
-        description="{{cookiecutter.project_description}}",
         version=metadata.version("{{cookiecutter.project_name}}"),
         {%- if cookiecutter.self_hosted_swagger == 'True' %}
         docs_url=None,
@@ -110,7 +109,7 @@ def get_app() -> FastAPI:
         app,
         config=TORTOISE_CONFIG,
         add_exception_handlers=True,
-        {%- if cookiecutter.enable_migrations == "False" %}
+        {%- if cookiecutter.enable_migrations != "True" %}
         generate_schemas=True,
         {%- endif %}
     )

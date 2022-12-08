@@ -15,7 +15,9 @@ def run_pre_commit() -> int:
     return results.returncode
 
 
-def run_docker_compose_command(command: Optional[str] = None) -> subprocess.CompletedProcess:
+def run_docker_compose_command(
+    command: Optional[str] = None,
+) -> subprocess.CompletedProcess:
     docker_command = [
         "docker-compose",
         "-f",

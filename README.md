@@ -12,7 +12,7 @@
 Poetry version must be greater or equal than 1.1.8. Otherwise it won't be able to install SQLAlchemy.
 
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/18153319/137182689-ce714440-7576-46a0-8f96-862a8469a28c.gif"/>
+ <a href="https://asciinema.org/a/ig0oi0fOq1hxqnW5X49XaaHIT" target="_blank"><img src="https://asciinema.org/a/ig0oi0fOq1hxqnW5X49XaaHIT.svg" /></a>
   <p>Templator in action</p>
 </div>
 
@@ -73,43 +73,31 @@ This project can handle arguments passed through command line.
 ```shell
 $ python -m fastapi_template --help
 
-usage: FastAPI template [-h] [--version] [--name PROJECT_NAME]
-                        [--description PROJECT_DESCRIPTION]
-                        [--api-type {rest,graphql}]
-                        [--db {none,sqlite,mysql,postgresql}]
-                        [--orm {ormar,sqlalchemy,tortoise,psycopg,piccolo}]
-                        [--ci {none,gitlab_ci,github}] [--redis] [--rabbit]
-                        [--migrations] [--kube] [--dummy] [--routers]
-                        [--swagger] [--prometheus] [--sentry] [--loguru]
-                        [--opentelemetry] [--traefik] [--force] [--quite]
+Usage: fastapi_template [OPTIONS]
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --version, -V         Prints current version
-  --name PROJECT_NAME   Name of your awesome project
-  --description PROJECT_DESCRIPTION
-                        Project description
-  --api-type {rest,graphql}
-                        API type
-  --db {none,sqlite,mysql,postgresql}
-                        Database
-  --orm {ormar,sqlalchemy,tortoise,psycopg,piccolo}
-                        ORM
-  --ci {none,gitlab_ci,github}
-                        Choose CI support
-  --redis               Add Redis support
-  --rabbit              Add RabbitMQ support
-  --migrations          Add migrations support
-  --kube                Add Kubernetes configs
-  --dummy, --dummy-model
-                        Add dummy model
-  --routers             Add example routers
-  --swagger             Enable self-hosted Swagger
-  --prometheus          Add prometheus integration
-  --sentry              Add sentry integration
-  --loguru              Add loguru logger
-  --opentelemetry       Add opentelemetry integration
-  --traefik             Adds traefik labels to docker container
-  --force               Owerrite directory if it exists
-  --quite               Do not ask for features during generation
+Options:
+  -n, --name TEXT                 Name of your awesome project
+  -V, --version                   Prints current version
+  --force                         Owerrite directory if it exists
+  --quite                         Do not ask for features during generation
+  --api-type [rest|graphql]       Select API type for your application
+  --db [none|sqlite|mysql|postgresql]
+                                  Select a database for your app
+  --orm [none|ormar|sqlalchemy|tortoise|psycopg|piccolo]
+                                  Choose Object–Relational Mapper lib
+  --ci [none|gitlab_ci|github]    Select a CI for your app
+  --redis                         Add redis support
+  --rabbit                        Add RabbitMQ support
+  --migrations                    Add Migrations
+  --kube                          Add kubernetes configs
+  --dummy                         Add dummy model
+  --routers                       Add example routers
+  --swagger                       Add self hosted swagger
+  --prometheus                    Add prometheus compatible metrics
+  --sentry                        Add sentry integration
+  --loguru                        Add loguru logger
+  --opentelemetry                 Add opentelemetry integration
+  --traefik                       Adds traefik labels to docker container
+  --kafka                         Add Kafka support
+  --help                          Show this message and exit.
 ```

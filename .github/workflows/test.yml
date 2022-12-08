@@ -2,8 +2,6 @@ name: Testing fastapi-template
 
 on:
   pull_request:
-    branches:
-      - 'release/**'
 
 jobs:
   pre_job:
