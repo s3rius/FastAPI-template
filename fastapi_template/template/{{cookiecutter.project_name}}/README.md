@@ -51,7 +51,7 @@ $ tree "{{cookiecutter.project_name}}"
 ├── conftest.py  # Fixtures for all tests. 
 {%- if cookiecutter.db_info.name != "none" %}
 ├── db  # module contains db configurations
-│   ├── dao  # Data Access Objects. Contains different classes to inteact with database.
+│   ├── dao  # Data Access Objects. Contains different classes to interact with database.
 │   └── models  # Package contains different models for ORMs.
 {%- endif %}
 ├── __main__.py  # Startup script. Starts uvicorn.
