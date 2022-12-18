@@ -126,7 +126,6 @@ By default it runs:
 * mypy (validates types);
 * isort (sorts imports in all files);
 * flake8 (spots possibe bugs);
-* yesqa (removes useless `# noqa` comments).
 
 
 You can read more about pre-commit here: https://pre-commit.com/
