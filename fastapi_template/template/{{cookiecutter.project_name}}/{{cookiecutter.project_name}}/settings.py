@@ -1,3 +1,4 @@
+import os
 import enum
 from pathlib import Path
 from tempfile import gettempdir
@@ -43,9 +44,16 @@ class Settings(BaseSettings):
 
     # Current environment
     environment: str = "dev"
-
+    
     log_level: LogLevel = LogLevel.INFO
 
+    {%- if cookiecutter.add_users == "True" %}
+    {%- if cookiecutter.orm == "sqlalchemy" %}
+    users_secret = os.getenv("USERS_SECRET", "")
+    google_oauth_client_id = os.getenv("GOOGLE_OAUTH_CLIENT_ID", "")
+    google_oauth_client_secret = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET", "")
+    {%- endif %}
+    {%- endif %}
     {% if cookiecutter.db_info.name != "none" -%}
 
     # Variables for the database

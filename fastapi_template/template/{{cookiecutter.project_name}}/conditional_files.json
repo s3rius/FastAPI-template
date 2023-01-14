@@ -120,6 +120,13 @@
             "{{cookiecutter.project_name}}/tests/test_rabbit.py"
         ]
     },
+    "Users model": {
+        "enabled": "{{cookiecutter.add_users}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/api/users",
+            "{{cookiecutter.project_name}}/db_sa/models/users.py"
+        ]
+    },
     "Dummy model": {
         "enabled": "{{cookiecutter.add_dummy}}",
         "resources": [

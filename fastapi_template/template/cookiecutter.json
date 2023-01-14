@@ -65,6 +65,9 @@
     "gunicorn": {
         "type": "bool"
     },
+    "add_users": {
+        "type": "bool"
+    },
     "_extensions": [
         "cookiecutter.extensions.RandomStringExtension"
     ],

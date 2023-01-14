@@ -34,7 +34,7 @@ def db_menu_update_info(ctx: BuilderContext, menu: SingularMenuModel) -> Builder
     return ctx
 
 
-def disable_orm(ctx: BuilderContext) -> MenuEntry:
+def disable_orm(ctx: BuilderContext) -> Optional[MenuEntry]:
     if ctx.db == "none":
         ctx.orm = "none"
         return SKIP_ENTRY
@@ -74,7 +74,8 @@ api_menu = SingularMenuModel(
                 "Choose this option if you want to create a service with {name}.\n"
                 "It's more suitable for {generic} web-services or services without databases.".format(
                     name=colored("REST API", color="green"),
-                    generic=colored("generic", color="cyan", attrs=["underline"]),
+                    generic=colored("generic", color="cyan",
+                                    attrs=["underline"]),
                 )
             ),
         ),
@@ -145,7 +146,8 @@ db_menu = SingularMenuModel(
                 "{name} is the most popular database made by oracle.\n"
                 "It's a good fit for {prod} application.".format(
                     name=colored("MySQL", color="green"),
-                    prod=colored("production-grade", color="cyan", attrs=["underline"]),
+                    prod=colored("production-grade", color="cyan",
+                                 attrs=["underline"]),
                 )
             ),
             additional_info=Database(
@@ -164,7 +166,8 @@ db_menu = SingularMenuModel(
                 "{name} is second most popular open-source relational database.\n"
                 "It's a good fit for {prod} application.".format(
                     name=colored("PostgreSQL", color="green"),
-                    prod=colored("production-grade", color="cyan", attrs=["underline"]),
+                    prod=colored("production-grade", color="cyan",
+                                 attrs=["underline"]),
                 )
             ),
             additional_info=Database(
@@ -239,7 +242,8 @@ orm_menu = SingularMenuModel(
                 "If you select this option, you will get only {what}.\n"
                 "The rest {warn}.".format(
                     what=colored("raw database", color="green"),
-                    warn=colored("is up to you", color="red", attrs=["underline"]),
+                    warn=colored("is up to you", color="red",
+                                 attrs=["underline"]),
                 )
             ),
         ),
@@ -330,7 +334,24 @@ features_menu = MultiselectMenuModel(
                         color="green",
                     ),
                     purpose1=colored("caching", color="cyan"),
-                    purpose2=colored("storing temporary variables", color="cyan"),
+                    purpose2=colored(
+                        "storing temporary variables", color="cyan"),
+                )
+            ),
+        ),
+        MenuEntry(
+            code="add_users",
+            cli_name="add_users",
+            user_view="Add users support with fastapi-users",
+            description=(
+                "{name}.\n"
+                "Adds {purpose1} JWT, cookie and OAuth endpoints and {purpose2} models CRUD's. Only supports SQLAlchemy.".format(
+                    name=colored(
+                        "Add fastapi-users",
+                        color="green",
+                    ),
+                    purpose1=colored("authentication", color="red"),
+                    purpose2=colored("user", color="cyan"),
                 )
             ),
         ),
@@ -383,7 +404,8 @@ features_menu = MultiselectMenuModel(
                 "This option will add {what} manifests to your project.\n"
                 "But this option is {warn}, since if you want to use k8s, please create helm.".format(
                     what=colored("kubernetes", color="green"),
-                    warn=colored("deprecated", color="red", attrs=["underline"]),
+                    warn=colored("deprecated", color="red",
+                                 attrs=["underline"]),
                 )
             ),
         ),

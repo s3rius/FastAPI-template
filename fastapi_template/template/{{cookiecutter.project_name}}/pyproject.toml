@@ -17,6 +17,13 @@ uvicorn = { version = "^0.22.0", extras = ["standard"] }
 {%- if cookiecutter.gunicorn == "True" %}
 gunicorn = "^21.2.0"
 {%- endif %}
+{%- if cookiecutter.add_users == "True" %}
+{%- if cookiecutter.orm == "sqlalchemy" %}
+fastapi-users = "^10.2.1"
+httpx-oauth = "^0.10.2"
+fastapi-users-db-sqlalchemy = "^4.0.3"
+{%- endif %}
+{%- endif %}
 {%- if cookiecutter.pydanticv1 == "True" %}
 pydantic = { version = "^1", extras=["dotenv"] }
 {%- else %}
