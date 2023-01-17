@@ -4,8 +4,13 @@ from typing import Optional, Callable, Any
 from pydantic import BaseModel
 import click
 import abc
-from simple_term_menu import TerminalMenu
 from collections import UserDict
+from prompt_toolkit.shortcuts import checkboxlist_dialog, radiolist_dialog
+
+try:
+    from simple_term_menu import TerminalMenu
+except Exception:
+    TerminalMenu = None
 
 
 class Database(BaseModel):
@@ -50,6 +55,7 @@ SKIP_ENTRY = MenuEntry(
 class BaseMenuModel(BaseModel, abc.ABC):
     title: str
     entries: list[MenuEntry]
+    description: str = ""
 
     def _preview(self, current_value: str):
 
@@ -122,20 +128,31 @@ class SingularMenuModel(BaseMenuModel):
                     available_entries.append(entry)
                 elif not entry.is_hidden(context):
                     available_entries.append(entry)
+            if TerminalMenu is not None:
+                menu = TerminalMenu(
+                    title=self.title,
+                    menu_entries=[entry.user_view for entry in available_entries],
+                    multi_select=False,
+                    preview_title="Description",
+                    preview_command=self._preview,
+                    preview_size=0.5,
+                )
+                idx = menu.show()
+                if idx is None:
+                    return None
 
-            menu = TerminalMenu(
-                title=self.title,
-                menu_entries=[entry.user_view for entry in available_entries],
-                multi_select=False,
-                preview_title="Description",
-                preview_command=self._preview,
-                preview_size=0.5,
-            )
-            idx = menu.show()
-            if idx is None:
-                return None
-
-            chosen_entry = available_entries[idx]
+                chosen_entry = available_entries[idx]
+            else:
+                chosen_entry = (
+                    radiolist_dialog(
+                        title=self.title,
+                        text=self.description,
+                        values=[
+                            (entry, entry.user_view) for entry in available_entries
+                        ],
+                    ).run()
+                    or SKIP_ENTRY
+                )
 
         if chosen_entry == SKIP_ENTRY:
             return
@@ -190,22 +207,29 @@ class MultiselectMenuModel(BaseMenuModel):
                 elif not entry.is_hidden(context):
                     visible_entries.append(entry)
 
-            menu = TerminalMenu(
-                title=self.title,
-                menu_entries=[entry.user_view for entry in visible_entries],
-                multi_select=True,
-                preview_title="Description",
-                preview_command=self._preview,
-            )
+            if TerminalMenu is not None:
+                menu = TerminalMenu(
+                    title=self.title,
+                    menu_entries=[entry.user_view for entry in visible_entries],
+                    multi_select=True,
+                    preview_title="Description",
+                    preview_command=self._preview,
+                )
 
-            idxs = menu.show()
+                idxs = menu.show()
 
-            if idxs is None:
-                return None
+                if idxs is None:
+                    return None
 
-            chosen_entries = []
-            for idx in idxs:
-                chosen_entries.append(visible_entries[idx])
+                chosen_entries = []
+                for idx in idxs:
+                    chosen_entries.append(visible_entries[idx])
+            else:
+                chosen_entries = checkboxlist_dialog(
+                    title=self.title,
+                    text=self.description,
+                    values=[(entry, entry.user_view) for entry in visible_entries],
+                ).run() or [SKIP_ENTRY]
 
         if chosen_entries == [SKIP_ENTRY]:
             return context
@@ -232,5 +256,5 @@ class BuilderContext(UserDict):
     def __setattr__(self, name: str, value: Any) -> None:
         self[name] = value
 
-    def dict(self) -> str:
+    def dict(self) -> dict[str, Any]:
         return self.__dict__["data"]
