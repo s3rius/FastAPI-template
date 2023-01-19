@@ -68,6 +68,12 @@
     "add_users": {
         "type": "bool"
     },
+    "cookie_auth": {
+        "type": "bool"
+    },
+    "jwt_auth": {
+        "type": "bool"
+    },
     "_extensions": [
         "cookiecutter.extensions.RandomStringExtension"
     ],

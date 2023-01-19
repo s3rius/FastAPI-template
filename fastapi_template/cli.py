@@ -47,6 +47,12 @@ def do_not_ask_features_if_quite(ctx: BuilderContext) -> Optional[List[MenuEntry
     return None
 
 
+def do_not_ask_features_if_no_users(ctx: BuilderContext) -> Optional[list[MenuEntry]]:
+    if not ctx.add_users:
+        return [SKIP_ENTRY]
+    return None
+
+
 def check_db(allowed_values: List[str]) -> Callable[[BuilderContext], bool]:
     def checker(ctx: BuilderContext) -> bool:
         return ctx.db not in allowed_values
@@ -342,15 +348,16 @@ features_menu = MultiselectMenuModel(
         MenuEntry(
             code="add_users",
             cli_name="add_users",
-            user_view="Add users support with fastapi-users",
+            user_view="Add fastapi-users support",
+            is_hidden=check_orm(["sqlalchemy"]),
             description=(
-                "{name}.\n"
-                "Adds {purpose1} JWT, cookie and OAuth endpoints and {purpose2} models CRUD's. Only supports SQLAlchemy.".format(
+                "{name} is a user management extension.\n"
+                "Adds {purpose1} JWT or cookie endpoints and {purpose2} models CRUD's.".format(
                     name=colored(
-                        "Add fastapi-users",
-                        color="green",
+                        "Fastapi-users",
+                        color="cyan",
                     ),
-                    purpose1=colored("authentication", color="red"),
+                    purpose1=colored("authentication", color="cyan"),
                     purpose2=colored("user", color="cyan"),
                 )
             ),
@@ -556,6 +563,42 @@ features_menu = MultiselectMenuModel(
     ],
 )
 
+users_backend_menu = MultiselectMenuModel(
+    title="FastApi Users Backend",
+    code="users_menu",
+    description="Available backends for authentication with fastapi_users",
+    multiselect=True,
+    before_ask=do_not_ask_features_if_no_users,
+    entries=[
+        MenuEntry(
+            code="cookie_auth",
+            cli_name="cookie auth",
+            user_view="Add authentication via cookie support",
+            description=(
+                "Adds {cookie} authentication support.".format(
+                    cookie=colored(
+                        "cookie",
+                        color="green",
+                    )
+                )
+            ),
+        ),
+        MenuEntry(
+            code="jwt_auth",
+            cli_name="jwt auth",
+            user_view="Add JWT auth support",
+            description=(
+                "Adds {name} authentication support.".format(
+                    name=colored(
+                        "JWT",
+                        color="green",
+                    )
+                )
+            ),
+        ),
+    ],
+)
+
 
 def handle_cli(
     menus: List[BaseMenuModel],
@@ -597,6 +640,7 @@ def run_command(callback: Callable[[BuilderContext], None]) -> None:
         orm_menu,
         ci_menu,
         features_menu,
+        users_backend_menu,
     ]
 
     cmd = Command(

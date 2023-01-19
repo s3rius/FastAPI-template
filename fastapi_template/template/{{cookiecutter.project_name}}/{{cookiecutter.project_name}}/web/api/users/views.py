@@ -4,7 +4,7 @@ from {{cookiecutter.project_name}}.db.models.users import (UserCreate,
                                                            UserRead,
                                                            UserUpdate,
                                                            api_users,
-                                                           auth_backend,
+                                                           auth_jwt,
                                                            auth_cookie)
 
 
@@ -33,15 +33,18 @@ router.include_router(
     prefix="/users",
     tags=["users"],
 )
-
+{%- if cookiecutter.jwt_auth == "True" %}
 router.include_router(
-    api_users.get_auth_router(auth_backend),
+    api_users.get_auth_router(auth_jwt),
     prefix="/auth/jwt",
     tags=["auth"]
 )
+{%- endif %}
 
+{%- if cookiecutter.cookie_auth == "True" %}
 router.include_router(
     api_users.get_auth_router(auth_cookie),
     prefix="/auth/cookie",
     tags=["auth"]
 )
+{%- endif %}
