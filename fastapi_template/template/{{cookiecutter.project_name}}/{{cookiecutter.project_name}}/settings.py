@@ -45,7 +45,7 @@ class Settings(BaseSettings):
     {%- if cookiecutter.db_info.name == "sqlite" %}
     db_file: Path = TEMP_DIR / "db.sqlite3"
     {%- else %}
-    db_host: str = "localhost"
+    db_host: str = "{{cookiecutter.project_name}}-db"
     db_port: int = {{cookiecutter.db_info.port}}
     db_user: str = "{{cookiecutter.project_name}}"
     db_pass: str = "{{cookiecutter.project_name}}"
