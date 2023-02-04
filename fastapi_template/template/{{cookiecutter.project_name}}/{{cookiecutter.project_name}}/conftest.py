@@ -34,8 +34,7 @@ from {{cookiecutter.project_name}}.web.application import get_app
 
 
 {%- if cookiecutter.orm == "sqlalchemy" %}
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncEngine, AsyncConnection
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncEngine, AsyncConnection, async_sessionmaker
 from {{cookiecutter.project_name}}.db.dependencies import get_db_session
 from {{cookiecutter.project_name}}.db.utils import create_database, drop_database
 {%- elif cookiecutter.orm == "tortoise" %}
@@ -114,8 +113,9 @@ async def dbsession(
     connection = await _engine.connect()
     trans = await connection.begin()
 
-    session_maker = sessionmaker(
-        connection, expire_on_commit=False, class_=AsyncSession,
+    session_maker = async_sessionmaker(
+        connection,
+        expire_on_commit=False,
     )
     session = session_maker()
 

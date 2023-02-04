@@ -79,9 +79,9 @@ async def _setup_db(app: FastAPI) -> None:
 {%- if cookiecutter.orm == "sqlalchemy" %}
 from asyncio import current_task
 from sqlalchemy.ext.asyncio import (
-    AsyncSession,
     async_scoped_session,
     create_async_engine,
+    async_sessionmaker,
 )
 from sqlalchemy.orm import sessionmaker
 
@@ -103,10 +103,9 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
     """
     engine = create_async_engine(str(settings.db_url), echo=settings.db_echo)
     session_factory = async_scoped_session(
-        sessionmaker(
+        async_sessionmaker(
             engine,
             expire_on_commit=False,
-            class_=AsyncSession,
         ),
         scopefunc=current_task,
     )
