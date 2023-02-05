@@ -33,7 +33,7 @@ class DummyDAO:
             select(DummyModel).limit(limit).offset(offset),
         )
 
-        return raw_dummies.scalars().fetchall()
+        return list(raw_dummies.scalars().fetchall())
 
     async def filter(
         self,
@@ -49,4 +49,4 @@ class DummyDAO:
         if name:
             query = query.where(DummyModel.name == name)
         rows = await self.session.execute(query)
-        return rows.scalars().fetchall()
+        return list(rows.scalars().fetchall())
