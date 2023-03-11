@@ -6,7 +6,7 @@ from {{cookiecutter.project_name}}.settings import settings
 
 {% if cookiecutter.db_info.name == "postgresql" -%}
 def create_database() -> None:
-    """Create a databse."""
+    """Create a database."""
     db_url = make_url(str(settings.db_url.with_path('/postgres')))
     engine = create_engine(db_url, isolation_level="AUTOCOMMIT")
 
@@ -46,7 +46,7 @@ def drop_database() -> None:
 {%- endif %}
 {%- if cookiecutter.db_info.name == "mysql" %}
 def create_database() -> None:
-    """Create a databse."""
+    """Create a database."""
     engine = create_engine(str(settings.db_url.with_path("/mysql")))
 
     with engine.connect() as conn:
@@ -76,7 +76,7 @@ def drop_database() -> None:
 {%- endif %}
 {%- if cookiecutter.db_info.name == "sqlite" %}
 def create_database() -> None:
-    """Create a databse."""
+    """Create a database."""
 
 def drop_database() -> None:
     """Drop current database."""

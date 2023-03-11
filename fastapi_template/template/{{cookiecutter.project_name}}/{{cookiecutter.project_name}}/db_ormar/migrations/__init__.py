@@ -1,1 +1,1 @@
-"""Alembic migraions."""
+"""Alembic migrations."""

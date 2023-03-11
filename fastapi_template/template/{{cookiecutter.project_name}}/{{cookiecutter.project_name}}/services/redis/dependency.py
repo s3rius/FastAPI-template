@@ -16,7 +16,7 @@ async def get_redis_pool(request: Request) -> AsyncGenerator[Redis, None]:  # pr
     >>>     async with Redis(connection_pool=redis_pool) as redis:
     >>>         await redis.get('key')
 
-    I use pools so you don't acquire connection till the end of the handler.
+    I use pools, so you don't acquire connection till the end of the handler.
 
     :param request: current request.
     :returns:  redis connection pool.

@@ -29,7 +29,7 @@ class Query:
         {% endif -%}
         :param limit: limit of dummy objects, defaults to 10.
         :param offset: offset of dummy objects, defaults to 0.
-        :return: list of dummy obbjects from database.
+        :return: list of dummy objects from database.
         """
         {%- if cookiecutter.orm == "sqlalchemy" %}
         dao = DummyDAO(info.context.db_connection)

@@ -24,7 +24,7 @@ class Mutation:
         :param info: connection info.
         {% endif -%}
         :param name: name of a dummy.
-        :return: name of a dummt model.
+        :return: name of a dummy model.
         """
         {%- if cookiecutter.orm == "sqlalchemy" %}
         dao = DummyDAO(info.context.db_connection)
