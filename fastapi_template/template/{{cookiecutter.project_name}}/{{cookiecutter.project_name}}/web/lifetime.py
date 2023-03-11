@@ -252,7 +252,7 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pr
     Actions to run on application startup.
 
     This function uses fastAPI app to store data
-    inthe state, such as db_engine.
+    in the state, such as db_engine.
 
     :param app: the fastAPI application.
     :return: function that actually performs actions.
