@@ -1,7 +1,7 @@
 import enum
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseSettings
 from yarl import URL
@@ -111,7 +111,7 @@ class Settings(BaseSettings):
 
     {%- if cookiecutter.enable_kafka == "True" %}
 
-    kafka_bootstrap_servers: list[str] = ["{{cookiecutter.project_name}}-kafka:9092"]
+    kafka_bootstrap_servers: List[str] = ["{{cookiecutter.project_name}}-kafka:9092"]
 
     {%- endif %}
 

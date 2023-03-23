@@ -1,5 +1,5 @@
 import enum
-from typing import Optional, Callable, Any
+from typing import List, Optional, Callable, Any
 
 from pydantic import BaseModel
 import click
@@ -54,7 +54,7 @@ SKIP_ENTRY = MenuEntry(
 
 class BaseMenuModel(BaseModel, abc.ABC):
     title: str
-    entries: list[MenuEntry]
+    entries: List[MenuEntry]
     description: str = ""
 
     def _preview(self, current_value: str):
@@ -65,7 +65,7 @@ class BaseMenuModel(BaseModel, abc.ABC):
         return "Unknown value"
 
     @abc.abstractmethod
-    def get_cli_options(self) -> list[click.Option]:
+    def get_cli_options(self) -> List[click.Option]:
         pass
 
     @abc.abstractmethod
@@ -91,7 +91,7 @@ class SingularMenuModel(BaseMenuModel):
     ]
     parser: Optional[Callable[[str], Any]]
 
-    def get_cli_options(self) -> list[click.Option]:
+    def get_cli_options(self) -> List[click.Option]:
         cli_name = self.code
         if self.cli_name is not None:
             cli_name = self.cli_name
@@ -168,9 +168,9 @@ class SingularMenuModel(BaseMenuModel):
 
 
 class MultiselectMenuModel(BaseMenuModel):
-    before_ask: Optional[Callable[["BuilderContext"], Optional[list[MenuEntry]]]]
+    before_ask: Optional[Callable[["BuilderContext"], Optional[List[MenuEntry]]]]
 
-    def get_cli_options(self) -> list[click.Option]:
+    def get_cli_options(self) -> List[click.Option]:
         options = []
         for entry in self.entries:
             options.append(
