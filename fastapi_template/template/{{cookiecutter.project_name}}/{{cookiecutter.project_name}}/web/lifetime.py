@@ -77,9 +77,7 @@ async def _setup_db(app: FastAPI) -> None:
 {%- endif %}
 
 {%- if cookiecutter.orm == "sqlalchemy" %}
-from asyncio import current_task
 from sqlalchemy.ext.asyncio import (
-    async_scoped_session,
     create_async_engine,
     async_sessionmaker,
 )
@@ -102,12 +100,9 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
     :param app: fastAPI application.
     """
     engine = create_async_engine(str(settings.db_url), echo=settings.db_echo)
-    session_factory = async_scoped_session(
-        async_sessionmaker(
-            engine,
-            expire_on_commit=False,
-        ),
-        scopefunc=current_task,
+    session_factory = async_sessionmaker(
+        engine,
+        expire_on_commit=False,
     )
     app.state.db_engine = engine
     app.state.db_session_factory = session_factory
@@ -252,7 +247,7 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pr
     Actions to run on application startup.
 
     This function uses fastAPI app to store data
-    inthe state, such as db_engine.
+    in the state, such as db_engine.
 
     :param app: the fastAPI application.
     :return: function that actually performs actions.

@@ -354,7 +354,7 @@ async def test_exchange_name() -> str:
 @pytest.fixture
 async def test_routing_key() -> str:
     """
-    Name of routing key to use whild binding test queue.
+    Name of routing key to use while binding test queue.
 
     :return: key string.
     """

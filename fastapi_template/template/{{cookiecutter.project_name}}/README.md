@@ -73,14 +73,14 @@ This application can be configured with environment variables.
 You can create `.env` file in the root directory and place all
 environment variables here. 
 
-All environment variabels should start with "{{cookiecutter.project_name | upper}}_" prefix.
+All environment variables should start with "{{cookiecutter.project_name | upper}}_" prefix.
 
 For example if you see in your "{{cookiecutter.project_name}}/settings.py" a variable named like
 `random_parameter`, you should provide the "{{cookiecutter.project_name | upper}}_RANDOM_PARAMETER" 
 variable to configure the value. This behaviour can be changed by overriding `env_prefix` property
 in `{{cookiecutter.project_name}}.settings.Settings.Config`.
 
-An exmaple of .env file:
+An example of .env file:
 ```bash
 {{cookiecutter.project_name | upper}}_RELOAD="True"
 {{cookiecutter.project_name | upper}}_PORT="8000"
@@ -156,7 +156,7 @@ docker save --output {{cookiecutter.project_name}}.tar {{cookiecutter.project_na
 If you want to migrate your database, you should run following commands:
 ```bash
 {%- if cookiecutter.orm in ['sqlalchemy', 'ormar'] %}
-# To run all migrations untill the migration with revision_id.
+# To run all migrations until the migration with revision_id.
 alembic upgrade "<revision_id>"
 
 # To perform all pending migrations.
@@ -168,7 +168,7 @@ aerich upgrade
 {%- elif cookiecutter.orm == 'piccolo' %}
 # You have to set a PICCOLO_CONF variable
 export PICCOLO_CONF="{{cookiecutter.project_name}}.piccolo_conf"
-# Now you can easily run migrations usuing 
+# Now you can easily run migrations using 
 piccolo migrations forwards all
 {%- endif %}
 ```

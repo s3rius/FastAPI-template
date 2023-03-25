@@ -35,7 +35,7 @@ python3 -m pip install .
 python3 -m fastapi_template
 ```
 
-Also you can use it with docker.
+Also, you can use it with docker.
 ```bash
 docker run --rm -it -v "$(pwd):/projects" s3rius/fastapi_template
 ```

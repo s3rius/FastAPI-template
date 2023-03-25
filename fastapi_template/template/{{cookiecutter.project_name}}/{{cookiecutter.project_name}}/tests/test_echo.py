@@ -10,7 +10,7 @@ async def test_echo(fastapi_app: FastAPI, client: AsyncClient) -> None:
     Tests that echo route works.
 
     :param fastapi_app: current application.
-    :param client: clien for the app.
+    :param client: client for the app.
     """
     {%- if cookiecutter.api_type == 'rest' %}
     url = fastapi_app.url_path_for('send_echo_message')

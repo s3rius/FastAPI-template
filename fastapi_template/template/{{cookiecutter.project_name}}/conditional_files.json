@@ -147,7 +147,7 @@
     "Self-hosted swagger": {
         "enabled": "{{cookiecutter.self_hosted_swagger}}",
         "resources": [
-            "{{cookiecutter.project_name}}/web/static",
+            "{{cookiecutter.project_name}}/static/docs",
             "{{cookiecutter.project_name}}/web/api/docs"
         ]
     },

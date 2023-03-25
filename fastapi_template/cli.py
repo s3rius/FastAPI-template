@@ -8,7 +8,7 @@ from fastapi_template.input_model import (
     SKIP_ENTRY,
 )
 from importlib.metadata import version
-from typing import Callable, Optional
+from typing import Callable, List, Optional
 from click import Command, Option
 import re
 
@@ -40,20 +40,20 @@ def disable_orm(ctx: BuilderContext) -> MenuEntry:
     return None
 
 
-def do_not_ask_features_if_quite(ctx: BuilderContext) -> Optional[list[MenuEntry]]:
+def do_not_ask_features_if_quite(ctx: BuilderContext) -> Optional[List[MenuEntry]]:
     if ctx.quite:
         return [SKIP_ENTRY]
     return None
 
 
-def check_db(allowed_values: list[str]) -> Callable[[BuilderContext], bool]:
+def check_db(allowed_values: List[str]) -> Callable[[BuilderContext], bool]:
     def checker(ctx: BuilderContext) -> bool:
         return ctx.db not in allowed_values
 
     return checker
 
 
-def check_orm(allowed_values: list[str]) -> Callable[[BuilderContext], bool]:
+def check_orm(allowed_values: List[str]) -> Callable[[BuilderContext], bool]:
     def checker(ctx: BuilderContext) -> bool:
         return ctx.orm not in allowed_values
 
@@ -499,7 +499,7 @@ features_menu = MultiselectMenuModel(
 
 
 def handle_cli(
-    menus: list[BaseMenuModel],
+    menus: List[BaseMenuModel],
     callback: Callable[[BuilderContext], None],
 ):
     def inner_callback(**cli_args: Any):
@@ -532,7 +532,7 @@ def handle_cli(
 
 
 def run_command(callback: Callable[[BuilderContext], None]) -> None:
-    menus: "list[BaseMenuModel]" = [
+    menus: "List[BaseMenuModel]" = [
         api_menu,
         db_menu,
         orm_menu,
