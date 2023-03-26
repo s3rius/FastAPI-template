@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  api:
+  api: &main_app
     build:
       context: .
       dockerfile: ./deploy/Dockerfile
@@ -61,6 +61,9 @@ services:
       {%- if cookiecutter.enable_rmq == 'True' %}
       {{cookiecutter.project_name | upper }}_RABBIT_HOST: {{cookiecutter.project_name}}-rmq
       {%- endif %}
+      {%- if cookiecutter.enable_redis == 'True' %}
+      {{cookiecutter.project_name | upper }}_REDIS_HOST: {{cookiecutter.project_name}}-redis
+      {%- endif %}
       {%- if cookiecutter.enable_kafka == "True" %}
       TESTKAFKA_KAFKA_BOOTSTRAP_SERVERS: '["{{cookiecutter.project_name}}-kafka:9092"]'
       {%- endif %}
@@ -68,6 +71,17 @@ services:
     volumes:
       - {{cookiecutter.project_name}}-db-data:/db_data/
     {%- endif %}
+
+  {%- if cookiecutter.enable_taskiq == "True" %}
+
+  taskiq-worker:
+    <<: *main_app
+    labels: []
+    command:
+      - taskiq
+      - worker
+      - {{cookiecutter.project_name}}.taskiq:broker
+  {%- endif %}
 
   {%- if cookiecutter.db_info.name == "postgresql" %}
 

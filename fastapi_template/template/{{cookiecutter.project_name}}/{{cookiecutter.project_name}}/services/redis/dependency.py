@@ -3,8 +3,12 @@ from typing import AsyncGenerator
 from redis.asyncio import Redis
 from starlette.requests import Request
 
+{%- if cookiecutter.enable_taskiq == "True" %}
+from taskiq import TaskiqDepends
+{%- endif %}
 
-async def get_redis_pool(request: Request) -> AsyncGenerator[Redis, None]:  # pragma: no cover
+
+async def get_redis_pool(request: Request {%- if cookiecutter.enable_taskiq == "True" %} = TaskiqDepends(){%- endif %}) -> AsyncGenerator[Redis, None]:  # pragma: no cover
     """
     Returns connection pool.
 

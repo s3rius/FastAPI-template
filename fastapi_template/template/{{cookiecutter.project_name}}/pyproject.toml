@@ -140,6 +140,23 @@ asynctest = "^0.13.0"
 nest-asyncio = "^1.5.6"
 {%- endif %}
 httpx = "^0.23.3"
+{%- if cookiecutter.enable_taskiq == "True" %}
+taskiq = "^0"
+taskiq-fastapi = "^0"
+
+    {%- if cookiecutter.enable_redis == "True" %}
+taskiq-redis = "^0"
+    {%- endif %}
+
+    {%- if cookiecutter.enable_rmq == "True" %}
+taskiq-aio-pika = "^0"
+    {%- endif %}
+
+    {%- if (cookiecutter.enable_rmq or cookiecutter.enable_rmq) != "True" %}
+pyzmq = "^25.0.2"
+    {%- endif %}
+
+{%- endif %}
 
 [tool.isort]
 profile = "black"
@@ -177,8 +194,8 @@ filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore:.*unclosed.*:ResourceWarning",
 ]
-{%- if cookiecutter.db_info.name != "none" %}
 env = [
+    "{{cookiecutter.project_name | upper}}_ENVIRONMENT=pytest",
     {%- if cookiecutter.db_info.name == "sqlite" %}
     "{{cookiecutter.project_name | upper}}_DB_FILE=test_db.sqlite3",
     {%- else %}
@@ -191,7 +208,6 @@ env = [
     "{{cookiecutter.project_name | upper}}_SENTRY_DSN=",
     {%- endif %}
 ]
-{%- endif %}
 
 {%- if cookiecutter.orm == "tortoise" %}
 {%- if cookiecutter.enable_migrations == "True" %}

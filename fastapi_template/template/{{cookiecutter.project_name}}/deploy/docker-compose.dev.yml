@@ -11,3 +11,16 @@ services:
     environment:
       # Enables autoreload.
       {{cookiecutter.project_name | upper}}_RELOAD: "True"
+
+  {%- if cookiecutter.enable_taskiq == "True" %}
+
+  taskiq-worker:
+    volumes:
+      # Adds current directory as volume.
+      - .:/app/src/
+    command:
+      - taskiq
+      - worker
+      - {{cookiecutter.project_name}}.taskiq:broker
+      - --reload
+  {%- endif %}

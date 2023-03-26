@@ -338,6 +338,21 @@ features_menu = MultiselectMenuModel(
             ),
         ),
         MenuEntry(
+            code="enable_taskiq",
+            cli_name="taskiq",
+            user_view="Add Taskiq support",
+            description=(
+                "{what} is an async task manager.\n"
+                "You can think of taskiq as a {celery}, but async.".format(
+                    what=colored("Taskiq", color="green"),
+                    celery=colored(
+                        "celery",
+                        color="cyan",
+                    ),
+                )
+            ),
+        ),
+        MenuEntry(
             code="enable_migrations",
             cli_name="migrations",
             user_view="Add Migrations",
