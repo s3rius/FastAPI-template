@@ -57,6 +57,7 @@ def default_context(project_name: str) -> None:
         db="none",
         db_info=Database(name="none").dict(),
         enable_redis=False,
+        enable_taskiq=False,
         enable_migrations=False,
         enable_kube=False,
         enable_routers=True,
