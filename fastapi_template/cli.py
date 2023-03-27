@@ -1,3 +1,4 @@
+import shutil
 from fastapi_template.input_model import (
     BuilderContext,
     MenuEntry,
@@ -585,4 +586,18 @@ def run_command(callback: Callable[[BuilderContext], None]) -> None:
     )
     for menu in menus:
         cmd.params.extend(menu.get_cli_options())
+    required_commands = {
+        "poetry": "https://python-poetry.org/docs/#installation",
+        "git": "https://git-scm.com/",
+    }
+    for prog, link in required_commands.items():
+        if shutil.which(prog) is None:
+            print(
+                "Please install {prog} before generating project. Link: {link}".format(
+                    prog=colored(prog, "green"),
+                    link=colored(link, "cyan"),
+                ),
+            )
+            return
+
     cmd.main()

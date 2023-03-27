@@ -66,6 +66,7 @@ Generator features:
 - Optional Sentry integration;
 - Optional Loguru logger;
 - Optional Opentelemetry integration.
+- Optional taskiq integration.
 
 
 This project can handle arguments passed through command line.
@@ -88,6 +89,7 @@ Options:
   --ci [none|gitlab_ci|github]    Select a CI for your app
   --redis                         Add redis support
   --rabbit                        Add RabbitMQ support
+  --taskiq                        Add Taskiq support
   --migrations                    Add Migrations
   --kube                          Add kubernetes configs
   --dummy                         Add dummy model

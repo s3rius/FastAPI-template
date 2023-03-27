@@ -218,6 +218,13 @@ src_folder = "./{{cookiecutter.project_name}}"
 {%- endif %}
 {%- endif %}
 
+[fastapi-template.options]
+{%- for key, value in cookiecutter.items() %}
+{%- if not key.startswith("_") and not key == "db_info" %}
+{{key}} = "{{value}}"
+{%- endif %}
+{%- endfor %}
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
