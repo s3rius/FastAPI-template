@@ -144,6 +144,7 @@ def test_without_dummy(default_context: BuilderContext, orm: str):
 )
 def test_redis(default_context: BuilderContext, api: str):
     default_context.enable_redis = True
+    default_context.enable_taskiq = True
     default_context.api_type = api
     run_default_check(default_context)
 
@@ -157,6 +158,7 @@ def test_redis(default_context: BuilderContext, api: str):
 )
 def test_rmq(default_context: BuilderContext, api: str):
     default_context.enable_rmq = True
+    default_context.enable_taskiq = True
     default_context.api_type = api
     run_default_check(default_context)
 

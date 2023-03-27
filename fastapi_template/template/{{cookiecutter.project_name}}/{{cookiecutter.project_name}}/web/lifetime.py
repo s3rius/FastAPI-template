@@ -20,6 +20,10 @@ from {{cookiecutter.project_name}}.services.rabbit.lifetime import init_rabbit, 
 from {{cookiecutter.project_name}}.services.kafka.lifetime import init_kafka, shutdown_kafka
 {%- endif %}
 
+{%- if cookiecutter.enable_taskiq == "True" %}
+from {{cookiecutter.project_name}}.taskiq import broker
+{%- endif %}
+
 
 {%- if cookiecutter.orm == "ormar" %}
 from {{cookiecutter.project_name}}.db.config import database
@@ -255,6 +259,10 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pr
 
     @app.on_event("startup")
     async def _startup() -> None:  # noqa: WPS430
+        {%- if cookiecutter.enable_taskiq == "True" %}
+        if not broker.is_worker_process:
+            await broker.startup()
+        {%- endif %}
         {%- if cookiecutter.orm == "sqlalchemy" %}
         _setup_db(app)
         {%- elif cookiecutter.orm == "ormar" %}
@@ -297,6 +305,10 @@ def register_shutdown_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # p
 
     @app.on_event("shutdown")
     async def _shutdown() -> None:  # noqa: WPS430
+        {%- if cookiecutter.enable_taskiq == "True" %}
+        if not broker.is_worker_process:
+            await broker.shutdown()
+        {%- endif %}
         {%- if cookiecutter.orm == "sqlalchemy" %}
         await app.state.db_engine.dispose()
         {% elif cookiecutter.orm == "ormar" %}

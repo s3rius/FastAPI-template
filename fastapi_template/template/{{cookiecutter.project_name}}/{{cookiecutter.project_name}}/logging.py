@@ -83,16 +83,19 @@ def record_formatter(record: dict[str, Any]) -> str:  # pragma: no cover
 
 def configure_logging() -> None:  # pragma: no cover
     """Configures logging."""
-    loggers = (
-        logging.getLogger(name)
-        for name in logging.root.manager.loggerDict
-        if name.startswith("uvicorn.")
-    )
-    for uvicorn_logger in loggers:
-        uvicorn_logger.handlers = []
+    intercept_handler = InterceptHandler()
+
+    logging.basicConfig(handlers=[intercept_handler], level=logging.NOTSET)
+
+    for logger_name in logging.root.manager.loggerDict:
+        if logger_name.startswith("uvicorn."):
+            logging.getLogger(logger_name).handlers = []
+        {%- if cookiecutter.enable_taskiq == "True" %}
+        if logger_name.startswith("taskiq."):
+            logging.getLogger(logger_name).root.handlers = [intercept_handler]
+        {%- endif %}
 
     # change handler for default uvicorn logger
-    intercept_handler = InterceptHandler()
     logging.getLogger("uvicorn").handlers = [intercept_handler]
     logging.getLogger("uvicorn.access").handlers = [intercept_handler]
 

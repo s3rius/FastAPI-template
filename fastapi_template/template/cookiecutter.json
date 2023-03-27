@@ -20,6 +20,9 @@
     "enable_migrations": {
         "type": "bool"
     },
+    "enable_taskiq": {
+        "type": "bool"
+    },
     "enable_kube": {
         "type": "bool"
     },
