@@ -104,5 +104,8 @@ pytest:
   artifacts:
     when: always
     reports:
-      cobertura: coverage.xml
       junit: report.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+
