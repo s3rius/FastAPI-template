@@ -213,7 +213,7 @@
     "Taskiq support":{
         "enabled": "{{cookiecutter.enable_taskiq}}",
         "resources": [
-            "{{cookiecutter.project_name}}/taskiq.py"
+            "{{cookiecutter.project_name}}/tkq.py"
         ]
     }
 }
