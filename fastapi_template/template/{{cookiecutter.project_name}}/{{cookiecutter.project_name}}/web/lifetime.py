@@ -21,7 +21,7 @@ from {{cookiecutter.project_name}}.services.kafka.lifetime import init_kafka, sh
 {%- endif %}
 
 {%- if cookiecutter.enable_taskiq == "True" %}
-from {{cookiecutter.project_name}}.taskiq import broker
+from {{cookiecutter.project_name}}.tkq import broker
 {%- endif %}
 
 

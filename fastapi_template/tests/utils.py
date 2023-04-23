@@ -1,4 +1,5 @@
 import os
+import shlex
 import subprocess
 from typing import Optional
 from fastapi_template.input_model import BuilderContext
@@ -26,7 +27,7 @@ def run_docker_compose_command(
         ".",
     ]
     if command:
-        docker_command.extend(command.split())
+        docker_command.extend(shlex.split(command))
     else:
         docker_command.extend(
             [
