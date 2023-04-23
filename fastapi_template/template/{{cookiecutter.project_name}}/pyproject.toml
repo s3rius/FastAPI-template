@@ -119,6 +119,24 @@ loguru = "^0.6.0"
 {%- if cookiecutter.enable_kafka == "True" %}
 aiokafka = "^0.8.0"
 {%- endif %}
+{%- if cookiecutter.enable_taskiq == "True" %}
+taskiq = "^0"
+taskiq-fastapi = "^0"
+
+    {%- if cookiecutter.enable_redis == "True" %}
+taskiq-redis = "^0"
+    {%- endif %}
+
+    {%- if cookiecutter.enable_rmq == "True" %}
+taskiq-aio-pika = "^0"
+    {%- endif %}
+
+    {%- if (cookiecutter.enable_rmq or cookiecutter.enable_rmq) != "True" %}
+pyzmq = "^25.0.2"
+    {%- endif %}
+
+{%- endif %}
+
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.2.1"
@@ -140,23 +158,7 @@ asynctest = "^0.13.0"
 nest-asyncio = "^1.5.6"
 {%- endif %}
 httpx = "^0.23.3"
-{%- if cookiecutter.enable_taskiq == "True" %}
-taskiq = "^0"
-taskiq-fastapi = "^0"
-
-    {%- if cookiecutter.enable_redis == "True" %}
-taskiq-redis = "^0"
-    {%- endif %}
-
-    {%- if cookiecutter.enable_rmq == "True" %}
-taskiq-aio-pika = "^0"
-    {%- endif %}
-
-    {%- if (cookiecutter.enable_rmq or cookiecutter.enable_rmq) != "True" %}
-pyzmq = "^25.0.2"
-    {%- endif %}
-
-{%- endif %}
+taskiq = { version = "^0", extras = ["reload"] }
 
 [tool.isort]
 profile = "black"
