@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: ./deploy/Dockerfile
+      target: prod
     image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
     restart: always
     env_file:

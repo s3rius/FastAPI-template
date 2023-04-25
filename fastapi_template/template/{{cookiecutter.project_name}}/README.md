@@ -32,7 +32,7 @@ If you want to develop in docker with autoreload add `-f deploy/docker-compose.d
 Like this:
 
 ```bash
-docker-compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --project-directory . up
+docker-compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --project-directory . up --build
 ```
 
 This command exposes the web application on port 8000, mounts current directory and enables autoreload.
@@ -210,8 +210,8 @@ aerich migrate
 If you want to run it in docker, simply run:
 
 ```bash
-docker-compose -f deploy/docker-compose.yml --project-directory . run --rm api pytest -vv .
-docker-compose -f deploy/docker-compose.yml --project-directory . down
+docker-compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --project-directory . run --build --rm api pytest -vv .
+docker-compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --project-directory . down
 ```
 
 For running tests on your local machine.
