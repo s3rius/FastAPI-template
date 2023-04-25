@@ -10,7 +10,7 @@ stages:
   except:
     - tags
   before_script:
-    - pip install poetry==1.2.2
+    - pip install poetry==1.4.2
     - poetry config virtualenvs.create false
     - poetry install
 

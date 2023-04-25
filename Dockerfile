@@ -22,7 +22,7 @@ WORKDIR /src
 
 ENV PATH ${PATH}:/home/fastapi_template/.local/bin
 
-RUN pip install poetry==1.2.2
+RUN pip install poetry==1.4.2
 
 COPY . /src/
 RUN pip install .
