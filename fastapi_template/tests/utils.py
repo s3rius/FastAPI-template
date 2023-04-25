@@ -47,7 +47,7 @@ def run_default_check(context: BuilderContext, without_pytest=False):
         if line.strip().replace(" ", "") == "target:prod":
             continue
         new_compose_lines.append(line)
-    compose.write_text("\n".join(new_compose_lines))
+    compose.write_text("\n".join(new_compose_lines) + "\n")
 
     assert run_pre_commit() == 0
 
