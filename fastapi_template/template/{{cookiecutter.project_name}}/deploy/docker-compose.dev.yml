@@ -5,6 +5,8 @@ services:
     ports:
       # Exposes application port.
     - "8000:8000"
+    build:
+      target: dev
     volumes:
       # Adds current directory as volume.
     - .:/app/src/
@@ -21,6 +23,6 @@ services:
     command:
       - taskiq
       - worker
-      - {{cookiecutter.project_name}}.taskiq:broker
+      - {{cookiecutter.project_name}}.tkq:broker
       - --reload
   {%- endif %}

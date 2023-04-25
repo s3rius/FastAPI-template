@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import shlex
 import subprocess
 from typing import Optional
@@ -39,6 +40,15 @@ def run_docker_compose_command(
 
 def run_default_check(context: BuilderContext, without_pytest=False):
     generate_project_and_chdir(context)
+    compose = Path("./deploy/docker-compose.yml")
+    compose_contents = compose.read_text()
+    new_compose_lines = []
+    for line in compose_contents.splitlines():
+        if line.strip().replace(" ", "") == "target:prod":
+            continue
+        new_compose_lines.append(line)
+    compose.write_text("\n".join(new_compose_lines) + "\n")
+
     assert run_pre_commit() == 0
 
     if without_pytest:

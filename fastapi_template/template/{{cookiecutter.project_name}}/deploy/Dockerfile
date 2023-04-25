@@ -1,4 +1,4 @@
-FROM python:3.9.6-slim-buster
+FROM python:3.9.6-slim-buster as prod
 
 {%- if cookiecutter.db_info.name == "mysql" %}
 RUN apt-get update && apt-get install -y \
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 {%- endif %}
 
 
-RUN pip install poetry==1.2.2
+RUN pip install poetry==1.4.2
 
 # Configuring poetry
 RUN poetry config virtualenvs.create false
@@ -25,7 +25,7 @@ COPY pyproject.toml poetry.lock /app/src/
 WORKDIR /app/src
 
 # Installing requirements
-RUN poetry install
+RUN poetry install --only main
 
 {%- if cookiecutter.db_info.name == "mysql" or cookiecutter.db_info.name == "postgresql" %}
 # Removing gcc
@@ -36,6 +36,10 @@ RUN apt-get purge -y \
 
 # Copying actuall application
 COPY . /app/src/
-RUN poetry install
+RUN poetry install --only main
 
 CMD ["/usr/local/bin/python", "-m", "{{cookiecutter.project_name}}"]
+
+FROM prod as dev
+
+RUN poetry install
