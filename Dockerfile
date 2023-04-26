@@ -18,7 +18,7 @@ WORKDIR /src
 RUN python -m venv --copies /src/venv
 RUN /src/venv/bin/pip install poetry==1.4.2
 RUN --mount=type=cache,target=/root/.cache/pypoetry \
-    . /src/venv/bin/activate && poetry install
+    . /src/venv/bin/activate && poetry install --only main
 
 FROM python:3.9.7-alpine3.13
 
