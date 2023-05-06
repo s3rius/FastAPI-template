@@ -158,7 +158,9 @@ asynctest = "^0.13.0"
 nest-asyncio = "^1.5.6"
 {%- endif %}
 httpx = "^0.23.3"
+{%- if cookiecutter.enable_taskiq == "True" %}
 taskiq = { version = "^0", extras = ["reload"] }
+{%- endif %}
 
 [tool.isort]
 profile = "black"
