@@ -90,9 +90,9 @@ An example of .env file:
 You can read more about BaseSettings class here: https://pydantic-docs.helpmanual.io/usage/settings/
 
 {%- if cookiecutter.otlp_enabled == "True" %}
-## Opentelemetry 
+## OpenTelemetry 
 
-If you want to start your project with opentelemetry collector 
+If you want to start your project with OpenTelemetry collector 
 you can add `-f ./deploy/docker-compose.otlp.yml` to your docker command.
 
 Like this:
@@ -101,14 +101,14 @@ Like this:
 docker-compose -f deploy/docker-compose.yml -f deploy/docker-compose.otlp.yml --project-directory . up
 ```
 
-This command will start opentelemetry collector and jaeger. 
+This command will start OpenTelemetry collector and jaeger. 
 After sending a requests you can see traces in jaeger's UI
 at http://localhost:16686/.
 
 This docker configuration is not supposed to be used in production. 
 It's only for demo purpose.
 
-You can read more about opentelemetry here: https://opentelemetry.io/
+You can read more about OpenTelemetry here: https://opentelemetry.io/
 {%- endif %}
 
 ## Pre-commit
@@ -125,7 +125,7 @@ By default it runs:
 * black (formats your code);
 * mypy (validates types);
 * isort (sorts imports in all files);
-* flake8 (spots possibe bugs);
+* flake8 (spots possible bugs);
 
 
 You can read more about pre-commit here: https://pre-commit.com/
