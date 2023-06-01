@@ -125,7 +125,7 @@ By default it runs:
 * black (formats your code);
 * mypy (validates types);
 * isort (sorts imports in all files);
-* flake8 (spots possibe bugs);
+* flake8 (spots possible bugs);
 
 
 You can read more about pre-commit here: https://pre-commit.com/
