@@ -26,8 +26,7 @@ broker = AioPikaBroker(
 {%- elif cookiecutter.enable_redis == "True" %}
 broker = ListQueueBroker(
     str(settings.redis_url.with_path("/1")),
-    result_backend=result_backend,
-)
+).with_result_backend(result_backend)
 {%- else %}
 broker = ZeroMQBroker()
 {%- endif %}
