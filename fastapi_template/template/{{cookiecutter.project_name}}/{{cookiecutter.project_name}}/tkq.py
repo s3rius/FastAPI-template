@@ -21,8 +21,7 @@ result_backend = RedisAsyncResultBackend(
 {%- if cookiecutter.enable_rmq == "True" %}
 broker = AioPikaBroker(
     str(settings.rabbit_url),
-    {%- if cookiecutter.enable_redis == "True" %}result_backend=result_backend, {%- endif %}
-)
+){%- if cookiecutter.enable_redis == "True" %}.with_result_backend(result_backend){%- endif %}
 {%- elif cookiecutter.enable_redis == "True" %}
 broker = ListQueueBroker(
     str(settings.redis_url.with_path("/1")),
