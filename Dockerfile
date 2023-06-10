@@ -1,4 +1,4 @@
-FROM python:3.9.7-alpine3.13
+FROM python:3.9.17-alpine
 
 RUN apk add --no-cache \
   curl \
@@ -11,7 +11,10 @@ RUN apk add --no-cache \
   # For psycopg \
   postgresql-dev \
   # For mysql deps \
-  mariadb-connector-c-dev
+  mariadb-connector-c-dev \
+  # For UI \
+  ncurses \
+  bash
 
 RUN adduser --disabled-password fastapi_template
 RUN mkdir /projects /src
@@ -31,6 +34,9 @@ USER root
 RUN rm -rfv /src
 RUN apk del curl
 USER fastapi_template
+
+RUN git config --global user.name "Fastapi Template"
+RUN git config --global user.email "fastapi-template@no-reply.com"
 
 VOLUME /projects
 WORKDIR /projects
