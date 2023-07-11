@@ -1,10 +1,12 @@
-import re
-import pytest
 import os
-import tempfile
+import re
 import shutil
-from faker import Faker
+import tempfile
 from pathlib import Path
+
+import pytest
+from faker import Faker
+
 from fastapi_template.input_model import BuilderContext, Database
 from fastapi_template.tests.utils import run_docker_compose_command
 
@@ -55,7 +57,7 @@ def default_context(project_name: str) -> None:
         api_type="rest",
         ci_type="none",
         db="none",
-        db_info=Database(name="none").dict(),
+        db_info=Database(name="none").model_dump(),
         enable_redis=False,
         enable_taskiq=False,
         enable_migrations=False,

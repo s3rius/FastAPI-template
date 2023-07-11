@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class DummyModelDTO(BaseModel):
@@ -11,8 +11,7 @@ class DummyModelDTO(BaseModel):
     id: int
     name: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class DummyModelInputDTO(BaseModel):

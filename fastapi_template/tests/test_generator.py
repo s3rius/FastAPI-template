@@ -1,9 +1,10 @@
 from typing import Optional
-from fastapi_template.tests.utils import run_default_check
+
 import pytest
 
-from fastapi_template.input_model import BuilderContext
 from fastapi_template.cli import db_menu
+from fastapi_template.input_model import BuilderContext
+from fastapi_template.tests.utils import run_default_check
 
 
 def init_context(
@@ -15,7 +16,7 @@ def init_context(
     db_info = None
     for entry in db_menu.entries:
         if entry.code == db:
-            db_info = entry.additional_info.dict()
+            db_info = entry.additional_info.model_dump()
     if db_info is None:
         raise ValueError(f"Unknown database: {db}")
 
