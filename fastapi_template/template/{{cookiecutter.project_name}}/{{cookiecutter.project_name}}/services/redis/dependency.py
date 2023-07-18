@@ -5,6 +5,7 @@ from starlette.requests import Request
 
 {%- if cookiecutter.enable_taskiq == "True" %}
 from taskiq import TaskiqDepends
+
 {%- endif %}
 
 

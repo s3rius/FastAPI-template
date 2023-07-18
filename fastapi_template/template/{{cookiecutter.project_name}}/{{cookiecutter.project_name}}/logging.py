@@ -3,11 +3,11 @@ import sys
 from typing import Any, Union
 
 from loguru import logger
-
 from {{cookiecutter.project_name}}.settings import settings
 
 {%- if cookiecutter.otlp_enabled == "True" %}
 from opentelemetry.trace import INVALID_SPAN, INVALID_SPAN_CONTEXT, get_current_span
+
 {%- endif %}
 
 

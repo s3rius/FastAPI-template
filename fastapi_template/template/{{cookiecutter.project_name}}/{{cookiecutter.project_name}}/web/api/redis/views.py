@@ -1,7 +1,6 @@
-from redis.asyncio import ConnectionPool, Redis
 from fastapi import APIRouter
 from fastapi.param_functions import Depends
-
+from redis.asyncio import ConnectionPool, Redis
 from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_pool
 from {{cookiecutter.project_name}}.web.api.redis.schema import RedisValueDTO
 

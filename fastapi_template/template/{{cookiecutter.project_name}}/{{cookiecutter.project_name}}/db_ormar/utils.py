@@ -1,7 +1,7 @@
 import os
+
 from sqlalchemy import text
-from sqlalchemy.engine import URL, make_url
-from sqlalchemy.engine import create_engine
+from sqlalchemy.engine import URL, create_engine, make_url
 from {{cookiecutter.project_name}}.settings import settings
 
 {% if cookiecutter.db_info.name == "postgresql" -%}

@@ -1,21 +1,25 @@
 import strawberry
 from strawberry.fastapi import GraphQLRouter
-
 from {{cookiecutter.project_name}}.web.gql.context import get_context
 
 {%- if cookiecutter.enable_routers == "True" %}
 from {{cookiecutter.project_name}}.web.gql import echo
+
 {%- if cookiecutter.add_dummy == 'True' %}
 from {{cookiecutter.project_name}}.web.gql import dummy
+
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
 from {{cookiecutter.project_name}}.web.gql import redis
+
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
 from {{cookiecutter.project_name}}.web.gql import rabbit
+
 {%- endif %}
 {%- if cookiecutter.enable_kafka == "True" %}
 from {{cookiecutter.project_name}}.web.gql import kafka
+
 {%- endif %}
 
 {%- endif %}

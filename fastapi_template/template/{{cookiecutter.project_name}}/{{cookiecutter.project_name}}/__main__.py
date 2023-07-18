@@ -1,9 +1,8 @@
-import uvicorn
 import os
 import shutil
 
+import uvicorn
 from {{cookiecutter.project_name}}.settings import settings
-
 
 {%- if cookiecutter.prometheus_enabled == "True" %}
 def set_multiproc_dir() -> None:

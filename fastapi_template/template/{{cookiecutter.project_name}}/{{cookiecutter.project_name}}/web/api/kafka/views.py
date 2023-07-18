@@ -1,6 +1,5 @@
 from aiokafka import AIOKafkaProducer
 from fastapi import APIRouter, Depends
-
 from {{cookiecutter.project_name}}.services.kafka.dependencies import get_kafka_producer
 from {{cookiecutter.project_name}}.web.api.kafka.schema import KafkaMessage
 

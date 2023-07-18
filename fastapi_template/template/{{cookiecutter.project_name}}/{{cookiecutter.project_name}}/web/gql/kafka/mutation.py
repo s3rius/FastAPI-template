@@ -1,6 +1,5 @@
 import strawberry
 from strawberry.types import Info
-
 from {{cookiecutter.project_name}}.web.gql.context import Context
 from {{cookiecutter.project_name}}.web.gql.kafka.schema import KafkaMessageDTO
 

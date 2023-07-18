@@ -1,7 +1,8 @@
+import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 from starlette import status
-import pytest
+
 
 @pytest.mark.anyio
 async def test_health(client: AsyncClient, fastapi_app: FastAPI) -> None:

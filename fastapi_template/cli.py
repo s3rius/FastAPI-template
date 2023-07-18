@@ -1,23 +1,18 @@
-import shutil
-from fastapi_template.input_model import (
-    BuilderContext,
-    MenuEntry,
-    SingularMenuModel,
-    MultiselectMenuModel,
-    BaseMenuModel,
-    Database,
-    SKIP_ENTRY,
-)
-from importlib.metadata import version
-from typing import Callable, List, Optional
-from click import Command, Option
 import re
+import shutil
+from importlib.metadata import version
+from typing import Any, Callable, List, Optional
 
+from click import Command, Option
 from prompt_toolkit import prompt
 from prompt_toolkit.document import Document
 from prompt_toolkit.validation import ValidationError, Validator
-from typing import Any
 from termcolor import colored
+
+from fastapi_template.input_model import (SKIP_ENTRY, BaseMenuModel,
+                                          BuilderContext, Database, MenuEntry,
+                                          MultiselectMenuModel,
+                                          SingularMenuModel)
 
 
 class SnakeCaseValidator(Validator):
@@ -242,17 +237,18 @@ orm_menu = SingularMenuModel(
                 )
             ),
         ),
-        MenuEntry(
-            code="ormar",
-            user_view="Ormar",
-            description=(
-                "{what} is a great {feature} ORM.\n"
-                "It's compatible with pydantic models and alembic migrator.".format(
-                    what=colored("Ormar", color="green"),
-                    feature=colored("SQLAlchemy-based", color="cyan"),
-                )
-            ),
-        ),
+        # Commented out until ormar support pydanticV2.
+        # MenuEntry(
+        #     code="ormar",
+        #     user_view="Ormar",
+        #     description=(
+        #         "{what} is a great {feature} ORM.\n"
+        #         "It's compatible with pydantic models and alembic migrator.".format(
+        #             what=colored("Ormar", color="green"),
+        #             feature=colored("SQLAlchemy-based", color="cyan"),
+        #         )
+        #     ),
+        # ),
         MenuEntry(
             code="sqlalchemy",
             user_view="SQLAlchemy",

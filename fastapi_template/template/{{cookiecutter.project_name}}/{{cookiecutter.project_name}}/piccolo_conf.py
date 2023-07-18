@@ -1,7 +1,5 @@
-from {{cookiecutter.project_name}}.settings import settings
-
 from piccolo.conf.apps import AppRegistry
-
+from {{cookiecutter.project_name}}.settings import settings
 
 {%- if cookiecutter.db_info.name == "postgresql" %}
 from piccolo.engine.postgres import PostgresEngine

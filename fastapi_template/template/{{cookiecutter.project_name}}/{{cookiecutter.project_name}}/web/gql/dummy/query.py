@@ -2,7 +2,6 @@ from typing import List
 
 import strawberry
 from strawberry.types import Info
-
 from {{cookiecutter.project_name}}.db.dao.dummy_dao import DummyDAO
 from {{cookiecutter.project_name}}.web.gql.context import Context
 from {{cookiecutter.project_name}}.web.gql.dummy.schema import DummyModelDTO

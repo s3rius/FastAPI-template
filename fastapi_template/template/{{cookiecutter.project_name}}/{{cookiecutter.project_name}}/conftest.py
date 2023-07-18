@@ -1,65 +1,73 @@
 import asyncio
-from asyncio.events import AbstractEventLoop
 import sys
-from typing import Any, Generator, AsyncGenerator
+import uuid
+from asyncio.events import AbstractEventLoop
+from typing import Any, AsyncGenerator, Generator
+from unittest.mock import Mock
 
 import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
-import uuid
-from unittest.mock import Mock
 
 {%- if cookiecutter.enable_redis == "True" %}
 from fakeredis import FakeServer
 from fakeredis.aioredis import FakeConnection
 from redis.asyncio import ConnectionPool
 from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_pool
+
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
 from aio_pika import Channel
 from aio_pika.abc import AbstractExchange, AbstractQueue
 from aio_pika.pool import Pool
-from {{cookiecutter.project_name}}.services.rabbit.dependencies import get_rmq_channel_pool
-from {{cookiecutter.project_name}}.services.rabbit.lifetime import init_rabbit, shutdown_rabbit
+from {{cookiecutter.project_name}}.services.rabbit.dependencies import \
+    get_rmq_channel_pool
+from {{cookiecutter.project_name}}.services.rabbit.lifetime import (init_rabbit,
+                                                                    shutdown_rabbit)
 
 {%- endif %}
 {%- if cookiecutter.enable_kafka == "True" %}
 from aiokafka import AIOKafkaProducer
 from {{cookiecutter.project_name}}.services.kafka.dependencies import get_kafka_producer
-from {{cookiecutter.project_name}}.services.kafka.lifetime import init_kafka, shutdown_kafka
+from {{cookiecutter.project_name}}.services.kafka.lifetime import (init_kafka,
+                                                                   shutdown_kafka)
+
 {%- endif %}
 
 from {{cookiecutter.project_name}}.settings import settings
 from {{cookiecutter.project_name}}.web.application import get_app
 
-
 {%- if cookiecutter.orm == "sqlalchemy" %}
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncEngine, AsyncConnection, async_sessionmaker
+from sqlalchemy.ext.asyncio import (AsyncConnection, AsyncEngine, AsyncSession,
+                                    async_sessionmaker, create_async_engine)
 from {{cookiecutter.project_name}}.db.dependencies import get_db_session
 from {{cookiecutter.project_name}}.db.utils import create_database, drop_database
+
 {%- elif cookiecutter.orm == "tortoise" %}
-from tortoise.contrib.test import finalizer, initializer
-from tortoise import Tortoise
-from {{cookiecutter.project_name}}.db.config import MODELS_MODULES, TORTOISE_CONFIG
 import nest_asyncio
+from tortoise import Tortoise
+from tortoise.contrib.test import finalizer, initializer
+from {{cookiecutter.project_name}}.db.config import MODELS_MODULES, TORTOISE_CONFIG
 
 nest_asyncio.apply()
 {%- elif cookiecutter.orm == "ormar" %}
 from sqlalchemy.engine import create_engine
 from {{cookiecutter.project_name}}.db.config import database
 from {{cookiecutter.project_name}}.db.utils import create_database, drop_database
+
 {%- elif cookiecutter.orm == "psycopg" %}
 from psycopg import AsyncConnection
 from psycopg_pool import AsyncConnectionPool
-
 from {{cookiecutter.project_name}}.db.dependencies import get_db_pool
+
 {%- elif cookiecutter.orm == "piccolo" %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
 from piccolo.engine.postgres import PostgresEngine
+
 {%- endif %}
+from piccolo.conf.apps import Finder
 from piccolo.table import create_tables, drop_tables
 
-from piccolo.conf.apps import Finder
 {%- endif %}
 
 
