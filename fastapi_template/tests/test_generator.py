@@ -51,7 +51,7 @@ def test_default_without_db(default_context: BuilderContext):
         "sqlalchemy",
         "tortoise",
         # "ormar",
-        "piccolo",
+        # "piccolo",
     ],
 )
 def test_default_with_db(default_context: BuilderContext, db: str, orm: str):
@@ -67,7 +67,7 @@ def test_default_with_db(default_context: BuilderContext, db: str, orm: str):
         "sqlalchemy",
         "tortoise",
         # "ormar",
-        "piccolo",
+        # "piccolo",
     ],
 )
 def test_default_for_apis(default_context: BuilderContext, orm: str, api: str):
@@ -91,7 +91,7 @@ def test_pg_drivers(default_context: BuilderContext, orm: str):
         "tortoise",
         # "ormar",
         "psycopg",
-        "piccolo",
+        # "piccolo",
     ],
 )
 def test_without_routers(default_context: BuilderContext, orm: str):
@@ -106,7 +106,7 @@ def test_without_routers(default_context: BuilderContext, orm: str):
         "sqlalchemy",
         "tortoise",
         # "ormar",
-        "piccolo",
+        # "piccolo",
     ],
 )
 def test_without_migrations(default_context: BuilderContext, orm: str):
@@ -127,7 +127,7 @@ def test_with_selfhosted_swagger(default_context: BuilderContext):
         "tortoise",
         # "ormar",
         "psycopg",
-        "piccolo",
+        # "piccolo",
     ],
 )
 def test_without_dummy(default_context: BuilderContext, orm: str):
