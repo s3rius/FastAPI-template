@@ -1,6 +1,6 @@
 import strawberry
 from strawberry.fastapi import GraphQLRouter
-from {{cookiecutter.project_name}}.web.gql.context import get_context
+from {{cookiecutter.project_name}}.web.gql.context import Context, get_context
 
 {%- if cookiecutter.enable_routers == "True" %}
 from {{cookiecutter.project_name}}.web.gql import echo
@@ -65,7 +65,7 @@ schema = strawberry.Schema(
     Mutation,
 )
 
-gql_router = GraphQLRouter(
+gql_router: GraphQLRouter[Context, None] = GraphQLRouter(
     schema,
     graphiql=True,
     context_getter=get_context,

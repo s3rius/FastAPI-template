@@ -38,4 +38,4 @@ async def create_dummy_model(
     :param new_dummy_object: new dummy model item.
     :param dummy_dao: DAO for dummy models.
     """
-    await dummy_dao.create_dummy_model(**new_dummy_object.model_dump())
+    await dummy_dao.create_dummy_model(name=new_dummy_object.name)

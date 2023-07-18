@@ -14,10 +14,14 @@ readme = "README.md"
 python = "^3.9"
 fastapi = "^0.100.0"
 uvicorn = { version = "^0.22.0", extras = ["standard"] }
-pydantic = {version = "^2"}
+{%- if cookiecutter.pydanticv1 == "True" %}
+pydantic = { version = "^1", extras=["dotenv"] }
+{%- else %}
+pydantic = "^2"
+pydantic-settings = "^2"
+{%- endif %}
 yarl = "^1.9.2"
 ujson = "^5.8.0"
-pydantic-settings = "^2"
 {%- if cookiecutter.orm == "piccolo" %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
 piccolo = {version = "^0.117.0", extras = ["postgres"]}
@@ -180,6 +184,9 @@ allow_untyped_decorators = true
 warn_unused_ignores = false
 warn_return_any = false
 namespace_packages = true
+{%- if cookiecutter.api_type == "graphql" %}
+plugins = ["strawberry.ext.mypy_plugin"]
+{%- endif %}
 
 {%- if cookiecutter.enable_redis == "True" %}
 

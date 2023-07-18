@@ -2,9 +2,9 @@ from typing import Optional
 
 import pytest
 
-from fastapi_template.cli import db_menu
+from fastapi_template.cli import db_menu, orm_menu
 from fastapi_template.input_model import BuilderContext
-from fastapi_template.tests.utils import run_default_check
+from fastapi_template.tests.utils import model_dump_compat, run_default_check
 
 
 def init_context(
@@ -16,16 +16,24 @@ def init_context(
     db_info = None
     for entry in db_menu.entries:
         if entry.code == db:
-            db_info = entry.additional_info.model_dump()
+            db_info = model_dump_compat(entry.additional_info)
+            if entry.pydantic_v1:
+                context.pydanticv1 = True
     if db_info is None:
         raise ValueError(f"Unknown database: {db}")
 
     context.db = db
     context.db_info = db_info
     context.orm = orm
-
+    for entry in orm_menu.entries:
+        if entry.code == orm:
+            if entry.pydantic_v1:
+                context.pydanticv1 = True
+    
     if api is not None:
         context.api_type = api
+        if api == "graphql":
+            context.pydanticv1 = True
 
     context.enable_migrations = db != "none"
     context.add_dummy = db != "none"
@@ -50,8 +58,8 @@ def test_default_without_db(default_context: BuilderContext):
     [
         "sqlalchemy",
         "tortoise",
-        # "ormar",
-        # "piccolo",
+        "ormar",
+        "piccolo",
     ],
 )
 def test_default_with_db(default_context: BuilderContext, db: str, orm: str):
@@ -66,8 +74,8 @@ def test_default_with_db(default_context: BuilderContext, db: str, orm: str):
     [
         "sqlalchemy",
         "tortoise",
-        # "ormar",
-        # "piccolo",
+        "ormar",
+        "piccolo",
     ],
 )
 def test_default_for_apis(default_context: BuilderContext, orm: str, api: str):
@@ -89,9 +97,9 @@ def test_pg_drivers(default_context: BuilderContext, orm: str):
     [
         "sqlalchemy",
         "tortoise",
-        # "ormar",
+        "ormar",
         "psycopg",
-        # "piccolo",
+        "piccolo",
     ],
 )
 def test_without_routers(default_context: BuilderContext, orm: str):
@@ -105,8 +113,8 @@ def test_without_routers(default_context: BuilderContext, orm: str):
     [
         "sqlalchemy",
         "tortoise",
-        # "ormar",
-        # "piccolo",
+        "ormar",
+        "piccolo",
     ],
 )
 def test_without_migrations(default_context: BuilderContext, orm: str):
@@ -125,9 +133,9 @@ def test_with_selfhosted_swagger(default_context: BuilderContext):
     [
         "sqlalchemy",
         "tortoise",
-        # "ormar",
+        "ormar",
         "psycopg",
-        # "piccolo",
+        "piccolo",
     ],
 )
 def test_without_dummy(default_context: BuilderContext, orm: str):

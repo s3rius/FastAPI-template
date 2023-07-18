@@ -6,10 +6,8 @@ from pathlib import Path
 
 import pytest
 from faker import Faker
-
 from fastapi_template.input_model import BuilderContext, Database
-from fastapi_template.tests.utils import run_docker_compose_command
-
+from fastapi_template.tests.utils import run_docker_compose_command, model_dump_compat
 
 @pytest.fixture
 def project_name(worker_id: str) -> str:
@@ -57,7 +55,7 @@ def default_context(project_name: str) -> None:
         api_type="rest",
         ci_type="none",
         db="none",
-        db_info=Database(name="none").model_dump(),
+        db_info=model_dump_compat(Database(name="none")),
         enable_redis=False,
         enable_taskiq=False,
         enable_migrations=False,

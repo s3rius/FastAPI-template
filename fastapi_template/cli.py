@@ -76,6 +76,7 @@ api_menu = SingularMenuModel(
         MenuEntry(
             code="graphql",
             user_view="GrapQL API",
+            pydantic_v1=True,
             description=(
                 "Choose this option if you want to create a service with {name}.\n"
                 "It's more suitable for services with {reason} and deep nesting.".format(
@@ -237,18 +238,18 @@ orm_menu = SingularMenuModel(
                 )
             ),
         ),
-        # Commented out until ormar support pydanticV2.
-        # MenuEntry(
-        #     code="ormar",
-        #     user_view="Ormar",
-        #     description=(
-        #         "{what} is a great {feature} ORM.\n"
-        #         "It's compatible with pydantic models and alembic migrator.".format(
-        #             what=colored("Ormar", color="green"),
-        #             feature=colored("SQLAlchemy-based", color="cyan"),
-        #         )
-        #     ),
-        # ),
+        MenuEntry(
+            code="ormar",
+            user_view="Ormar",
+            pydantic_v1=True,
+            description=(
+                "{what} is a great {feature} ORM.\n"
+                "It's compatible with pydantic models and alembic migrator.".format(
+                    what=colored("Ormar", color="green"),
+                    feature=colored("SQLAlchemy-based", color="cyan"),
+                )
+            ),
+        ),
         MenuEntry(
             code="sqlalchemy",
             user_view="SQLAlchemy",
@@ -283,18 +284,19 @@ orm_menu = SingularMenuModel(
                 )
             ),
         ),
-        # MenuEntry(
-        #     code="piccolo",
-        #     user_view="Piccolo",
-        #     is_hidden=check_db(["postgresql", "sqlite"]),
-        #     description=(
-        #         "{what} is a great ORM for Postgresql and SQLite.\n"
-        #         "It's very flexible and fully {feature}.".format(
-        #             what=colored("Piccolo", color="green"),
-        #             feature=colored("tab-completable", color="cyan"),
-        #         )
-        #     ),
-        # ),
+        MenuEntry(
+            code="piccolo",
+            user_view="Piccolo",
+            pydantic_v1=True,
+            is_hidden=check_db(["postgresql", "sqlite"]),
+            description=(
+                "{what} is a great ORM for Postgresql and SQLite.\n"
+                "It's very flexible and fully {feature}.".format(
+                    what=colored("Piccolo", color="green"),
+                    feature=colored("tab-completable", color="cyan"),
+                )
+            ),
+        ),
     ],
 )
 
