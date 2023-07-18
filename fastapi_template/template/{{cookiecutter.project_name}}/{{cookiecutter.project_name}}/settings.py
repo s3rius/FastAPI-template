@@ -3,7 +3,7 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import List, Optional
 
-{%- if cookiecutter.pydanticv1 %}
+{%- if cookiecutter.pydanticv1 == "True" %}
 from pydantic import BaseSettings
 
 {%- else %}
