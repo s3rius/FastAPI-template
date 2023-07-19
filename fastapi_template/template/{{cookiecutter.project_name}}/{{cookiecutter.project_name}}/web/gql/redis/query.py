@@ -18,7 +18,7 @@ class Query:
         :param info: resolver context.
         :return: information from redis.
         """
-        async with Redis(connection_pool=info.context["redis_pool"]) as redis:
+        async with Redis(connection_pool=info.context.redis_pool) as redis:
             val = await redis.get(name=key)
         if isinstance(val, bytes):
             val = val.decode("utf-8")

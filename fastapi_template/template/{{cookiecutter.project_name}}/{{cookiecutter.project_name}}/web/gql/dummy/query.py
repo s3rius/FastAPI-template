@@ -31,9 +31,9 @@ class Query:
         :return: list of dummy objects from database.
         """
         {%- if cookiecutter.orm == "sqlalchemy" %}
-        dao = DummyDAO(info.context["db_connection"])
+        dao = DummyDAO(info.context.db_connection)
         {%- elif cookiecutter.orm == "psycopg" %}
-        dao = DummyDAO(info.context["db_pool"])
+        dao = DummyDAO(info.context.db_pool)
         {%- else %}
         dao = DummyDAO()
         {%- endif %}

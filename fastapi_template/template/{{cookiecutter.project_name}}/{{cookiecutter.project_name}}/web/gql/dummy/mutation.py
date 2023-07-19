@@ -26,9 +26,9 @@ class Mutation:
         :return: name of a dummy model.
         """
         {%- if cookiecutter.orm == "sqlalchemy" %}
-        dao = DummyDAO(info.context["db_connection"])
+        dao = DummyDAO(info.context.db_connection)
         {%- elif cookiecutter.orm == "psycopg" %}
-        dao = DummyDAO(info.context["db_pool"])
+        dao = DummyDAO(info.context.db_pool)
         {%- else %}
         dao = DummyDAO()
         {%- endif %}
