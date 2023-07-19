@@ -19,7 +19,7 @@ class Mutation:
         :param message: message to publish.
         :param info: current context.
         """
-        async with info.context['rabbit'].acquire() as conn:
+        async with info.context.rabbit.acquire() as conn:
             exchange = await conn.declare_exchange(
                 name=message.exchange_name,
                 auto_delete=True,

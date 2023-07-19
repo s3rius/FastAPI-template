@@ -155,6 +155,8 @@ def test_redis(default_context: BuilderContext, api: str):
     default_context.enable_redis = True
     default_context.enable_taskiq = True
     default_context.api_type = api
+    if api == "graphql":
+        default_context.pydanticv1 = True
     run_default_check(default_context)
 
 
@@ -169,6 +171,8 @@ def test_rmq(default_context: BuilderContext, api: str):
     default_context.enable_rmq = True
     default_context.enable_taskiq = True
     default_context.api_type = api
+    if api == "graphql":
+        default_context.pydanticv1 = True
     run_default_check(default_context)
 
 
