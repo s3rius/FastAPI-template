@@ -1,8 +1,10 @@
 import uuid
+
 import pytest
-from httpx import AsyncClient
 from fastapi import FastAPI
+from httpx import AsyncClient
 from starlette import status
+
 
 @pytest.mark.anyio
 async def test_echo(fastapi_app: FastAPI, client: AsyncClient) -> None:

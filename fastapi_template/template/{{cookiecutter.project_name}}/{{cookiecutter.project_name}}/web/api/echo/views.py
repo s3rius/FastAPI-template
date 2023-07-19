@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-
 from {{cookiecutter.project_name}}.web.api.echo.schema import Message
 
 router = APIRouter()

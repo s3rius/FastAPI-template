@@ -1,4 +1,4 @@
-FROM python:3.9.17-alpine
+FROM python:3.11.4-slim-bullseye
 
 RUN apk add --no-cache \
   curl \
@@ -11,7 +11,8 @@ RUN apk add --no-cache \
   # For psycopg \
   postgresql-dev \
   # For mysql deps \
-  mariadb-connector-c-dev \
+  default-libmysqlclient-dev \
+  pkg-config \
   # For UI \
   ncurses \
   bash

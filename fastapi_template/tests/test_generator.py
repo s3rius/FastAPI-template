@@ -1,9 +1,10 @@
 from typing import Optional
-from fastapi_template.tests.utils import run_default_check
+
 import pytest
 
+from fastapi_template.cli import db_menu, orm_menu
 from fastapi_template.input_model import BuilderContext
-from fastapi_template.cli import db_menu
+from fastapi_template.tests.utils import model_dump_compat, run_default_check
 
 
 def init_context(
@@ -15,16 +16,24 @@ def init_context(
     db_info = None
     for entry in db_menu.entries:
         if entry.code == db:
-            db_info = entry.additional_info.dict()
+            db_info = model_dump_compat(entry.additional_info)
+            if entry.pydantic_v1:
+                context.pydanticv1 = True
     if db_info is None:
         raise ValueError(f"Unknown database: {db}")
 
     context.db = db
     context.db_info = db_info
     context.orm = orm
-
+    for entry in orm_menu.entries:
+        if entry.code == orm:
+            if entry.pydantic_v1:
+                context.pydanticv1 = True
+    
     if api is not None:
         context.api_type = api
+        if api == "graphql":
+            context.pydanticv1 = True
 
     context.enable_migrations = db != "none"
     context.add_dummy = db != "none"
@@ -146,6 +155,8 @@ def test_redis(default_context: BuilderContext, api: str):
     default_context.enable_redis = True
     default_context.enable_taskiq = True
     default_context.api_type = api
+    if api == "graphql":
+        default_context.pydanticv1 = True
     run_default_check(default_context)
 
 
@@ -160,6 +171,8 @@ def test_rmq(default_context: BuilderContext, api: str):
     default_context.enable_rmq = True
     default_context.enable_taskiq = True
     default_context.api_type = api
+    if api == "graphql":
+        default_context.pydanticv1 = True
     run_default_check(default_context)
 
 

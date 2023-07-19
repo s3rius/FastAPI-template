@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import shlex
 import subprocess
-from typing import Optional
+from typing import Any, Optional
 from fastapi_template.input_model import BuilderContext
 from fastapi_template.__main__ import generate_project
 
@@ -58,3 +58,9 @@ def run_default_check(context: BuilderContext, without_pytest=False):
     assert build.returncode == 0
     tests = run_docker_compose_command("run --rm api pytest -vv .")
     assert tests.returncode == 0
+
+def model_dump_compat(model: Any):
+    if hasattr(model, 'model_dump'):
+        return model.model_dump()
+    return model.dict()
+    

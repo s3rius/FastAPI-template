@@ -1,11 +1,11 @@
 import uuid
+
 import fakeredis
 import pytest
-
 from fastapi import FastAPI
 from httpx import AsyncClient
-from starlette import status
 from redis.asyncio import ConnectionPool, Redis
+from starlette import status
 
 
 @pytest.mark.anyio

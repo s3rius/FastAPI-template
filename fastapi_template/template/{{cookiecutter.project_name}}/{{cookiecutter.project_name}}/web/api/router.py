@@ -3,22 +3,28 @@ from fastapi.routing import APIRouter
 {%- if cookiecutter.enable_routers == "True" %}
 {%- if cookiecutter.api_type == 'rest' %}
 from {{cookiecutter.project_name}}.web.api import echo
+
 {%- if cookiecutter.add_dummy == 'True' %}
 from {{cookiecutter.project_name}}.web.api import dummy
+
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
 from {{cookiecutter.project_name}}.web.api import redis
+
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
 from {{cookiecutter.project_name}}.web.api import rabbit
+
 {%- endif %}
 {%- if cookiecutter.enable_kafka == "True" %}
 from {{cookiecutter.project_name}}.web.api import kafka
+
 {%- endif %}
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.self_hosted_swagger == "True" %}
 from {{cookiecutter.project_name}}.web.api import docs
+
 {%- endif %}
 from {{cookiecutter.project_name}}.web.api import monitoring
 

@@ -1,23 +1,18 @@
-import shutil
-from fastapi_template.input_model import (
-    BuilderContext,
-    MenuEntry,
-    SingularMenuModel,
-    MultiselectMenuModel,
-    BaseMenuModel,
-    Database,
-    SKIP_ENTRY,
-)
-from importlib.metadata import version
-from typing import Callable, List, Optional
-from click import Command, Option
 import re
+import shutil
+from importlib.metadata import version
+from typing import Any, Callable, List, Optional
 
+from click import Command, Option
 from prompt_toolkit import prompt
 from prompt_toolkit.document import Document
 from prompt_toolkit.validation import ValidationError, Validator
-from typing import Any
 from termcolor import colored
+
+from fastapi_template.input_model import (SKIP_ENTRY, BaseMenuModel,
+                                          BuilderContext, Database, MenuEntry,
+                                          MultiselectMenuModel,
+                                          SingularMenuModel)
 
 
 class SnakeCaseValidator(Validator):
@@ -81,6 +76,7 @@ api_menu = SingularMenuModel(
         MenuEntry(
             code="graphql",
             user_view="GrapQL API",
+            pydantic_v1=True,
             description=(
                 "Choose this option if you want to create a service with {name}.\n"
                 "It's more suitable for services with {reason} and deep nesting.".format(
@@ -245,6 +241,7 @@ orm_menu = SingularMenuModel(
         MenuEntry(
             code="ormar",
             user_view="Ormar",
+            pydantic_v1=True,
             description=(
                 "{what} is a great {feature} ORM.\n"
                 "It's compatible with pydantic models and alembic migrator.".format(
@@ -290,6 +287,7 @@ orm_menu = SingularMenuModel(
         MenuEntry(
             code="piccolo",
             user_view="Piccolo",
+            pydantic_v1=True,
             is_hidden=check_db(["postgresql", "sqlite"]),
             description=(
                 "{what} is a great ORM for Postgresql and SQLite.\n"

@@ -1,9 +1,9 @@
 import strawberry
+from redis.asyncio import Redis
 from strawberry.types import Info
-
 from {{cookiecutter.project_name}}.web.gql.context import Context
 from {{cookiecutter.project_name}}.web.gql.redis.schema import RedisDTO
-from redis.asyncio import Redis
+
 
 @strawberry.type
 class Query:

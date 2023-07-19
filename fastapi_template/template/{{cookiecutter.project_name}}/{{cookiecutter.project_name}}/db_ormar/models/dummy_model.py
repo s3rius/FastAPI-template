@@ -1,5 +1,4 @@
 import ormar
-
 from {{cookiecutter.project_name}}.db.base import BaseMeta
 
 

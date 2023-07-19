@@ -1,5 +1,4 @@
-from sqlalchemy.orm import  DeclarativeBase
-
+from sqlalchemy.orm import DeclarativeBase
 from {{cookiecutter.project_name}}.db.meta import meta
 
 

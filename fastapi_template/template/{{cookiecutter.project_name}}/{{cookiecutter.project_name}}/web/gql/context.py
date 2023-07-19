@@ -4,26 +4,32 @@ from strawberry.fastapi import BaseContext
 {%- if cookiecutter.enable_redis == "True" %}
 from redis.asyncio import ConnectionPool
 from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_pool
+
 {%- endif %}
 
 {%- if cookiecutter.enable_rmq == "True" %}
-from aio_pika.pool import Pool
 from aio_pika import Channel
-from {{cookiecutter.project_name}}.services.rabbit.dependencies import get_rmq_channel_pool
+from aio_pika.pool import Pool
+from {{cookiecutter.project_name}}.services.rabbit.dependencies import \
+    get_rmq_channel_pool
+
 {%- endif %}
 
 {%- if cookiecutter.enable_kafka == "True" %}
 from aiokafka import AIOKafkaProducer
 from {{cookiecutter.project_name}}.services.kafka.dependencies import get_kafka_producer
+
 {%- endif %}
 
 
 {%- if cookiecutter.orm == "sqlalchemy" %}
 from sqlalchemy.ext.asyncio import AsyncSession
 from {{cookiecutter.project_name}}.db.dependencies import get_db_session
+
 {%- elif cookiecutter.orm == "psycopg" %}
 from psycopg_pool import AsyncConnectionPool
 from {{cookiecutter.project_name}}.db.dependencies import get_db_pool
+
 {%- endif %}
 
 

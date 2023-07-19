@@ -1,11 +1,11 @@
-import enum
-from typing import List, Optional, Callable, Any
-
-from pydantic import BaseModel
-import click
 import abc
+import enum
 from collections import UserDict
+from typing import Any, Callable, List, Optional
+
+import click
 from prompt_toolkit.shortcuts import checkboxlist_dialog, radiolist_dialog
+from pydantic import BaseModel
 
 try:
     from simple_term_menu import TerminalMenu
@@ -15,20 +15,21 @@ except Exception:
 
 class Database(BaseModel):
     name: str
-    image: Optional[str]
-    driver: Optional[str]
-    async_driver: Optional[str]
-    port: Optional[int]
-    driver_short: Optional[str]
+    image: Optional[str] = None
+    driver: Optional[str] = None
+    async_driver: Optional[str] = None
+    port: Optional[int] = None
+    driver_short: Optional[str] = None
 
 
 class MenuEntry(BaseModel):
     code: str
-    cli_name: Optional[str]
+    cli_name: Optional[str] = None
     user_view: str
     description: str
-    is_hidden: Optional[Callable[["BuilderContext"], bool]]
-    additional_info: Any
+    is_hidden: Optional[Callable[["BuilderContext"], bool]] = None
+    additional_info: Any = None
+    pydantic_v1: bool = False
 
     @property
     def generated_name(self) -> str:
@@ -83,13 +84,13 @@ class BaseMenuModel(BaseModel, abc.ABC):
 
 class SingularMenuModel(BaseMenuModel):
     code: str
-    cli_name: Optional[str]
+    cli_name: Optional[str] = None
     description: str
-    before_ask_fun: Optional[Callable[["BuilderContext"], Optional[MenuEntry]]]
+    before_ask_fun: Optional[Callable[["BuilderContext"], Optional[MenuEntry]]] = None
     after_ask_fun: Optional[
         Callable[["BuilderContext", "SingularMenuModel"], "BuilderContext"]
-    ]
-    parser: Optional[Callable[[str], Any]]
+    ] = None
+    parser: Optional[Callable[[str], Any]] = None
 
     def get_cli_options(self) -> List[click.Option]:
         cli_name = self.code
@@ -158,6 +159,8 @@ class SingularMenuModel(BaseMenuModel):
             return
 
         setattr(context, self.code, chosen_entry.code)
+        if chosen_entry.pydantic_v1:
+            context.pydanticv1 = True
 
         return context
 
@@ -236,6 +239,10 @@ class MultiselectMenuModel(BaseMenuModel):
 
         for entry in chosen_entries:
             setattr(context, entry.code, True)
+        
+        for ch_entry in chosen_entries:
+            if ch_entry.pydantic_v1:
+                context.pydanticv1 = True
 
         return context
 
