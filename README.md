@@ -45,11 +45,12 @@ docker run --rm -it -v "$(pwd):/projects" s3rius/fastapi_template
 One of the coolest features is that this project is extremely configurable.
 You can choose between different databases and even ORMs, or
 you can even generate a project without a database!
-Currently SQLAlchemy1.4, TortoiseORM, Piccolo and Ormar are supported.
+Currently SQLAlchemy 2.0, TortoiseORM, Piccolo and Ormar are supported.
 
 This project can run as TUI or CLI and has excellent code documentation.
 
 Generator features:
+- Pydantic V2 (Where it's possible. Some libs doesn't have support);
 - You can choose between GraphQL and REST api;
 - Different databases support;
 - Different ORMs support;
