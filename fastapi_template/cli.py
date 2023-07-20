@@ -380,6 +380,7 @@ features_menu = MultiselectMenuModel(
             code="add_dummy",
             cli_name="dummy",
             user_view="Add dummy model",
+            is_hidden=lambda ctx: ctx.orm == "none",
             description=(
                 "This option creates {what} as an example of how to use chosen ORM.\n"
                 "Also this option will generate you an example of {dao}.".format(
