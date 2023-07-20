@@ -62,6 +62,9 @@
     "pydanticv1": {
         "type": "bool"
     },
+    "gunicorn": {
+        "type": "bool"
+    },
     "_extensions": [
         "cookiecutter.extensions.RandomStringExtension"
     ],

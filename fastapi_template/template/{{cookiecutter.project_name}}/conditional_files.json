@@ -215,5 +215,11 @@
         "resources": [
             "{{cookiecutter.project_name}}/tkq.py"
         ]
+    },
+    "Gunicorn support":{
+        "enabled": "{{cookiecutter.gunicorn}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/gunicorn_runner.py"
+        ]
     }
 }

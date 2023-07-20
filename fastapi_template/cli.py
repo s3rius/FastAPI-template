@@ -9,10 +9,15 @@ from prompt_toolkit.document import Document
 from prompt_toolkit.validation import ValidationError, Validator
 from termcolor import colored
 
-from fastapi_template.input_model import (SKIP_ENTRY, BaseMenuModel,
-                                          BuilderContext, Database, MenuEntry,
-                                          MultiselectMenuModel,
-                                          SingularMenuModel)
+from fastapi_template.input_model import (
+    SKIP_ENTRY,
+    BaseMenuModel,
+    BuilderContext,
+    Database,
+    MenuEntry,
+    MultiselectMenuModel,
+    SingularMenuModel,
+)
 
 
 class SnakeCaseValidator(Validator):
@@ -506,6 +511,17 @@ features_menu = MultiselectMenuModel(
                         "super fast",
                         color="cyan",
                     ),
+                )
+            ),
+        ),
+        MenuEntry(
+            code="gunicorn",
+            cli_name="gunicorn",
+            user_view="Add gunicorn server",
+            description=(
+                "This option adds {what} server for running application.\n"
+                "It's more performant than uvicorn, and recommended for production.".format(
+                    what=colored("gunicorn", color="green")
                 )
             ),
         ),
