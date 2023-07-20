@@ -29,7 +29,7 @@ def init_context(
         if entry.code == orm:
             if entry.pydantic_v1:
                 context.pydanticv1 = True
-    
+
     if api is not None:
         context.api_type = api
         if api == "graphql":
@@ -183,6 +183,11 @@ def test_telemetry_pre_commit(default_context: BuilderContext):
     default_context.otlp_enabled = True
     default_context.sentry_enabled = True
     default_context.enable_loguru = True
+    run_default_check(default_context, without_pytest=True)
+
+
+def test_gunicorn(default_context: BuilderContext):
+    default_context.gunicorn = True
     run_default_check(default_context, without_pytest=True)
 
 

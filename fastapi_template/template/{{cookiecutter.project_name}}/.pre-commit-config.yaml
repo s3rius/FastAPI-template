@@ -26,18 +26,18 @@ repos:
 
     - repo: local
       hooks:
-          - id: black
-            name: Format with Black
-            entry: poetry run black
-            language: system
-            types: [python]
-
           - id: autoflake
             name: autoflake
             entry: poetry run autoflake
             language: system
             types: [python]
             args: [--in-place, --remove-all-unused-imports, --remove-duplicate-keys]
+
+          - id: black
+            name: Format with Black
+            entry: poetry run black
+            language: system
+            types: [python]
 
           - id: isort
             name: isort

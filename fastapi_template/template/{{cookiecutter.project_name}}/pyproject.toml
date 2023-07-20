@@ -14,6 +14,9 @@ readme = "README.md"
 python = "^3.9"
 fastapi = "^0.100.0"
 uvicorn = { version = "^0.22.0", extras = ["standard"] }
+{%- if cookiecutter.gunicorn == "True" %}
+gunicorn = "^21.2.0"
+{%- endif %}
 {%- if cookiecutter.pydanticv1 == "True" %}
 pydantic = { version = "^1", extras=["dotenv"] }
 {%- else %}
