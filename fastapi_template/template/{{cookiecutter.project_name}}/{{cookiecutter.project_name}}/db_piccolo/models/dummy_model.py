@@ -1,5 +1,5 @@
-from piccolo.table import Table
 from piccolo.columns import Varchar
+from piccolo.table import Table
 
 
 class DummyModel(Table):

@@ -1,9 +1,12 @@
-import uvicorn
 import os
 import shutil
 
-from {{cookiecutter.project_name}}.settings import settings
+import uvicorn
 
+{%- if cookiecutter.gunicorn == "True" %}
+from {{cookiecutter.project_name}}.gunicorn_runner import GunicornApplication
+{%- endif %}
+from {{cookiecutter.project_name}}.settings import settings
 
 {%- if cookiecutter.prometheus_enabled == "True" %}
 def set_multiproc_dir() -> None:
@@ -40,6 +43,32 @@ def main() -> None:
     {%- if cookiecutter.orm == "piccolo" %}
     os.environ['PICCOLO_CONF'] = "{{cookiecutter.project_name}}.piccolo_conf"
     {%- endif %}
+    {%- if cookiecutter.gunicorn == "True" %}
+    if settings.reload:
+        uvicorn.run(
+            "{{cookiecutter.project_name}}.web.application:get_app",
+            workers=settings.workers_count,
+            host=settings.host,
+            port=settings.port,
+            reload=settings.reload,
+            log_level=settings.log_level.value.lower(),
+            factory=True,
+        )
+    else:
+        # We choose gunicorn only if reload
+        # option is not used, because reload
+        # feature doen't work with Uvicorn workers.
+        GunicornApplication(
+            "{{cookiecutter.project_name}}.web.application:get_app",
+            host=settings.host,
+            port=settings.port,
+            workers=settings.workers_count,
+            factory=True,
+            accesslog="-",
+            loglevel=settings.log_level.value.lower(),
+            access_log_format='%r "-" %s "-" %Tf',  # noqa: WPS323
+        ).run()
+    {%- else %}
     uvicorn.run(
         "{{cookiecutter.project_name}}.web.application:get_app",
         workers=settings.workers_count,
@@ -49,7 +78,7 @@ def main() -> None:
         log_level=settings.log_level.value.lower(),
         factory=True,
     )
-
+    {%- endif %}
 
 if __name__ == "__main__":
     main()

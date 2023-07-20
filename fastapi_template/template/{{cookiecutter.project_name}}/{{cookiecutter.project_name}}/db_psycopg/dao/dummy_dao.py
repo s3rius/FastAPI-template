@@ -1,12 +1,12 @@
 from termios import OFDEL
-from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
-from typing import Any
+from typing import Any, List, Optional
 
 from fastapi import Depends
-from psycopg_pool import AsyncConnectionPool
 from psycopg.rows import class_row
+from psycopg_pool import AsyncConnectionPool
 from {{cookiecutter.project_name}}.db.dependencies import get_db_pool
-from typing import List, Optional
+from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
+
 
 class DummyDAO:
     """Class for accessing dummy table."""

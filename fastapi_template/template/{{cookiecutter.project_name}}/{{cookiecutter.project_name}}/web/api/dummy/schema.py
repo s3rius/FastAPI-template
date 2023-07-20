@@ -1,5 +1,10 @@
 from pydantic import BaseModel
 
+{%- if cookiecutter.pydanticv1 != "True" %}
+from pydantic import ConfigDict
+
+{%- endif %}
+
 
 class DummyModelDTO(BaseModel):
     """
@@ -11,9 +16,13 @@ class DummyModelDTO(BaseModel):
     id: int
     name: str
 
+
+    {%- if cookiecutter.pydanticv1 == "True" %}
     class Config:
         orm_mode = True
-
+    {%- else %}
+    model_config = ConfigDict(from_attributes=True)
+    {%- endif %}
 
 class DummyModelInputDTO(BaseModel):
     """DTO for creating new dummy model."""

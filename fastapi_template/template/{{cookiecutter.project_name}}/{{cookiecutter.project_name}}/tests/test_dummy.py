@@ -1,17 +1,22 @@
 import uuid
-import pytest
-from httpx import AsyncClient
-from fastapi import FastAPI
 from typing import Any
+
+import pytest
+from fastapi import FastAPI
+from httpx import AsyncClient
+
 {%- if cookiecutter.orm == 'sqlalchemy' %}
 from sqlalchemy.ext.asyncio import AsyncSession
+
 {%- elif cookiecutter.orm == 'psycopg' %}
 from psycopg.connection_async import AsyncConnection
 from psycopg_pool import AsyncConnectionPool
+
 {%- endif %}
 from starlette import status
-from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
 from {{cookiecutter.project_name}}.db.dao.dummy_dao import DummyDAO
+from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
+
 
 @pytest.mark.anyio
 async def test_creation(

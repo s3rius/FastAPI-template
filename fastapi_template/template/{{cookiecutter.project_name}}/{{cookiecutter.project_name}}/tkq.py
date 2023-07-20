@@ -1,14 +1,15 @@
-from {{cookiecutter.project_name}}.settings import settings
-
 import taskiq_fastapi
-from taskiq import TaskiqState, ZeroMQBroker, InMemoryBroker, TaskiqEvents
+from taskiq import InMemoryBroker, ZeroMQBroker
+from {{cookiecutter.project_name}}.settings import settings
 
 {%- if cookiecutter.enable_redis == "True" %}
 from taskiq_redis import ListQueueBroker, RedisAsyncResultBackend
+
 {%- endif %}
 
 {%- if cookiecutter.enable_rmq == "True" %}
 from taskiq_aio_pika import AioPikaBroker
+
 {%- endif %}
 
 {%- if cookiecutter.enable_redis == "True" %}

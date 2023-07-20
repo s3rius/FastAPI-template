@@ -2,10 +2,10 @@ from typing import List
 
 from fastapi import APIRouter
 from fastapi.param_functions import Depends
-
 from {{cookiecutter.project_name}}.db.dao.dummy_dao import DummyDAO
 from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
-from {{cookiecutter.project_name}}.web.api.dummy.schema import DummyModelDTO, DummyModelInputDTO
+from {{cookiecutter.project_name}}.web.api.dummy.schema import (DummyModelDTO,
+                                                                DummyModelInputDTO)
 
 router = APIRouter()
 
@@ -38,4 +38,4 @@ async def create_dummy_model(
     :param new_dummy_object: new dummy model item.
     :param dummy_dao: DAO for dummy models.
     """
-    await dummy_dao.create_dummy_model(**new_dummy_object.dict())
+    await dummy_dao.create_dummy_model(name=new_dummy_object.name)

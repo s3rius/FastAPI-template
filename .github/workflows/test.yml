@@ -40,4 +40,4 @@ jobs:
           git config --global user.name "fastapi_template"
           git config --global user.email "fastapi_template@pytest.python"
       - name: Run tests
-        run: poetry run pytest -vv --exitfirst -n auto
+        run: poetry run pytest -vv

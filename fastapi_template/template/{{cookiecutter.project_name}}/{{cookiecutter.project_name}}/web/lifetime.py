@@ -1,74 +1,84 @@
-from typing import Awaitable, Callable
 import logging
-from fastapi import FastAPI
+from typing import Awaitable, Callable
 
+from fastapi import FastAPI
 from {{cookiecutter.project_name}}.settings import settings
 
 {%- if cookiecutter.prometheus_enabled == "True" %}
-from prometheus_fastapi_instrumentator.instrumentation import PrometheusFastApiInstrumentator
+from prometheus_fastapi_instrumentator.instrumentation import \
+    PrometheusFastApiInstrumentator
+
 {%- endif %}
 
 {%- if cookiecutter.enable_redis == "True" %}
-from {{cookiecutter.project_name}}.services.redis.lifetime import init_redis, shutdown_redis
+from {{cookiecutter.project_name}}.services.redis.lifetime import (init_redis,
+                                                                   shutdown_redis)
+
 {%- endif %}
 
 {%- if cookiecutter.enable_rmq == "True" %}
-from {{cookiecutter.project_name}}.services.rabbit.lifetime import init_rabbit, shutdown_rabbit
+from {{cookiecutter.project_name}}.services.rabbit.lifetime import (init_rabbit,
+                                                                    shutdown_rabbit)
+
 {%- endif %}
 
 {%- if cookiecutter.enable_kafka == "True" %}
-from {{cookiecutter.project_name}}.services.kafka.lifetime import init_kafka, shutdown_kafka
+from {{cookiecutter.project_name}}.services.kafka.lifetime import (init_kafka,
+                                                                   shutdown_kafka)
+
 {%- endif %}
 
 {%- if cookiecutter.enable_taskiq == "True" %}
 from {{cookiecutter.project_name}}.tkq import broker
+
 {%- endif %}
 
 
 {%- if cookiecutter.orm == "ormar" %}
 from {{cookiecutter.project_name}}.db.config import database
+
 {%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations != "True" %}
 from sqlalchemy.engine import create_engine
 from {{cookiecutter.project_name}}.db.meta import meta
 from {{cookiecutter.project_name}}.db.models import load_all_models
+
 {%- endif %}
 {%- endif %}
 
 {%- if cookiecutter.otlp_enabled == "True" %}
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
-    OTLPSpanExporter,
-)
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from opentelemetry.sdk.resources import (
-    SERVICE_NAME,
-    TELEMETRY_SDK_LANGUAGE,
-    DEPLOYMENT_ENVIRONMENT,
-    Resource,
-)
+from opentelemetry.sdk.resources import (DEPLOYMENT_ENVIRONMENT, SERVICE_NAME,
+                                         TELEMETRY_SDK_LANGUAGE, Resource)
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.trace import set_tracer_provider
+
 {%- if cookiecutter.enable_redis == "True" %}
 from opentelemetry.instrumentation.redis import RedisInstrumentor
+
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" and cookiecutter.orm in ["ormar", "tortoise"] %}
 from opentelemetry.instrumentation.asyncpg import AsyncPGInstrumentor
+
 {%- endif %}
 {%- if cookiecutter.orm == "sqlalchemy" %}
-from opentelemetry.instrumentation.sqlalchemy import (
-    SQLAlchemyInstrumentor,
-)
+from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
 from opentelemetry.instrumentation.aio_pika import AioPikaInstrumentor
+
 {%- endif %}
 {%- if cookiecutter.enable_loguru != "True" %}
 from opentelemetry.instrumentation.logging import LoggingInstrumentor
+
 {%- endif %}
 {%- endif %}
 
 {%- if cookiecutter.orm == "psycopg" %}
 import psycopg_pool
+
 
 async def _setup_db(app: FastAPI) -> None:
     """
@@ -81,15 +91,13 @@ async def _setup_db(app: FastAPI) -> None:
 {%- endif %}
 
 {%- if cookiecutter.orm == "sqlalchemy" %}
-from sqlalchemy.ext.asyncio import (
-    create_async_engine,
-    async_sessionmaker,
-)
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 {%- if cookiecutter.enable_migrations != "True" %}
 from {{cookiecutter.project_name}}.db.meta import meta
 from {{cookiecutter.project_name}}.db.models import load_all_models
+
 {%- endif %}
 
 
@@ -259,6 +267,7 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pr
 
     @app.on_event("startup")
     async def _startup() -> None:  # noqa: WPS430
+        app.middleware_stack = None
         {%- if cookiecutter.enable_taskiq == "True" %}
         if not broker.is_worker_process:
             await broker.startup()
@@ -290,6 +299,7 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pr
         {%- if cookiecutter.prometheus_enabled == "True" %}
         setup_prometheus(app)
         {%- endif %}
+        app.middleware_stack = app.build_middleware_stack()
         pass  # noqa: WPS420
 
     return _startup

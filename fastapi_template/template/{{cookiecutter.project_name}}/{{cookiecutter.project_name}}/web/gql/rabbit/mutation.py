@@ -1,9 +1,8 @@
 import strawberry
+from aio_pika import Message
 from strawberry.types import Info
-
 from {{cookiecutter.project_name}}.web.gql.context import Context
 from {{cookiecutter.project_name}}.web.gql.rabbit.schema import RabbitMessageDTO
-from aio_pika import Message
 
 
 @strawberry.type

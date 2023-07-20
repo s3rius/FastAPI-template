@@ -1,8 +1,8 @@
 from aio_pika import Channel, Message
 from aio_pika.pool import Pool
 from fastapi import APIRouter, Depends
-
-from {{cookiecutter.project_name}}.services.rabbit.dependencies import get_rmq_channel_pool
+from {{cookiecutter.project_name}}.services.rabbit.dependencies import \
+    get_rmq_channel_pool
 from {{cookiecutter.project_name}}.web.api.rabbit.schema import RMQMessageDTO
 
 router = APIRouter()

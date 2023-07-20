@@ -3,7 +3,14 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import List, Optional
 
+{%- if cookiecutter.pydanticv1 == "True" %}
 from pydantic import BaseSettings
+
+{%- else %}
+from pydantic_settings import BaseSettings
+
+{%- endif %}
+
 from yarl import URL
 
 TEMP_DIR = Path(gettempdir())

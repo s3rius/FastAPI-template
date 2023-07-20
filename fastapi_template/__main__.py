@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from cookiecutter.exceptions import FailedHookException, OutputDirExistsException
+from cookiecutter.exceptions import (FailedHookException,
+                                     OutputDirExistsException)
 from cookiecutter.main import cookiecutter
 from termcolor import cprint
 

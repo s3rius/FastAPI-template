@@ -1,36 +1,45 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.responses import UJSONResponse
-import logging
-from {{cookiecutter.project_name}}.web.api.router import api_router
 from {{cookiecutter.project_name}}.settings import settings
+from {{cookiecutter.project_name}}.web.api.router import api_router
+
 {%- if cookiecutter.api_type == 'graphql' %}
 from {{cookiecutter.project_name}}.web.gql.router import gql_router
+
 {%- endif %}
-from {{cookiecutter.project_name}}.web.lifetime import register_startup_event, register_shutdown_event
 from importlib import metadata
+
+from {{cookiecutter.project_name}}.web.lifetime import (register_shutdown_event,
+                                                        register_startup_event)
 
 {%- if cookiecutter.orm == 'tortoise' %}
 from tortoise.contrib.fastapi import register_tortoise
 from {{cookiecutter.project_name}}.db.config import TORTOISE_CONFIG
+
 {%- endif %}
 
 {%- if cookiecutter.sentry_enabled == "True" %}
 import sentry_sdk
-from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.fastapi import FastApiIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
+
 {%- if cookiecutter.orm == "sqlalchemy" %}
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+
 {%- endif %}
 {%- endif %}
 
 {%- if cookiecutter.enable_loguru == "True" %}
 from {{cookiecutter.project_name}}.logging import configure_logging
+
 {%- endif %}
 
 {%- if cookiecutter.self_hosted_swagger == 'True' %}
-from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
+from fastapi.staticfiles import StaticFiles
 
 APP_ROOT = Path(__file__).parent.parent
 {%- endif %}

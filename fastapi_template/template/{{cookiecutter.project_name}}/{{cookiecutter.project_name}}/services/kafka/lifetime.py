@@ -1,6 +1,5 @@
 from aiokafka import AIOKafkaProducer
 from fastapi import FastAPI
-
 from {{cookiecutter.project_name}}.settings import settings
 
 

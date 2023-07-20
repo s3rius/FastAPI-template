@@ -1,4 +1,4 @@
-from tortoise import models, fields
+from tortoise import fields, models
 
 
 class DummyModel(models.Model):

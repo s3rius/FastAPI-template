@@ -1,5 +1,6 @@
-from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
 from typing import List, Optional
+
+from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
 
 
 class DummyDAO:
