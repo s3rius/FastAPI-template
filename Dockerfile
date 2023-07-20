@@ -1,4 +1,4 @@
-FROM python:3.11.4-slim-bullseye
+FROM python:3.11.4-alpine
 
 RUN apk add --no-cache \
   curl \
@@ -11,8 +11,7 @@ RUN apk add --no-cache \
   # For psycopg \
   postgresql-dev \
   # For mysql deps \
-  default-libmysqlclient-dev \
-  pkg-config \
+  mariadb-dev \
   # For UI \
   ncurses \
   bash
@@ -26,7 +25,7 @@ WORKDIR /src
 
 ENV PATH ${PATH}:/home/fastapi_template/.local/bin
 
-RUN pip install poetry==1.4.2
+RUN pip install poetry==1.5.1
 
 COPY . /src/
 RUN pip install .
