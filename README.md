@@ -52,6 +52,7 @@ This project can run as TUI or CLI and has excellent code documentation.
 Generator features:
 - Pydantic V2 (Where it's possible. Some libs doesn't have support);
 - You can choose between GraphQL and REST api;
+- Uvicorn and gunicorn;
 - Different databases support;
 - Different ORMs support;
 - Optional migrations for each ORM except raw drivers;
@@ -102,5 +103,6 @@ Options:
   --opentelemetry                 Add opentelemetry integration
   --traefik                       Adds traefik labels to docker container
   --kafka                         Add Kafka support
+  --gunicorn                      Add gunicorn server
   --help                          Show this message and exit.
 ```
