@@ -7,7 +7,7 @@ from typing import List, Optional
 from pydantic import BaseSettings
 
 {%- else %}
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 {%- endif %}
 
@@ -200,10 +200,20 @@ class Settings(BaseSettings):
         )
     {%- endif %}
 
+    {%- if cookiecutter.pydanticv1 == "True" %}
     class Config:
         env_file = ".env"
         env_prefix = "{{cookiecutter.project_name | upper }}_"
         env_file_encoding = "utf-8"
+
+    {%- else %}
+    model_config = SettingsConfigDict(
+        env_file = ".env",
+        env_prefix = "{{cookiecutter.project_name | upper }}_",
+        env_file_encoding = "utf-8",
+    )
+    {%- endif %}
+
 
 
 settings = Settings()
