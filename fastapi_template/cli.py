@@ -315,7 +315,7 @@ features_menu = MultiselectMenuModel(
         MenuEntry(
             code="pydanticv1",
             cli_name="pydantic-v1",
-            user_view="Disable pydantic settings",
+            user_view="Use older version of pydantic",
             description="Use pydantic version ^1 instead of ^2",
         ),
         MenuEntry(
