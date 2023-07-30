@@ -17,6 +17,7 @@ def generate_project(context: BuilderContext) -> None:
 
     :param context: builder_context
     """
+    context.pydanticv1 = True
     try:
         cookiecutter(
             template=f"{script_dir}/template",
