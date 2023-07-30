@@ -313,17 +313,10 @@ features_menu = MultiselectMenuModel(
     before_ask=do_not_ask_features_if_quite,
     entries=[
         MenuEntry(
-            code="disable_pydantic_settings",
-            cli_name="pydantic_settings",
+            code="pydanticv1",
+            cli_name="pydantic-v1",
             user_view="Disable pydantic settings",
-            description=(
-                "{name} provides optional Pydantic features for loading a settings or config class from environment variables or secrets files.\n".format(
-                    name=colored(
-                        "Pydantic-Settings",
-                        color="green",
-                    ),
-                )
-            ),
+            description="Use pydantic version ^1 instead of ^2",
         ),
         MenuEntry(
             code="enable_redis",
