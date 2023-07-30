@@ -313,6 +313,19 @@ features_menu = MultiselectMenuModel(
     before_ask=do_not_ask_features_if_quite,
     entries=[
         MenuEntry(
+            code="disable_pydantic_settings",
+            cli_name="pydantic_settings",
+            user_view="Disable pydantic settings",
+            description=(
+                "{name} provides optional Pydantic features for loading a settings or config class from environment variables or secrets files.\n".format(
+                    name=colored(
+                        "Pydantic-Settings",
+                        color="green",
+                    ),
+                )
+            ),
+        ),
+        MenuEntry(
             code="enable_redis",
             cli_name="redis",
             user_view="Add redis support",
