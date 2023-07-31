@@ -313,6 +313,12 @@ features_menu = MultiselectMenuModel(
     before_ask=do_not_ask_features_if_quite,
     entries=[
         MenuEntry(
+            code="pydanticv1",
+            cli_name="pydantic-v1",
+            user_view="Use older version of pydantic",
+            description="Use pydantic version ^1 instead of ^2",
+        ),
+        MenuEntry(
             code="enable_redis",
             cli_name="redis",
             user_view="Add redis support",
