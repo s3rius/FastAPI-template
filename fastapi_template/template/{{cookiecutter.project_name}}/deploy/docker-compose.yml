@@ -106,7 +106,7 @@ services:
   {%- if cookiecutter.db_info.name == "mongodb"%}
   db:
     image: {{cookiecutter.db_info.image}}
-    port:
+    ports:
     - "{{cookiecutter.db_info.port}}:{{cookiecutter.db_info.port}}"
     restart: always
     environment:

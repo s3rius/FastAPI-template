@@ -56,7 +56,11 @@ class Settings(BaseSettings):
     db_port: int = {{cookiecutter.db_info.port}}
     db_user: str = "{{cookiecutter.project_name}}"
     db_pass: str = "{{cookiecutter.project_name}}"
+    {%- if cookiecutter.db_info.name != "sqlite" %}
+    db_base: str = "admin"
+    {%- else %}
     db_base: str = "{{cookiecutter.project_name}}"
+    {%- endif %}
     {%- endif %}
     db_echo: bool = False
 

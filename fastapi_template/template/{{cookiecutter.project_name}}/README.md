@@ -51,7 +51,9 @@ $ tree "{{cookiecutter.project_name}}"
 ├── conftest.py  # Fixtures for all tests. 
 {%- if cookiecutter.db_info.name != "none" %}
 ├── db  # module contains db configurations
+{%- if cookiecutter.db_info.name != "mongodb" %}
 │   ├── dao  # Data Access Objects. Contains different classes to interact with database.
+{%- endif %}
 │   └── models  # Package contains different models for ORMs.
 {%- endif %}
 ├── __main__.py  # Startup script. Starts uvicorn.
@@ -129,6 +131,15 @@ By default it runs:
 
 
 You can read more about pre-commit here: https://pre-commit.com/
+
+{%- if cookiecutter.db_info.name == 'mongodb' %}
+## MongoDB
+
+Start a MongoDB container via docker compose by:
+```shell
+docker-compose -f deploy/docker-compose.yml --project-directory . up -d db
+```
+{%- endif %}
 
 {%- if cookiecutter.enable_kube == 'True' %}
 
