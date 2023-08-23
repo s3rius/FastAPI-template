@@ -123,7 +123,7 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
 {%- if cookiecutter.orm == "beanie" %}
 import beanie
 from motor.motor_asyncio import AsyncIOMotorClient
-from {{cookiecutter.projecT_name}}.db.models.dummy_model import DummyModel
+from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
 async def _setup_db(app: FastAPI) -> None:
     client = AsyncIOMotorClient(
         f"mongodb://{settings.db_user}:{settings.db_pass}"

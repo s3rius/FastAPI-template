@@ -56,9 +56,20 @@
             "alembic.ini",
             "{{cookiecutter.project_name}}/web/api/dummy",
             "{{cookiecutter.project_name}}/web/gql/dummy",
-            "{{cookiecutter.project_name}}/db_sa",
             "{{cookiecutter.project_name}}/tests/test_dummy.py",
             "deploy/kube/db.yml"
+        ]
+    },
+    "SQLAlchemy support": {
+        "enabled": "{{cookiecutter.db_info.name not in ['none', 'mongodb']}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/db_sa"
+        ]
+    },
+    "Beanie support": {
+        "enabled": "{{cookiecutter.db_info.name == 'mongodb'}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/db_beanie"
         ]
     },
     "Postgres and MySQL support": {
@@ -188,7 +199,7 @@
         "resources": [
             "{{cookiecutter.project_name}}/db_beanie"
         ]
-    }
+    },
     "Postgresql DB": {
         "enabled": "{{cookiecutter.db_info.name == 'postgresql'}}",
         "resources": [

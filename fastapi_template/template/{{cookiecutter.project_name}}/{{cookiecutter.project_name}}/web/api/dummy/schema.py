@@ -17,7 +17,7 @@ class DummyModelDTO(BaseModel):
     It returned when accessing dummy models from the API.
     """
 
-    {%- if cookiecutter.dbinfo.name != "mongodb" %}
+    {%- if cookiecutter.db_info.name != "mongodb" %}
     id: int
     {%- else %}
     id: str
