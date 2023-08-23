@@ -25,6 +25,10 @@ class DummyModelDTO(BaseModel):
     @field_validator("id", mode="before")
     @classmethod
     def parse_object_id(cls, document_id: ObjectId) -> str:
+        """
+        Validator for turning an incoming `ObjectId` into a
+        json serializable `str`.
+        """
         return str(document_id)
     {%- endif %}
     name: str
