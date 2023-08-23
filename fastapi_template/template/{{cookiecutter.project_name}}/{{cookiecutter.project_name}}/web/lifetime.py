@@ -120,6 +120,24 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
     app.state.db_session_factory = session_factory
 {%- endif %}
 
+{%- if cookiecutter.orm == "beanie" %}
+import beanie
+from motor.motor_asyncio import AsyncIOMotorClient
+from {{cookiecutter.projecT_name}}.db.models.dummy_model import DummyModel
+async def _setup_db(app: FastAPI) -> None:
+    client = AsyncIOMotorClient(
+        f"mongodb://{settings.db_user}:{settings.db_pass}"
+        + f"@{settings.db_host}:{settings.db_port}/{settings.db_base}"
+    )
+    app.state.db_client = client
+    await beanie.init_beanie(
+        database=client[settings.db_base],
+        document_models=[
+            DummyModel, # type: ignore
+        ]
+    )
+{%- endif %}
+
 {%- if cookiecutter.enable_migrations != "True" %}
 {%- if cookiecutter.orm in ["ormar", "sqlalchemy"] %}
 async def _create_tables() -> None:  # pragma: no cover
@@ -276,7 +294,7 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pr
         _setup_db(app)
         {%- elif cookiecutter.orm == "ormar" %}
         await database.connect()
-        {%- elif cookiecutter.orm == "psycopg" %}
+        {%- elif cookiecutter.orm in ["beanie", "psycopg"] %}
         await _setup_db(app)
         {%- endif %}
         {%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations != "True" %}

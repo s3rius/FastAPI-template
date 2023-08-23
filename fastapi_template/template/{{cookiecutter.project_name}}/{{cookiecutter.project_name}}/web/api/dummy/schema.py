@@ -4,6 +4,10 @@ from pydantic import BaseModel
 from pydantic import ConfigDict
 
 {%- endif %}
+{%- if cookiecutter.db_info.name == "mongodb" %}
+from pydantic import field_validator
+from bson import ObjectId
+{%- endif %}
 
 
 class DummyModelDTO(BaseModel):
@@ -13,7 +17,16 @@ class DummyModelDTO(BaseModel):
     It returned when accessing dummy models from the API.
     """
 
+    {%- if cookiecutter.dbinfo.name != "mongodb" %}
     id: int
+    {%- else %}
+    id: str
+
+    @field_validator("id", mode="before")
+    @classmethod
+    def parse_object_id(cls, document_id: ObjectId) -> str:
+        return str(document_id)
+    {%- endif %}
     name: str
 
 

@@ -62,7 +62,7 @@
         ]
     },
     "Postgres and MySQL support": {
-        "enabled": "{{cookiecutter.db_info.name != 'sqlite'}}",
+        "enabled": "{{cookiecutter.db_info.name not in ['sqlite', 'mongodb']}}",
         "resources": [
             "deploy/kube/db.yml"
         ]
@@ -136,6 +136,7 @@
             "{{cookiecutter.project_name}}/tests/test_dummy.py",
             "{{cookiecutter.project_name}}/db_piccolo/dao",
             "{{cookiecutter.project_name}}/db_piccolo/models/dummy_model.py",
+            "{{cookiecutter.project_name}}/db_beanie/models/dummy_model.py",
             "{{cookiecutter.project_name}}/db_sa/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
             "{{cookiecutter.project_name}}/db_ormar/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
             "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_pg.sql",
@@ -182,6 +183,12 @@
             "{{cookiecutter.project_name}}/piccolo_conf.py"
         ]
     },
+    "Beanie": {
+        "enabled": "{{cookiecutter.orm == 'beanie'}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/db_beanie"
+        ]
+    }
     "Postgresql DB": {
         "enabled": "{{cookiecutter.db_info.name == 'postgresql'}}",
         "resources": [

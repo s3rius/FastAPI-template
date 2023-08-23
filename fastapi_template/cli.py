@@ -176,6 +176,23 @@ db_menu = SingularMenuModel(
                 port=5432,
             ),
         ),
+        MenuEntry(
+            code="mongodb",
+            user_view="MongoDB",
+            description=(
+                "{name} is one of the most popular NoSQL databases out there.".format(
+                    name=colored("MongoDB", color="green"),
+                )
+            ),
+            additional_info=Database(
+                name="mongodb",
+                image="mongo:4.2",
+                async_driver="beanie",
+                driver_short="pymongo",
+                driver="pymongo",
+                port=27017
+            ),
+        )
     ],
 )
 
@@ -234,7 +251,7 @@ orm_menu = SingularMenuModel(
     entries=[
         MenuEntry(
             code="none",
-            user_view="Whithout ORMs",
+            user_view="Without ORMs",
             description=(
                 "If you select this option, you will get only {what}.\n"
                 "The rest {warn}.".format(
@@ -246,6 +263,7 @@ orm_menu = SingularMenuModel(
         MenuEntry(
             code="ormar",
             user_view="Ormar",
+            is_hidden=check_db(["sqlite", "mysql", "postgresql"]),
             pydantic_v1=True,
             description=(
                 "{what} is a great {feature} ORM.\n"
@@ -258,6 +276,7 @@ orm_menu = SingularMenuModel(
         MenuEntry(
             code="sqlalchemy",
             user_view="SQLAlchemy",
+            is_hidden=check_db(["sqlite", "mysql", "postgresql"]),
             description=(
                 "{what} is the most popular python ORM.\n"
                 "It has a {feature} and a big community around it.".format(
@@ -269,6 +288,7 @@ orm_menu = SingularMenuModel(
         MenuEntry(
             code="tortoise",
             user_view="Tortoise",
+            is_hidden=check_db(["sqlite", "mysql", "postgresql"]),
             description=(
                 "{what} is a great {feature} ORM.\n"
                 "It's easy to use, it has it's own migration tooling.".format(
@@ -302,6 +322,18 @@ orm_menu = SingularMenuModel(
                 )
             ),
         ),
+        MenuEntry(
+            code="beanie",
+            user_view="Beanie",
+            is_hidden=check_db(["mongodb"]),
+            description=(
+                "{what} is an asynchronous object-document mapper (ODM) for MongoDB.\n"
+                "Data models are based on Pydantic.".format(
+                    what=colored("Beanie", color="green"),
+                )
+            ),
+        ),
+
     ],
 )
 

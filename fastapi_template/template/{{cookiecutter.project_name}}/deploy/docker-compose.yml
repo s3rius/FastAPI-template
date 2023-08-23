@@ -103,6 +103,18 @@ services:
       retries: 40
   {%- endif %}
 
+  {%- if cookiecutter.db_info.name == "mongodb"%}
+  db:
+    image: {{cookiecutter.db_info.image}}
+    port:
+    - "{{cookiecutter.db_info.port}}:{{cookiecutter.db_info.port}}"
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "{{cookiecutter.project_name}}"
+      MONGO_INITDB_ROOT_PASSWORD: "{{cookiecutter.project_name}}"
+    command: "mongod"
+  {%- endif %}
+
   {%- if cookiecutter.db_info.name == "mysql" %}
 
   db:
