@@ -21,7 +21,10 @@ class DummyModelDTO(BaseModel):
     id: int
     {%- else %}
     id: str
+    {%- endif %}
+    name: str
 
+    {%- if cookiecutter.db_info.name == "mongodb" %}
     @field_validator("id", mode="before")
     @classmethod
     def parse_object_id(cls, document_id: ObjectId) -> str:
@@ -31,7 +34,6 @@ class DummyModelDTO(BaseModel):
         """
         return str(document_id)
     {%- endif %}
-    name: str
 
 
     {%- if cookiecutter.pydanticv1 == "True" %}

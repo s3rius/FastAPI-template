@@ -62,7 +62,7 @@ async def test_creation(
 
     {%- if cookiecutter.orm == "beanie" %}
     instance = await DummyModel.find(DummyModel.name == test_name).first_or_none()
-    assert instance.name == test_name
+    assert instance is not None and instance.name == test_name
     {%- else %}
     instances = await dao.filter(name=test_name)
     assert instances[0].name == test_name
