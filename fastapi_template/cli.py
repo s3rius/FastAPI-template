@@ -186,10 +186,10 @@ db_menu = SingularMenuModel(
             ),
             additional_info=Database(
                 name="mongodb",
-                image="mongo:4.2",
+                image="mongo:7.0",
                 async_driver="beanie",
-                driver_short="pymongo",
-                driver="pymongo",
+                driver_short="mongodb",
+                driver="mongodb",
                 port=27017
             ),
         )
