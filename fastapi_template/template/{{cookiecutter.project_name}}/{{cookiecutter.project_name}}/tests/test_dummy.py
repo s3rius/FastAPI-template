@@ -14,10 +14,7 @@ from psycopg_pool import AsyncConnectionPool
 
 {%- endif %}
 from starlette import status
-{%- if cookiecutter.orm != 'beanie' %}
 from {{cookiecutter.project_name}}.db.dao.dummy_dao import DummyDAO
-
-{%- endif %}
 from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
 
 
@@ -56,17 +53,12 @@ async def test_creation(
     dao = DummyDAO(dbsession)
     {%- elif cookiecutter.orm == "psycopg" %}
     dao = DummyDAO(dbpool)
-    {%- elif cookiecutter.orm in ["tortoise", "ormar", "piccolo"] %}
+    {%- else %}
     dao = DummyDAO()
     {%- endif %}
 
-    {%- if cookiecutter.orm == "beanie" %}
-    instance = await DummyModel.find(DummyModel.name == test_name).first_or_none()
-    assert instance is not None and instance.name == test_name
-    {%- else %}
     instances = await dao.filter(name=test_name)
     assert instances[0].name == test_name
-    {%- endif %}
 
 
 @pytest.mark.anyio
@@ -84,15 +76,11 @@ async def test_getting(
     dao = DummyDAO(dbsession)
     {%- elif cookiecutter.orm == "psycopg" %}
     dao = DummyDAO(dbpool)
-    {%- elif cookiecutter.orm in ["tortoise", "ormar", "piccolo"] %}
+    {%- else %}
     dao = DummyDAO()
     {%- endif %}
     test_name = uuid.uuid4().hex
-    {%- if cookiecutter.orm == "beanie" %}
-    await DummyModel.insert_one(DummyModel(name=test_name))
-    {%- else %}
     await dao.create_dummy_model(name=test_name)
-    {%- endif %}
 
     {%- if cookiecutter.api_type == 'rest' %}
     url = fastapi_app.url_path_for('get_dummy_models')
