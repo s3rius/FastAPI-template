@@ -29,8 +29,10 @@ class DummyModelDTO(BaseModel):
     @classmethod
     def parse_object_id(cls, document_id: ObjectId) -> str:
         """
-        Validator for turning an incoming `ObjectId` into a
-        json serializable `str`.
+        Validator that converts `ObjectId` to json serializable `str`.
+
+        :param document_id: Bson Id for this document.
+        :return: The converted str.
         """
         return str(document_id)
     {%- endif %}
