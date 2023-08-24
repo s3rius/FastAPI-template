@@ -21,9 +21,7 @@ async def get_dummy_models(
 
     :param limit: limit of dummy objects, defaults to 10.
     :param offset: offset of dummy objects, defaults to 0.
-{%- if cookiecutter.db_info.name != "mongodb" %}
     :param dummy_dao: DAO for dummy models.
-{%- endif %}
     :return: list of dummy objects from database.
     """
     return await dummy_dao.get_all_dummies(limit=limit, offset=offset)
@@ -38,8 +36,6 @@ async def create_dummy_model(
     Creates dummy model in the database.
 
     :param new_dummy_object: new dummy model item.
-{%- if cookiecutter.db_info.name != "mongodb" %}
     :param dummy_dao: DAO for dummy models.
-{%- endif %}
     """
     await dummy_dao.create_dummy_model(name=new_dummy_object.name)

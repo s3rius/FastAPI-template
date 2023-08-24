@@ -68,6 +68,10 @@ from piccolo.engine.postgres import PostgresEngine
 from piccolo.conf.apps import Finder
 from piccolo.table import create_tables, drop_tables
 
+{%- elif cookiecutter.orm == "beanie" %}
+import beanie
+from motor.motor_asyncio import AsyncIOMotorClient
+
 {%- endif %}
 
 
@@ -332,6 +336,23 @@ async def setup_db() -> AsyncGenerator[None, None]:
     await drop_database(engine)
     {%- endif %}
 
+{%- elif cookiecutter.orm == "beanie" %}
+@pytest.fixture(autouse=True)
+async def setup_db() -> AsyncGenerator[None, None]:
+    """
+    Fixture to create database connection.
+    
+    :yield: nothing.
+    """
+    client = AsyncIOMotorClient(settings.db_url.human_repr())
+    from {{cookiecutter.project_name}}.db.models import load_all_models  # noqa: WPS433
+    await beanie.init_beanie(
+        database=client[settings.db_base],
+        document_models=load_all_models(),
+    )
+    yield
+
+ 
 {%- endif %}
 
 {%- if cookiecutter.enable_rmq == 'True' %}
