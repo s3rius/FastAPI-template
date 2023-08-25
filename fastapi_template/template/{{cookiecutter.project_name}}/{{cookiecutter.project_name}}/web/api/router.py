@@ -46,8 +46,6 @@ api_router.include_router(echo.router, prefix="/echo", tags=["echo"])
 {%- if cookiecutter.add_dummy == 'True' %}
 api_router.include_router(dummy.router, prefix="/dummy", tags=["dummy"])
 {%- endif %}
-
-
 {%- if cookiecutter.enable_redis == "True" %}
 api_router.include_router(redis.router, prefix="/redis", tags=["redis"])
 {%- endif %}
