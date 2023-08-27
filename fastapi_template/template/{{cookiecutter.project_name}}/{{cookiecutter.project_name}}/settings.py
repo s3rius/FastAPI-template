@@ -49,7 +49,7 @@ class Settings(BaseSettings):
 
     {%- if cookiecutter.add_users == "True" %}
     {%- if cookiecutter.orm == "sqlalchemy" %}
-    users_secret = os.getenv("USERS_SECRET", "")
+    users_secret: str = os.getenv("USERS_SECRET", "")
     {%- endif %}
     {%- endif %}
     {% if cookiecutter.db_info.name != "none" -%}

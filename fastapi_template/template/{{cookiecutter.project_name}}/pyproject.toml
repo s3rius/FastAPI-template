@@ -19,9 +19,9 @@ gunicorn = "^21.2.0"
 {%- endif %}
 {%- if cookiecutter.add_users == "True" %}
 {%- if cookiecutter.orm == "sqlalchemy" %}
-fastapi-users = "^10.2.1"
+fastapi-users = "^12.1.2"
 httpx-oauth = "^0.10.2"
-fastapi-users-db-sqlalchemy = "^4.0.3"
+fastapi-users-db-sqlalchemy = "^6.0.1"
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.pydanticv1 == "True" %}
