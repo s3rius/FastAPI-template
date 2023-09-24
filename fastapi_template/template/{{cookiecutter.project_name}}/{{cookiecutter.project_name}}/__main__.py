@@ -57,7 +57,7 @@ def main() -> None:
     else:
         # We choose gunicorn only if reload
         # option is not used, because reload
-        # feature doen't work with Uvicorn workers.
+        # feature doesn't work with gunicorn workers.
         GunicornApplication(
             "{{cookiecutter.project_name}}.web.application:get_app",
             host=settings.host,
