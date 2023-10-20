@@ -60,12 +60,6 @@
             "deploy/kube/db.yml"
         ]
     },
-    "SQLAlchemy support": {
-        "enabled": "{{cookiecutter.db_info.name not in ['none', 'mongodb']}}",
-        "resources": [
-            "{{cookiecutter.project_name}}/db_sa"
-        ]
-    },
     "Beanie support": {
         "enabled": "{{cookiecutter.db_info.name == 'mongodb'}}",
         "resources": [

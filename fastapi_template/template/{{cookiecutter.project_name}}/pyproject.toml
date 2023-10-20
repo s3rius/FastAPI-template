@@ -218,6 +218,8 @@ env = [
     "{{cookiecutter.project_name | upper}}_ENVIRONMENT=pytest",
     {%- if cookiecutter.db_info.name == "sqlite" %}
     "{{cookiecutter.project_name | upper}}_DB_FILE=test_db.sqlite3",
+    {%- elif cookiecutter.db_info.name == "mongodb" %}
+    "{{cookiecutter.project_name | upper}}_DB_BASE=admin",
     {%- else %}
     "{{cookiecutter.project_name | upper}}_DB_BASE={{cookiecutter.project_name}}_test",
     {%- endif %}

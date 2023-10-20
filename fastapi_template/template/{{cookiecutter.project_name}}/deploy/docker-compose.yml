@@ -52,7 +52,7 @@ services:
       {%- if cookiecutter.db_info.name == "sqlite" %}
       {{cookiecutter.project_name | upper }}_DB_FILE: /db_data/db.sqlite3
       {%- else %}
-      {{cookiecutter.project_name | upper}}_DB_HOST: {{cookiecutter.project_name}}_db_1
+      {{cookiecutter.project_name | upper}}_DB_HOST: {{cookiecutter.project_name}}-db
       {{cookiecutter.project_name | upper}}_DB_PORT: {{cookiecutter.db_info.port}}
       {{cookiecutter.project_name | upper}}_DB_USER: {{cookiecutter.project_name}}
       {{cookiecutter.project_name | upper}}_DB_PASS: {{cookiecutter.project_name}}
@@ -110,6 +110,7 @@ services:
   {%- if cookiecutter.db_info.name == "mongodb"%}
   db:
     image: {{cookiecutter.db_info.image}}
+    hostname: {{cookiecutter.project_name}}-db
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: "{{cookiecutter.project_name}}"
