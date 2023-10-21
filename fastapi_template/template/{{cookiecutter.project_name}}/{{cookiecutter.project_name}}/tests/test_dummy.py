@@ -60,6 +60,11 @@ async def test_creation(
     instances = await dao.filter(name=test_name)
     assert instances[0].name == test_name
 
+    {%- if cookiecutter.orm == "beanie" %}
+    # Clean up the object we just inserted
+    await dao.delete_dummy_model_by_name(name=test_name)
+    {%- endif %}
+
 
 @pytest.mark.anyio
 async def test_getting(

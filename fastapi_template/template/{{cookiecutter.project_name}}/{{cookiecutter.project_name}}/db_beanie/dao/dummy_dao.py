@@ -37,3 +37,19 @@ class DummyDAO:
         if name is None:
             return []
         return await DummyModel.find(DummyModel.name == name).to_list()
+
+    async def delete_dummy_model_by_name(
+        self,
+        name: str,
+    ) -> Optional[DummyModel]:
+        """
+        Delete a dummy model by name.
+
+        :param name: name of dummy instance.
+        :return: option of a dummy model.
+        """
+        res = await DummyModel.find_one(DummyModel.name == name)
+        if res is None:
+            return res
+        await res.delete()
+        return res
