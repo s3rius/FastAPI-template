@@ -45,7 +45,7 @@ docker run --rm -it -v "$(pwd):/projects" s3rius/fastapi_template
 One of the coolest features is that this project is extremely configurable.
 You can choose between different databases and even ORMs, or
 you can even generate a project without a database!
-Currently SQLAlchemy 2.0, TortoiseORM, Piccolo and Ormar are supported.
+Currently SQLAlchemy 2.0, TortoiseORM, Piccolo, Ormar and Beanie are supported.
 
 This project can run as TUI or CLI and has excellent code documentation.
 
@@ -84,9 +84,9 @@ Options:
   --force                         Owerrite directory if it exists
   --quite                         Do not ask for features during generation
   --api-type [rest|graphql]       Select API type for your application
-  --db [none|sqlite|mysql|postgresql]
+  --db [none|sqlite|mysql|postgresql|mongodb]
                                   Select a database for your app
-  --orm [none|ormar|sqlalchemy|tortoise|psycopg|piccolo]
+  --orm [none|ormar|sqlalchemy|tortoise|psycopg|piccolo|beanie]
                                   Choose Object–Relational Mapper lib
   --ci [none|gitlab_ci|github]    Select a CI for your app
   --redis                         Add redis support
