@@ -107,3 +107,8 @@ async def test_getting(
     assert response.status_code == status.HTTP_200_OK
     assert len(dummies) == 1
     assert dummies[0]['name'] == test_name
+
+    {%- if cookiecutter.orm == "beanie" %}
+    # Clean up the object we just inserted
+    await dao.delete_dummy_model_by_name(name=test_name)
+    {%- endif %}
