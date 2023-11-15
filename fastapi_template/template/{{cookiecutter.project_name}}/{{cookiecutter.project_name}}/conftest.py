@@ -344,7 +344,7 @@ async def setup_db() -> AsyncGenerator[None, None]:
     
     :yield: nothing.
     """
-    client = AsyncIOMotorClient(settings.db_url.human_repr())
+    client = AsyncIOMotorClient(settings.db_url.human_repr())  # type: ignore
     from {{cookiecutter.project_name}}.db.models import load_all_models  # noqa: WPS433
     await beanie.init_beanie(
         database=client[settings.db_base],

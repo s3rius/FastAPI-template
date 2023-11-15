@@ -5,7 +5,11 @@ from pydantic import ConfigDict
 
 {%- endif %}
 {%- if cookiecutter.db_info.name == "mongodb" %}
+{%- if cookiecutter.pydanticv1 == "True" %}
+from pydantic import validator
+{%- else %}
 from pydantic import field_validator
+{%- endif %}
 from bson import ObjectId
 {%- endif %}
 
@@ -25,8 +29,12 @@ class DummyModelDTO(BaseModel):
     name: str
 
     {%- if cookiecutter.db_info.name == "mongodb" %}
+    {%- if cookiecutter.pydanticv1 == "True" %}
+    @validator("id")
+    {%- else %}
     @field_validator("id", mode="before")
     @classmethod
+    {%- endif %}
     def parse_object_id(cls, document_id: ObjectId) -> str:
         """
         Validator that converts `ObjectId` to json serializable `str`.

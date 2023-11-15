@@ -41,8 +41,8 @@ def disable_orm(ctx: BuilderContext) -> MenuEntry:
     return None
 
 
-def do_not_ask_features_if_quite(ctx: BuilderContext) -> Optional[List[MenuEntry]]:
-    if ctx.quite:
+def do_not_ask_features_if_quiet(ctx: BuilderContext) -> Optional[List[MenuEntry]]:
+    if ctx.quiet:
         return [SKIP_ENTRY]
     return None
 
@@ -342,7 +342,7 @@ features_menu = MultiselectMenuModel(
     code="features",
     description="Additional project features",
     multiselect=True,
-    before_ask=do_not_ask_features_if_quite,
+    before_ask=do_not_ask_features_if_quiet,
     entries=[
         MenuEntry(
             code="pydanticv1",
@@ -627,7 +627,7 @@ def run_command(callback: Callable[[BuilderContext], None]) -> None:
                 help="Owerrite directory if it exists",
             ),
             Option(
-                ["--quite"],
+                ["--quiet"],
                 is_flag=True,
                 help="Do not ask for features during generation",
             ),

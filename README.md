@@ -82,7 +82,7 @@ Options:
   -n, --name TEXT                 Name of your awesome project
   -V, --version                   Prints current version
   --force                         Owerrite directory if it exists
-  --quite                         Do not ask for features during generation
+  --quiet                         Do not ask for features during generation
   --api-type [rest|graphql]       Select API type for your application
   --db [none|sqlite|mysql|postgresql|mongodb]
                                   Select a database for your app

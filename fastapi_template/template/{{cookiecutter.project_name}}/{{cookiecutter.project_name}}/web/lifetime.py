@@ -125,7 +125,7 @@ import beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 from {{cookiecutter.project_name}}.db.models import load_all_models
 async def _setup_db(app: FastAPI) -> None:
-    client = AsyncIOMotorClient(str(settings.db_url))
+    client = AsyncIOMotorClient(str(settings.db_url))  # type: ignore
     app.state.db_client = client
     await beanie.init_beanie(
         database=client[settings.db_base],
