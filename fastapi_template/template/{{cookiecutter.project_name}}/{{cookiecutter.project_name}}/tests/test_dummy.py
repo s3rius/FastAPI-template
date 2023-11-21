@@ -25,7 +25,7 @@ async def test_creation(
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
     {%- elif cookiecutter.orm == "psycopg" %}
-    dbpool: AsyncConnectionPool,
+    dbpool: AsyncConnectionPool[Any],
     {%- endif %}
 ) -> None:
     """Tests dummy instance creation."""
@@ -73,7 +73,7 @@ async def test_getting(
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
     {%- elif cookiecutter.orm == "psycopg" %}
-    dbpool: AsyncConnectionPool,
+    dbpool: AsyncConnectionPool[Any],
     {%- endif %}
 ) -> None:
     """Tests dummy instance retrieval."""

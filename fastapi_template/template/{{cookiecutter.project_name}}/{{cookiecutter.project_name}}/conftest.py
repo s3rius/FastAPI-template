@@ -259,7 +259,7 @@ async def create_tables(connection: AsyncConnection[Any]) -> None:
 
 
 @pytest.fixture
-async def dbpool() -> AsyncGenerator[AsyncConnectionPool, None]:
+async def dbpool() -> AsyncGenerator[AsyncConnectionPool[Any], None]:
     """
     Creates database connections pool to test database.
 
@@ -477,7 +477,7 @@ def fastapi_app(
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
     {%- elif cookiecutter.orm == "psycopg" %}
-    dbpool: AsyncConnectionPool,
+    dbpool: AsyncConnectionPool[Any],
     {%- endif %}
     {% if cookiecutter.enable_redis == "True" -%}
     fake_redis_pool: ConnectionPool,
