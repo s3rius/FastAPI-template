@@ -27,6 +27,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from {{cookiecutter.project_name}}.db.dependencies import get_db_session
 
 {%- elif cookiecutter.orm == "psycopg" %}
+from typing import Any
 from psycopg_pool import AsyncConnectionPool
 from {{cookiecutter.project_name}}.db.dependencies import get_db_pool
 
@@ -47,7 +48,7 @@ class Context(BaseContext):
         {%- if cookiecutter.orm == "sqlalchemy" %}
         db_connection: AsyncSession = Depends(get_db_session),
         {%- elif cookiecutter.orm == "psycopg" %}
-        db_pool: AsyncConnectionPool = Depends(get_db_pool),
+        db_pool: AsyncConnectionPool[Any] = Depends(get_db_pool),
         {%- endif %}
         {%- if cookiecutter.enable_kafka == "True" %}
         kafka_producer: AIOKafkaProducer = Depends(get_kafka_producer),

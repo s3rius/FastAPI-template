@@ -13,7 +13,7 @@ class DummyDAO:
 
     def __init__(
         self,
-        db_pool: AsyncConnectionPool = Depends(get_db_pool),
+        db_pool: AsyncConnectionPool[Any] = Depends(get_db_pool),
     ):
         self.db_pool = db_pool
 
