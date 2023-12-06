@@ -6,6 +6,7 @@ services:
       # Exposes application port.
     - "8000:8000"
     build:
+      context: .
       target: dev
     volumes:
       # Adds current directory as volume.

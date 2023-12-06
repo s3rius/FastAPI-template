@@ -56,7 +56,11 @@ services:
       {{cookiecutter.project_name | upper}}_DB_PORT: {{cookiecutter.db_info.port}}
       {{cookiecutter.project_name | upper}}_DB_USER: {{cookiecutter.project_name}}
       {{cookiecutter.project_name | upper}}_DB_PASS: {{cookiecutter.project_name}}
+      {%- if cookiecutter.db_info.name == "mongodb" %}
+      {{cookiecutter.project_name | upper}}_DB_BASE: admin
+      {%- else %}
       {{cookiecutter.project_name | upper}}_DB_BASE: {{cookiecutter.project_name}}
+      {%- endif %}
       {%- endif %}
       {%- endif %}
       {%- if cookiecutter.enable_rmq == 'True' %}
@@ -100,6 +104,24 @@ services:
       test: pg_isready -U {{cookiecutter.project_name}}
       interval: 2s
       timeout: 3s
+      retries: 40
+  {%- endif %}
+
+  {%- if cookiecutter.db_info.name == "mongodb"%}
+  db:
+    image: {{cookiecutter.db_info.image}}
+    hostname: {{cookiecutter.project_name}}-db
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "{{cookiecutter.project_name}}"
+      MONGO_INITDB_ROOT_PASSWORD: "{{cookiecutter.project_name}}"
+    command: "mongod"
+    volumes:
+      - {{cookiecutter.project_name}}-db-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
       retries: 40
   {%- endif %}
 

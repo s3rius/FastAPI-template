@@ -25,7 +25,7 @@ async def test_creation(
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
     {%- elif cookiecutter.orm == "psycopg" %}
-    dbpool: AsyncConnectionPool,
+    dbpool: AsyncConnectionPool[Any],
     {%- endif %}
 ) -> None:
     """Tests dummy instance creation."""
@@ -53,11 +53,17 @@ async def test_creation(
     dao = DummyDAO(dbsession)
     {%- elif cookiecutter.orm == "psycopg" %}
     dao = DummyDAO(dbpool)
-    {%- elif cookiecutter.orm in ["tortoise", "ormar", "piccolo"] %}
+    {%- else %}
     dao = DummyDAO()
     {%- endif %}
+
     instances = await dao.filter(name=test_name)
     assert instances[0].name == test_name
+
+    {%- if cookiecutter.orm == "beanie" %}
+    # Clean up the object we just inserted
+    await dao.delete_dummy_model_by_name(name=test_name)
+    {%- endif %}
 
 
 @pytest.mark.anyio
@@ -67,7 +73,7 @@ async def test_getting(
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
     {%- elif cookiecutter.orm == "psycopg" %}
-    dbpool: AsyncConnectionPool,
+    dbpool: AsyncConnectionPool[Any],
     {%- endif %}
 ) -> None:
     """Tests dummy instance retrieval."""
@@ -75,7 +81,7 @@ async def test_getting(
     dao = DummyDAO(dbsession)
     {%- elif cookiecutter.orm == "psycopg" %}
     dao = DummyDAO(dbpool)
-    {%- elif cookiecutter.orm in ["tortoise", "ormar", "piccolo"] %}
+    {%- else %}
     dao = DummyDAO()
     {%- endif %}
     test_name = uuid.uuid4().hex
@@ -101,3 +107,8 @@ async def test_getting(
     assert response.status_code == status.HTTP_200_OK
     assert len(dummies) == 1
     assert dummies[0]['name'] == test_name
+
+    {%- if cookiecutter.orm == "beanie" %}
+    # Clean up the object we just inserted
+    await dao.delete_dummy_model_by_name(name=test_name)
+    {%- endif %}

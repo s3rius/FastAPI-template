@@ -130,6 +130,7 @@ By default it runs:
 
 You can read more about pre-commit here: https://pre-commit.com/
 
+
 {%- if cookiecutter.enable_kube == 'True' %}
 
 ## Kubernetes

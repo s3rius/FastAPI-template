@@ -68,6 +68,22 @@ def test_default_with_db(default_context: BuilderContext, db: str, orm: str):
     run_default_check(init_context(default_context, db, orm))
 
 
+@pytest.mark.parametrize(
+    "db",
+    [
+        "mongodb",
+    ],
+)
+@pytest.mark.parametrize(
+    "orm",
+    [
+        "beanie",
+    ],
+)
+def test_default_with_nosql_db(default_context: BuilderContext, db: str, orm: str):
+    run_default_check(init_context(default_context, db, orm))
+
+
 @pytest.mark.parametrize("api", ["rest", "graphql"])
 @pytest.mark.parametrize(
     "orm",
@@ -80,6 +96,17 @@ def test_default_with_db(default_context: BuilderContext, db: str, orm: str):
 )
 def test_default_for_apis(default_context: BuilderContext, orm: str, api: str):
     run_default_check(init_context(default_context, "postgresql", orm, api))
+
+
+@pytest.mark.parametrize("api", ["rest", "graphql"])
+@pytest.mark.parametrize(
+    "orm",
+    [
+        "beanie",
+    ]
+)
+def test_default_for_apis_with_nosql_db(default_context: BuilderContext, orm: str, api: str):
+    run_default_check(init_context(default_context, "mongodb", orm, api))
 
 
 @pytest.mark.parametrize(
@@ -108,6 +135,12 @@ def test_without_routers(default_context: BuilderContext, orm: str):
     run_default_check(context)
 
 
+def test_without_routers_with_nosql_db(default_context: BuilderContext):
+    context = init_context(default_context, "mongodb", "beanie")
+    context.enable_routers = False
+    run_default_check(context)
+
+
 @pytest.mark.parametrize(
     "orm",
     [
@@ -119,6 +152,12 @@ def test_without_routers(default_context: BuilderContext, orm: str):
 )
 def test_without_migrations(default_context: BuilderContext, orm: str):
     context = init_context(default_context, "postgresql", orm)
+    context.enable_migrations = False
+    run_default_check(context)
+
+
+def test_without_migrations_with_nosql_db(default_context: BuilderContext):
+    context = init_context(default_context, "mongodb", "beanie")
     context.enable_migrations = False
     run_default_check(context)
 
@@ -140,6 +179,12 @@ def test_with_selfhosted_swagger(default_context: BuilderContext):
 )
 def test_without_dummy(default_context: BuilderContext, orm: str):
     context = init_context(default_context, "postgresql", orm)
+    context.add_dummy = False
+    run_default_check(context)
+
+
+def test_without_dummy_with_nosql_db(default_context: BuilderContext):
+    context = init_context(default_context, "mongodb", "beanie")
     context.add_dummy = False
     run_default_check(context)
 
