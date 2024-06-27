@@ -93,6 +93,11 @@ aiofiles = "^23.1.0"
 psycopg = { version = "^3.1.9", extras = ["binary", "pool"] }
 {%- endif %}
 httptools = "^0.6.0"
+{%- if cookiecutter.orm == "beanie" %}
+beanie = "^1.21.0"
+{%- else %}
+pymongo = "^4.5.0"
+{%- endif %}
 {%- if cookiecutter.api_type == "graphql" %}
 strawberry-graphql = { version = "^0.194.4", extras = ["fastapi"] }
 {%- endif %}
@@ -220,6 +225,8 @@ env = [
     "{{cookiecutter.project_name | upper}}_ENVIRONMENT=pytest",
     {%- if cookiecutter.db_info.name == "sqlite" %}
     "{{cookiecutter.project_name | upper}}_DB_FILE=test_db.sqlite3",
+    {%- elif cookiecutter.db_info.name == "mongodb" %}
+    "{{cookiecutter.project_name | upper}}_DB_BASE=admin",
     {%- else %}
     "{{cookiecutter.project_name | upper}}_DB_BASE={{cookiecutter.project_name}}_test",
     {%- endif %}

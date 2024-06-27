@@ -69,6 +69,16 @@ pytest:
     MYSQL_DATABASE: {{ cookiecutter.project_name }}
     ALLOW_EMPTY_PASSWORD: yes
     {%- endif %}
+
+    {%- if cookiecutter.db_info.name == "mongodb" %}
+
+    # MongoDB variables
+    {{ cookiecutter.project_name | upper }}_DB_HOST: database
+    {{ cookiecutter.project_name | upper }}_DB_BASE: admin
+    MONGO_INITDB_ROOT_USERNAME: {{ cookiecutter.project_name }}
+    MONGO_INITDB_ROOT_PASSWORD: {{ cookiecutter.project_name }}
+    {%- endif %}
+ 
     {%- if cookiecutter.enable_rmq == "True" %}
 
     # Rabbitmq variables
