@@ -23,7 +23,7 @@ from {{cookiecutter.project_name}}.db.config import TORTOISE_CONFIG
 {%- if cookiecutter.sentry_enabled == "True" %}
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
+from sentry_sdk.integrations.log import LoggingIntegration
 
 {%- if cookiecutter.orm == "sqlalchemy" %}
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
@@ -32,7 +32,7 @@ from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 {%- endif %}
 
 {%- if cookiecutter.enable_loguru == "True" %}
-from {{cookiecutter.project_name}}.logging import configure_logging
+from {{cookiecutter.project_name}}.log import configure_logging
 
 {%- endif %}
 
