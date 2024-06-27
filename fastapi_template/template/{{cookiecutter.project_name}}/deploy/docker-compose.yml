@@ -4,7 +4,7 @@ services:
   api: &main_app
     build:
       context: .
-      dockerfile: ./deploy/Dockerfile
+      dockerfile: ./Dockerfile
       target: prod
     image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
     restart: always

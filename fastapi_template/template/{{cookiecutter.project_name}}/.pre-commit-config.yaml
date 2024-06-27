@@ -26,32 +26,12 @@ repos:
 
     - repo: local
       hooks:
-          - id: autoflake
-            name: autoflake
-            entry: poetry run autoflake
-            language: system
-            types: [python]
-            args: [--in-place, --remove-all-unused-imports, --remove-duplicate-keys]
 
           - id: black
             name: Format with Black
             entry: poetry run black
             language: system
             types: [python]
-
-          - id: isort
-            name: isort
-            entry: poetry run isort
-            language: system
-            types: [python]
-
-          - id: flake8
-            name: Check with Flake8
-            entry: poetry run flake8
-            language: system
-            pass_filenames: false
-            types: [python]
-            args: [--count, .]
 
           - id: mypy
             name: Validate types with MyPy
@@ -61,3 +41,19 @@ repos:
             pass_filenames: false
             args:
               - "{{cookiecutter.project_name}}"
+          - id: ruff
+            name: Validate project with Ruff
+            entry: poetry run ruff
+            language: system
+            types: [python]
+            pass_filenames: false
+            args:
+              - "{{cookiecutter.project_name}}"
+
+          - id: ruff
+            name: Check with Ruff
+            entry: poetry run ruff
+            language: system
+            pass_filenames: false
+            always_run: true
+            args: ["check", "{{cookiecutter.project_name}}", "tests", "--fix"]

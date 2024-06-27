@@ -160,13 +160,10 @@ pyzmq = "^25"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.2.1"
-flake8 = "~4.0.1"
+ruff = "^0"
 mypy = "^1.1.1"
-isort = "^5.11.4"
 pre-commit = "^3.0.1"
-wemake-python-styleguide = "^0.17.0"
 black = "^22.12.0"
-autoflake = "^1.6.1"
 pytest-cov = "^4.0.0"
 anyio = "^3.6.2"
 pytest-env = "^0.8.1"
@@ -253,6 +250,86 @@ src_folder = "./{{cookiecutter.project_name}}"
 {{key}} = "{{value}}"
 {%- endif %}
 {%- endfor %}
+
+[tool.ruff]
+# List of enabled rulsets.
+# See https://docs.astral.sh/ruff/rules/ for more information.
+select = [
+    "E",   # Error
+    "F",   # Pyflakes
+    "W",   # Pycodestyle
+    "C90", # McCabe complexity
+    "I",   # Isort
+    "N",   # pep8-naming
+    "D",   # Pydocstyle
+    "ANN", # Pytype annotations
+    "S",   # Bandit
+    "B",   # Bugbear
+    "COM", # Commas
+    "C4",  # Comprehensions
+    "ISC", # Implicit string concat
+    "PIE", # Unnecessary code
+    "T20", # Catch prints
+    "PYI", # validate pyi files
+    "Q",   # Checks for quotes
+    "RSE", # Checks raise statements
+    "RET", # Checks return statements
+    "SLF", # Self checks
+    "SIM", # Simplificator
+    "PTH", # Pathlib checks
+    "ERA", # Checks for commented out code
+    "PL",  # PyLint checks
+    "RUF", # Specific to Ruff checks
+]
+ignore = [
+    "D105",    # Missing docstring in magic method
+    "D107",    # Missing docstring in __init__
+    "D211",    # No blank lines allowed before class docstring
+    "D212",    # Multi-line docstring summary should start at the first line
+    "D401",    # First line should be in imperative mood
+    "D104",    # Missing docstring in public package
+    "D100",    # Missing docstring in public module
+    "D202",    # No blank lines allowed after function docstring
+    "ANN102",  # Missing type annotation for self in method
+    "ANN101",  # Missing type annotation for argument
+    "ANN401",  # typing.Any are disallowed in `**kwargs
+    "PLR0913", # Too many arguments for function call
+    "D106",    # Missing docstring in public nested class
+]
+exclude = [
+    {%- if cookiecutter.orm in ["ormar", "sqlalchemy", "piccolo", "tortoise"] %}
+    "{{ cookiecutter.project_name }}/db/migrations",
+    {%- endif %}
+    ".venv/"
+]
+mccabe = { max-complexity = 10 }
+line-length = 88
+
+[tool.ruff.per-file-ignores]
+"tests/*" = [
+    "S101", # Use of assert detected
+]
+
+[tool.ruff.pydocstyle]
+convention = "pep257"
+ignore-decorators = ["typing.overload"]
+
+[tool.ruff.pylint]
+allow-magic-value-types = ["int", "str", "float", "bytes"]
+
+[tool.ruff.flake8-bugbear]
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.Query",
+    "fastapi.Path",
+    {%- if cookiecutter.enable_taskiq == "True" %}
+    "taskiq.TaskiqDepends",
+    {%- endif %}
+    {%- if cookiecutter.orm == "sqlalchemy" %}
+    "sqlalchemy.orm.joinedload",
+    {%- endif %}
+]
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
