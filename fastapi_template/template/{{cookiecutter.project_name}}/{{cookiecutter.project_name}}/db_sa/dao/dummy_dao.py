@@ -10,7 +10,7 @@ from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
 class DummyDAO:
     """Class for accessing dummy table."""
 
-    def __init__(self, session: AsyncSession = Depends(get_db_session)):
+    def __init__(self, session: AsyncSession = Depends(get_db_session)) -> None:
         self.session = session
 
     async def create_dummy_model(self, name: str) -> None:

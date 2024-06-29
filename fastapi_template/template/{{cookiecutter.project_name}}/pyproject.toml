@@ -244,17 +244,10 @@ src_folder = "./{{cookiecutter.project_name}}"
 {%- endif %}
 {%- endif %}
 
-[fastapi-template.options]
-{%- for key, value in cookiecutter.items() %}
-{%- if not key.startswith("_") and not key == "db_info" %}
-{{key}} = "{{value}}"
-{%- endif %}
-{%- endfor %}
-
 [tool.ruff]
 # List of enabled rulsets.
 # See https://docs.astral.sh/ruff/rules/ for more information.
-select = [
+lint.select = [
     "E",   # Error
     "F",   # Pyflakes
     "W",   # Pycodestyle
@@ -281,9 +274,10 @@ select = [
     "PL",  # PyLint checks
     "RUF", # Specific to Ruff checks
 ]
-ignore = [
+lint.ignore = [
     "D105",    # Missing docstring in magic method
     "D107",    # Missing docstring in __init__
+    "B008",    # Do not perform function calls in argument defaults
     "D211",    # No blank lines allowed before class docstring
     "D212",    # Multi-line docstring summary should start at the first line
     "D401",    # First line should be in imperative mood
@@ -302,34 +296,28 @@ exclude = [
     {%- endif %}
     ".venv/"
 ]
-mccabe = { max-complexity = 10 }
+lint.mccabe = { max-complexity = 10 }
 line-length = 88
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/*" = [
     "S101", # Use of assert detected
 ]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "pep257"
 ignore-decorators = ["typing.overload"]
 
-[tool.ruff.pylint]
+[tool.ruff.lint.pylint]
 allow-magic-value-types = ["int", "str", "float", "bytes"]
 
-[tool.ruff.flake8-bugbear]
-extend-immutable-calls = [
-    "fastapi.Depends",
-    "fastapi.Query",
-    "fastapi.Path",
-    {%- if cookiecutter.enable_taskiq == "True" %}
-    "taskiq.TaskiqDepends",
-    {%- endif %}
-    {%- if cookiecutter.orm == "sqlalchemy" %}
-    "sqlalchemy.orm.joinedload",
-    {%- endif %}
-]
 
+[fastapi-template.options]
+{%- for key, value in cookiecutter.items() %}
+{%- if not key.startswith("_") and not key == "db_info" %}
+{{key}} = "{{value}}"
+{%- endif %}
+{%- endfor %}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

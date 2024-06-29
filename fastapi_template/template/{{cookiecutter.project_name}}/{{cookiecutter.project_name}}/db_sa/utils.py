@@ -4,6 +4,7 @@ from sqlalchemy import text
 from sqlalchemy.engine import URL, make_url
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+from pathlib import Path
 from {{cookiecutter.project_name}}.settings import settings
 
 {% if cookiecutter.db_info.name == "postgresql" -%}
@@ -83,6 +84,6 @@ async def create_database() -> None:
 async def drop_database() -> None:
     """Drop current database."""
     if settings.db_file.exists():
-        os.remove(settings.db_file)
+        Path(settings.db_file).unlink()
 
 {%- endif %}

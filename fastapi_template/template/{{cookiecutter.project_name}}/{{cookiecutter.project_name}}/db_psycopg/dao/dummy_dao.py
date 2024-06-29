@@ -14,7 +14,7 @@ class DummyDAO:
     def __init__(
         self,
         db_pool: AsyncConnectionPool[Any] = Depends(get_db_pool),
-    ):
+    ) -> None:
         self.db_pool = db_pool
 
 
@@ -24,8 +24,7 @@ class DummyDAO:
 
         :param name: name of a dummy.
         """
-        async with self.db_pool.connection() as connection:
-            async with connection.cursor(binary=True) as cur:
+        async with self.db_pool.connection() as connection, connection.cursor(binary=True) as cur:
                 await cur.execute(
                     "INSERT INTO dummy (name) VALUES (%(name)s);",
                     params={
@@ -41,8 +40,7 @@ class DummyDAO:
         :param offset: offset of dummies.
         :return: stream of dummies.
         """
-        async with self.db_pool.connection() as connection:
-            async with connection.cursor(
+        async with self.db_pool.connection() as connection, connection.cursor(
                 binary=True,
                 row_factory=class_row(DummyModel)
             ) as cur:
@@ -65,8 +63,7 @@ class DummyDAO:
         :param name: name of dummy instance.
         :return: dummy models.
         """
-        async with self.db_pool.connection() as connection:
-            async with connection.cursor(
+        async with self.db_pool.connection() as connection, connection.cursor(
                 binary=True,
                 row_factory=class_row(DummyModel)
             ) as cur:

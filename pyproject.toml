@@ -36,7 +36,8 @@ markers = [
     "sqlite: tests for sqlite3.",
 ]
 env = [
-    "POETRY_VIRTUALENVS_IN_PROJECT=True"
+    "POETRY_VIRTUALENVS_IN_PROJECT=True",
+    "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring",
 ]
 testpaths = ["fastapi_template/tests"]
 
