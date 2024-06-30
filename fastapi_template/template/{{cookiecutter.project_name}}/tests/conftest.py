@@ -52,7 +52,7 @@ from {{cookiecutter.project_name}}.db.config import MODELS_MODULES, TORTOISE_CON
 nest_asyncio.apply()
 {%- elif cookiecutter.orm == "ormar" %}
 from sqlalchemy.engine import create_engine
-from {{cookiecutter.project_name}}.db.config import database
+from {{cookiecutter.project_name}}.db.base import database
 from {{cookiecutter.project_name}}.db.utils import create_database, drop_database
 
 {%- elif cookiecutter.orm == "psycopg" %}
@@ -168,7 +168,7 @@ async def initialize_db() -> AsyncGenerator[None, None]:
 
     :yield: new engine.
     """
-    from {{cookiecutter.project_name}}.db.meta import meta  # noqa: WPS433
+    from {{cookiecutter.project_name}}.db.base import meta  # noqa: WPS433
     from {{cookiecutter.project_name}}.db.models import load_all_models  # noqa: WPS433
 
     load_all_models()
@@ -192,8 +192,8 @@ async def initialize_db() -> AsyncGenerator[None, None]:
 
 async def drop_db() -> None:
     """Drops database after tests."""
-    pool = AsyncConnectionPool(conninfo=str(settings.db_url.with_path("/postgres")))
-    await pool.wait()
+    pool = AsyncConnectionPool(conninfo=str(settings.db_url.with_path("/postgres")), open=False)
+    await pool.open(wait=True)
     async with pool.connection() as conn:
         await conn.set_autocommit(True)
         await conn.execute(
@@ -213,8 +213,8 @@ async def drop_db() -> None:
 
 async def create_db() -> None:  # noqa: WPS217
     """Creates database for tests."""
-    pool = AsyncConnectionPool(conninfo=str(settings.db_url.with_path("/postgres")))
-    await pool.wait()
+    pool = AsyncConnectionPool(conninfo=str(settings.db_url.with_path("/postgres")), open=False)
+    await pool.open(wait=True)
     async with pool.connection() as conn_check:
         res = await conn_check.execute(
             "SELECT 1 FROM pg_database WHERE datname=%(dbname)s",
@@ -268,8 +268,8 @@ async def dbpool() -> AsyncGenerator[AsyncConnectionPool[Any], None]:
     :yield: database connections pool.
     """
     await create_db()
-    pool = AsyncConnectionPool(conninfo=str(settings.db_url))
-    await pool.wait()
+    pool = AsyncConnectionPool(conninfo=str(settings.db_url), open=False)
+    await pool.open(wait=True)
 
     async with pool.connection() as create_conn:
         await create_tables(create_conn)

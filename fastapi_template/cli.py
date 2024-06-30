@@ -158,7 +158,7 @@ db_menu = SingularMenuModel(
             ),
             additional_info=Database(
                 name="mysql",
-                image="bitnami/mysql:8.0.30",
+                image="mysql:8.4",
                 async_driver="mysql+aiomysql",
                 driver_short="mysql",
                 driver="mysql",
@@ -178,7 +178,7 @@ db_menu = SingularMenuModel(
             ),
             additional_info=Database(
                 name="postgresql",
-                image="postgres:13.8-bullseye",
+                image="postgres:16.3-bullseye",
                 async_driver="postgresql+asyncpg",
                 driver_short="postgres",
                 driver="postgresql",
@@ -274,7 +274,6 @@ orm_menu = SingularMenuModel(
             code="ormar",
             user_view="Ormar",
             is_hidden=check_db(["sqlite", "mysql", "postgresql"]),
-            pydantic_v1=True,
             description=(
                 "{what} is a great {feature} ORM.\n"
                 "It's compatible with pydantic models and alembic migrator.".format(
@@ -354,12 +353,6 @@ features_menu = MultiselectMenuModel(
     multiselect=True,
     before_ask=do_not_ask_features_if_quiet,
     entries=[
-        MenuEntry(
-            code="pydanticv1",
-            cli_name="pydantic-v1",
-            user_view="Use older version of pydantic",
-            description="Use pydantic version ^1 instead of ^2",
-        ),
         MenuEntry(
             code="enable_redis",
             cli_name="redis",

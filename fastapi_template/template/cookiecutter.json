@@ -59,9 +59,6 @@
     "otlp_enabled": {
         "type": "bool"
     },
-    "pydanticv1": {
-        "type": "bool"
-    },
     "gunicorn": {
         "type": "bool"
     },

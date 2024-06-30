@@ -3,6 +3,7 @@ import re
 import shutil
 import tempfile
 from pathlib import Path
+from typing import Generator
 
 import pytest
 from faker import Faker
@@ -26,7 +27,7 @@ def project_name(worker_id: str) -> str:
 
 
 @pytest.fixture(scope="session", autouse=True)
-def generator_start_dir() -> str:
+def generator_start_dir() -> Generator[str, None, None]:
     """
     Generate directory to work into
 
@@ -74,7 +75,7 @@ def default_context(project_name: str) -> None:
 
 
 @pytest.fixture(autouse=True)
-def default_dir(generator_start_dir: str) -> None:
+def default_dir(generator_start_dir: str) -> Generator[None, None, None]:
     """
     Change directory to generator_start_dir.
 
@@ -87,7 +88,9 @@ def default_dir(generator_start_dir: str) -> None:
 
 
 @pytest.fixture(autouse=True)
-def docker_module_shutdown(generator_start_dir: str, project_name: str) -> None:
+def docker_module_shutdown(
+    generator_start_dir: str, project_name: str
+) -> Generator[None, None, None]:
     """
     Cleans up docker context.
 

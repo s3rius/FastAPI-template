@@ -1,10 +1,10 @@
-from ormar import ModelMeta
-from {{cookiecutter.project_name}}.db.config import database
-from {{cookiecutter.project_name}}.db.meta import meta
+import sqlalchemy as sa
+from databases import Database
+from ormar import OrmarConfig
+from {{cookiecutter.project_name}}.settings import settings
 
+meta = sa.MetaData()
+database = Database(str(settings.db_url))
 
-class BaseMeta(ModelMeta):
-    """Base metadata for models."""
+ormar_config = OrmarConfig(metadata=meta, database=database)
 
-    database = database
-    metadata = meta
