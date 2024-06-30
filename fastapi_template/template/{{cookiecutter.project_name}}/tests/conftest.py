@@ -168,7 +168,7 @@ async def initialize_db() -> AsyncGenerator[None, None]:
 
     :yield: new engine.
     """
-    from {{cookiecutter.project_name}}.db.meta import meta  # noqa: WPS433
+    from {{cookiecutter.project_name}}.db.base import meta  # noqa: WPS433
     from {{cookiecutter.project_name}}.db.models import load_all_models  # noqa: WPS433
 
     load_all_models()
