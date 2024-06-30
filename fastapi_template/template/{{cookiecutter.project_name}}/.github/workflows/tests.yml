@@ -39,9 +39,8 @@ jobs:
           {%- endif %}
           {%- if cookiecutter.db_info.name == "mysql" %}
           MYSQL_ROOT_PASSWORD: "{{ cookiecutter.project_name }}"
-          MYSQL_ROOT_USER: "{{ cookiecutter.project_name }}"
+          MYSQL_USER: "{{ cookiecutter.project_name }}"
           MYSQL_DATABASE: "{{ cookiecutter.project_name }}"
-          MYSQL_AUTHENTICATION_PLUGIN: "mysql_native_password"
           {%- endif %}
           {%- if cookiecutter.db_info.name == "mongodb" %}
           MONGO_INITDB_ROOT_USERNAME: "{{ cookiecutter.project_name }}"
@@ -49,7 +48,7 @@ jobs:
           {%- endif %}
          {%- if cookiecutter.db_info.name == "mysql" %}
         options: >-
-          --health-cmd="mysqladmin ping -u root"
+          --health-cmd="mysqladmin ping --user={{ cookiecutter.project_name }} --password={{ cookiecutter.project_name }}"
           --health-interval=15s
           --health-timeout=5s
           --health-retries=6

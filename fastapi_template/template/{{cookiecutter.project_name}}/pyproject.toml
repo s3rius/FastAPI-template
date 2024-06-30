@@ -223,6 +223,9 @@ env = [
     {%- else %}
     "{{cookiecutter.project_name | upper}}_DB_BASE={{cookiecutter.project_name}}_test",
     {%- endif %}
+    {%- if cookiecutter.db_info.name == "mysql" %}
+    "{{cookiecutter.project_name | upper}}_DB_USER=root"
+    {%- endif %}
     {%- if cookiecutter.orm == "piccolo" %}
     "PICCOLO_CONF={{cookiecutter.project_name}}.piccolo_conf",
     {%- endif %}
