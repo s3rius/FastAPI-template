@@ -42,8 +42,8 @@ env = [
     "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring",
 ]
 testpaths = ["fastapi_template/tests"]
-retries = 2
-retry_delay = 0.5
+retries = 3
+retry_delay = 2
 cumulative_timing = true
 
 [tool.poetry.scripts]

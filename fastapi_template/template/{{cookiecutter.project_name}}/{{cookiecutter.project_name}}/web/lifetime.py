@@ -86,8 +86,8 @@ async def _setup_db(app: FastAPI) -> None:
 
     :param app: current FastAPI app.
     """
-    app.state.db_pool = psycopg_pool.AsyncConnectionPool(conninfo=str(settings.db_url))
-    await app.state.db_pool.wait()
+    app.state.db_pool = psycopg_pool.AsyncConnectionPool(conninfo=str(settings.db_url), open=False)
+    await app.state.db_pool.open(wait=True)
 {%- endif %}
 
 {%- if cookiecutter.orm == "sqlalchemy" %}
