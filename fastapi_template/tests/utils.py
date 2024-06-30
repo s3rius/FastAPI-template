@@ -3,6 +3,8 @@ from pathlib import Path
 import shlex
 import subprocess
 from typing import Any, Optional
+
+import yaml
 from fastapi_template.input_model import BuilderContext
 from fastapi_template.__main__ import generate_project
 
@@ -41,13 +43,11 @@ def run_docker_compose_command(
 def run_default_check(context: BuilderContext, without_pytest=False):
     generate_project_and_chdir(context)
     compose = Path("./deploy/docker-compose.yml")
-    compose_contents = compose.read_text()
-    new_compose_lines = []
-    for line in compose_contents.splitlines():
-        if line.strip().replace(" ", "") == "target:prod":
-            continue
-        new_compose_lines.append(line)
-    compose.write_text("\n".join(new_compose_lines) + "\n")
+    with compose.open("r") as compose_file:
+        data = yaml.safe_load(compose_file)
+    data['services']['api']['build'].pop('target', None)
+    with compose.open("w") as compose_file:
+        yaml.safe_dump(data, compose_file)
 
     assert run_pre_commit() == 0
 
@@ -59,8 +59,8 @@ def run_default_check(context: BuilderContext, without_pytest=False):
     tests = run_docker_compose_command("run --rm api pytest -vv .")
     assert tests.returncode == 0
 
+
 def model_dump_compat(model: Any):
-    if hasattr(model, 'model_dump'):
+    if hasattr(model, "model_dump"):
         return model.model_dump()
     return model.dict()
-    

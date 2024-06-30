@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   api: &main_app
     build:
