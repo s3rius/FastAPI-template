@@ -52,7 +52,7 @@ from {{cookiecutter.project_name}}.db.config import MODELS_MODULES, TORTOISE_CON
 nest_asyncio.apply()
 {%- elif cookiecutter.orm == "ormar" %}
 from sqlalchemy.engine import create_engine
-from {{cookiecutter.project_name}}.db.config import database
+from {{cookiecutter.project_name}}.db.base import database
 from {{cookiecutter.project_name}}.db.utils import create_database, drop_database
 
 {%- elif cookiecutter.orm == "psycopg" %}
