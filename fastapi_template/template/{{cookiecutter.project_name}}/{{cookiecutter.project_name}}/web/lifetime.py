@@ -35,11 +35,11 @@ from {{cookiecutter.project_name}}.tkq import broker
 
 
 {%- if cookiecutter.orm == "ormar" %}
-from {{cookiecutter.project_name}}.db.config import database
+from {{cookiecutter.project_name}}.db.base import database
 
 {%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations != "True" %}
 from sqlalchemy.engine import create_engine
-from {{cookiecutter.project_name}}.db.meta import meta
+from {{cookiecutter.project_name}}.db.base import meta
 from {{cookiecutter.project_name}}.db.models import load_all_models
 
 {%- endif %}
