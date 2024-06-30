@@ -129,7 +129,7 @@ async def _setup_db(app: FastAPI) -> None:
     app.state.db_client = client
     await beanie.init_beanie(
         database=client[settings.db_base],
-        document_models=load_all_models(),
+        document_models=load_all_models(),  # type: ignore
     )
 {%- endif %}
 

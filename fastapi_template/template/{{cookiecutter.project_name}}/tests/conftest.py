@@ -341,18 +341,18 @@ async def setup_db() -> AsyncGenerator[None, None]:
 async def setup_db() -> AsyncGenerator[None, None]:
     """
     Fixture to create database connection.
-    
+
     :yield: nothing.
     """
     client = AsyncIOMotorClient(settings.db_url.human_repr())  # type: ignore
     from {{cookiecutter.project_name}}.db.models import load_all_models  # noqa: WPS433
     await beanie.init_beanie(
         database=client[settings.db_base],
-        document_models=load_all_models(),
+        document_models=load_all_models(),  # type: ignore
     )
     yield
 
- 
+
 {%- endif %}
 
 {%- if cookiecutter.enable_rmq == 'True' %}
@@ -509,7 +509,7 @@ def fastapi_app(
     {%- if cookiecutter.enable_kafka == "True" %}
     application.dependency_overrides[get_kafka_producer] = lambda: test_kafka_producer
     {%- endif %}
-    return application  # noqa: WPS331
+    return application  # noqa: RET504
 
 
 @pytest.fixture

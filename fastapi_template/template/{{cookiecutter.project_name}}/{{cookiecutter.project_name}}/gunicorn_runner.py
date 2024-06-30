@@ -20,7 +20,7 @@ class UvicornWorker(BaseUvicornWorker):
     to pass these parameters through gunicorn.
     """
 
-    CONFIG_KWARGS = {  # noqa: WPS115 (upper-case constant in a class)
+    CONFIG_KWARGS: dict[str, Any] = {  # typing: ignore  # noqa: RUF012
         "loop": "uvloop" if uvloop is not None else "asyncio",
         "http": "httptools",
         "lifespan": "on",
@@ -44,7 +44,7 @@ class GunicornApplication(BaseApplication):
         port: int,
         workers: int,
         **kwargs: Any,
-    ):
+    ) -> None:
         self.options = {
             "bind": f"{host}:{port}",
             "workers": workers,

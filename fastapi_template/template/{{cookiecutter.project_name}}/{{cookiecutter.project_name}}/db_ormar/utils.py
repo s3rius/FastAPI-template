@@ -1,5 +1,6 @@
 import os
 
+from pathlib import Path
 from sqlalchemy import text
 from sqlalchemy.engine import URL, create_engine, make_url
 from {{cookiecutter.project_name}}.settings import settings
@@ -81,6 +82,6 @@ def create_database() -> None:
 def drop_database() -> None:
     """Drop current database."""
     if settings.db_file.exists():
-        os.remove(settings.db_file)
+        Path(settings.db_file).unlink()
 
 {%- endif %}
