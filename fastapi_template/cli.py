@@ -88,7 +88,6 @@ api_menu = SingularMenuModel(
         MenuEntry(
             code="graphql",
             user_view="GrapQL API",
-            pydantic_v1=True,
             description=(
                 "Choose this option if you want to create a service with {name}.\n"
                 "It's more suitable for services with {reason} and deep nesting.".format(
