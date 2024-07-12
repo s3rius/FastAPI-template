@@ -122,7 +122,8 @@
             "tests/test_echo.py",
             "tests/test_dummy.py",
             "tests/test_redis.py",
-            "tests/test_rabbit.py"
+            "tests/test_rabbit.py",
+            "tests/test_kafka.py"
         ]
     },
     "Users model": {

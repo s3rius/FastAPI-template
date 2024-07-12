@@ -225,8 +225,8 @@ def test_gunicorn(default_context: BuilderContext, worker_id: str):
     run_default_check(default_context, worker_id, without_pytest=True)
 
 
-# @pytest.mark.parametrize("api", ["rest", "graphql"])
-# def test_kafka(default_context: BuilderContext, api: str):
-#     default_context.enable_kafka = True
-#     default_context.api_type = api
-#     run_default_check(default_context)
+@pytest.mark.parametrize("api", ["rest", "graphql"])
+def test_kafka(default_context: BuilderContext, api: str, worker_id: str):
+    default_context.enable_kafka = True
+    default_context.api_type = api
+    run_default_check(default_context, worker_id)
