@@ -1,5 +1,4 @@
 import abc
-import enum
 from collections import UserDict
 from typing import Any, Callable, List, Optional
 
@@ -29,7 +28,6 @@ class MenuEntry(BaseModel):
     description: str
     is_hidden: Optional[Callable[["BuilderContext"], bool]] = None
     additional_info: Any = None
-    pydantic_v1: bool = False
 
     @property
     def generated_name(self) -> str:
@@ -159,8 +157,6 @@ class SingularMenuModel(BaseMenuModel):
             return
 
         setattr(context, self.code, chosen_entry.code)
-        if chosen_entry.pydantic_v1:
-            context.pydanticv1 = True
 
         return context
 
@@ -240,10 +236,6 @@ class MultiselectMenuModel(BaseMenuModel):
         for entry in chosen_entries:
             setattr(context, entry.code, True)
         
-        for ch_entry in chosen_entries:
-            if ch_entry.pydantic_v1:
-                context.pydanticv1 = True
-
         return context
 
 

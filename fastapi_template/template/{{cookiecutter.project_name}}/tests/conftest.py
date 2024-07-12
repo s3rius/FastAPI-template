@@ -52,7 +52,7 @@ from {{cookiecutter.project_name}}.db.config import MODELS_MODULES, TORTOISE_CON
 nest_asyncio.apply()
 {%- elif cookiecutter.orm == "ormar" %}
 from sqlalchemy.engine import create_engine
-from {{cookiecutter.project_name}}.db.config import database
+from {{cookiecutter.project_name}}.db.base import database
 from {{cookiecutter.project_name}}.db.utils import create_database, drop_database
 
 {%- elif cookiecutter.orm == "psycopg" %}
@@ -67,6 +67,10 @@ from piccolo.engine.postgres import PostgresEngine
 {%- endif %}
 from piccolo.conf.apps import Finder
 from piccolo.table import create_tables, drop_tables
+
+{%- elif cookiecutter.orm == "beanie" %}
+import beanie
+from motor.motor_asyncio import AsyncIOMotorClient
 
 {%- endif %}
 
@@ -164,7 +168,7 @@ async def initialize_db() -> AsyncGenerator[None, None]:
 
     :yield: new engine.
     """
-    from {{cookiecutter.project_name}}.db.meta import meta  # noqa: WPS433
+    from {{cookiecutter.project_name}}.db.base import meta  # noqa: WPS433
     from {{cookiecutter.project_name}}.db.models import load_all_models  # noqa: WPS433
 
     load_all_models()
@@ -188,8 +192,8 @@ async def initialize_db() -> AsyncGenerator[None, None]:
 
 async def drop_db() -> None:
     """Drops database after tests."""
-    pool = AsyncConnectionPool(conninfo=str(settings.db_url.with_path("/postgres")))
-    await pool.wait()
+    pool = AsyncConnectionPool(conninfo=str(settings.db_url.with_path("/postgres")), open=False)
+    await pool.open(wait=True)
     async with pool.connection() as conn:
         await conn.set_autocommit(True)
         await conn.execute(
@@ -209,8 +213,8 @@ async def drop_db() -> None:
 
 async def create_db() -> None:  # noqa: WPS217
     """Creates database for tests."""
-    pool = AsyncConnectionPool(conninfo=str(settings.db_url.with_path("/postgres")))
-    await pool.wait()
+    pool = AsyncConnectionPool(conninfo=str(settings.db_url.with_path("/postgres")), open=False)
+    await pool.open(wait=True)
     async with pool.connection() as conn_check:
         res = await conn_check.execute(
             "SELECT 1 FROM pg_database WHERE datname=%(dbname)s",
@@ -255,7 +259,7 @@ async def create_tables(connection: AsyncConnection[Any]) -> None:
 
 
 @pytest.fixture
-async def dbpool() -> AsyncGenerator[AsyncConnectionPool, None]:
+async def dbpool() -> AsyncGenerator[AsyncConnectionPool[Any], None]:
     """
     Creates database connections pool to test database.
 
@@ -264,8 +268,8 @@ async def dbpool() -> AsyncGenerator[AsyncConnectionPool, None]:
     :yield: database connections pool.
     """
     await create_db()
-    pool = AsyncConnectionPool(conninfo=str(settings.db_url))
-    await pool.wait()
+    pool = AsyncConnectionPool(conninfo=str(settings.db_url), open=False)
+    await pool.open(wait=True)
 
     async with pool.connection() as create_conn:
         await create_tables(create_conn)
@@ -331,6 +335,23 @@ async def setup_db() -> AsyncGenerator[None, None]:
     {%- if cookiecutter.db_info.name == "postgresql" %}
     await drop_database(engine)
     {%- endif %}
+
+{%- elif cookiecutter.orm == "beanie" %}
+@pytest.fixture(autouse=True)
+async def setup_db() -> AsyncGenerator[None, None]:
+    """
+    Fixture to create database connection.
+
+    :yield: nothing.
+    """
+    client = AsyncIOMotorClient(settings.db_url.human_repr())  # type: ignore
+    from {{cookiecutter.project_name}}.db.models import load_all_models  # noqa: WPS433
+    await beanie.init_beanie(
+        database=client[settings.db_base],
+        document_models=load_all_models(),  # type: ignore
+    )
+    yield
+
 
 {%- endif %}
 
@@ -456,7 +477,7 @@ def fastapi_app(
     {%- if cookiecutter.orm == "sqlalchemy" %}
     dbsession: AsyncSession,
     {%- elif cookiecutter.orm == "psycopg" %}
-    dbpool: AsyncConnectionPool,
+    dbpool: AsyncConnectionPool[Any],
     {%- endif %}
     {% if cookiecutter.enable_redis == "True" -%}
     fake_redis_pool: ConnectionPool,
@@ -488,7 +509,7 @@ def fastapi_app(
     {%- if cookiecutter.enable_kafka == "True" %}
     application.dependency_overrides[get_kafka_producer] = lambda: test_kafka_producer
     {%- endif %}
-    return application  # noqa: WPS331
+    return application  # noqa: RET504
 
 
 @pytest.fixture
@@ -502,5 +523,5 @@ async def client(
     :param fastapi_app: the application.
     :yield: client for the app.
     """
-    async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
+    async with AsyncClient(app=fastapi_app, base_url="http://test", timeout=2.0) as ac:
             yield ac

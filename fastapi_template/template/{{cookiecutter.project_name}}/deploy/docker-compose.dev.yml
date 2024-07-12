@@ -1,11 +1,10 @@
-version: '3.9'
-
 services:
   api:
     ports:
       # Exposes application port.
     - "8000:8000"
     build:
+      context: .
       target: dev
     volumes:
       # Adds current directory as volume.

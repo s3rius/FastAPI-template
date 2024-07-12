@@ -41,8 +41,8 @@ def disable_orm(ctx: BuilderContext) -> Optional[MenuEntry]:
     return None
 
 
-def do_not_ask_features_if_quite(ctx: BuilderContext) -> Optional[List[MenuEntry]]:
-    if ctx.quite:
+def do_not_ask_features_if_quiet(ctx: BuilderContext) -> Optional[List[MenuEntry]]:
+    if ctx.quiet:
         return [SKIP_ENTRY]
     return None
 
@@ -158,7 +158,7 @@ db_menu = SingularMenuModel(
             ),
             additional_info=Database(
                 name="mysql",
-                image="bitnami/mysql:8.0.30",
+                image="mysql:8.4",
                 async_driver="mysql+aiomysql",
                 driver_short="mysql",
                 driver="mysql",
@@ -178,13 +178,30 @@ db_menu = SingularMenuModel(
             ),
             additional_info=Database(
                 name="postgresql",
-                image="postgres:13.8-bullseye",
+                image="postgres:16.3-bullseye",
                 async_driver="postgresql+asyncpg",
                 driver_short="postgres",
                 driver="postgresql",
                 port=5432,
             ),
         ),
+        MenuEntry(
+            code="mongodb",
+            user_view="MongoDB",
+            description=(
+                "{name} is one of the most popular NoSQL databases out there.".format(
+                    name=colored("MongoDB", color="green"),
+                )
+            ),
+            additional_info=Database(
+                name="mongodb",
+                image="mongo:7.0",
+                async_driver="beanie",
+                driver_short="mongodb",
+                driver="mongodb",
+                port=27017
+            ),
+        )
     ],
 )
 
@@ -243,7 +260,7 @@ orm_menu = SingularMenuModel(
     entries=[
         MenuEntry(
             code="none",
-            user_view="Whithout ORMs",
+            user_view="Without ORMs",
             description=(
                 "If you select this option, you will get only {what}.\n"
                 "The rest {warn}.".format(
@@ -256,7 +273,7 @@ orm_menu = SingularMenuModel(
         MenuEntry(
             code="ormar",
             user_view="Ormar",
-            pydantic_v1=True,
+            is_hidden=check_db(["sqlite", "mysql", "postgresql"]),
             description=(
                 "{what} is a great {feature} ORM.\n"
                 "It's compatible with pydantic models and alembic migrator.".format(
@@ -268,6 +285,7 @@ orm_menu = SingularMenuModel(
         MenuEntry(
             code="sqlalchemy",
             user_view="SQLAlchemy",
+            is_hidden=check_db(["sqlite", "mysql", "postgresql"]),
             description=(
                 "{what} is the most popular python ORM.\n"
                 "It has a {feature} and a big community around it.".format(
@@ -279,6 +297,7 @@ orm_menu = SingularMenuModel(
         MenuEntry(
             code="tortoise",
             user_view="Tortoise",
+            is_hidden=check_db(["sqlite", "mysql", "postgresql"]),
             description=(
                 "{what} is a great {feature} ORM.\n"
                 "It's easy to use, it has it's own migration tooling.".format(
@@ -312,6 +331,18 @@ orm_menu = SingularMenuModel(
                 )
             ),
         ),
+        MenuEntry(
+            code="beanie",
+            user_view="Beanie",
+            is_hidden=check_db(["mongodb"]),
+            description=(
+                "{what} is an asynchronous object-document mapper (ODM) for MongoDB.\n"
+                "Data models are based on Pydantic.".format(
+                    what=colored("Beanie", color="green"),
+                )
+            ),
+        ),
+
     ],
 )
 
@@ -320,14 +351,8 @@ features_menu = MultiselectMenuModel(
     code="features",
     description="Additional project features",
     multiselect=True,
-    before_ask=do_not_ask_features_if_quite,
+    before_ask=do_not_ask_features_if_quiet,
     entries=[
-        MenuEntry(
-            code="pydanticv1",
-            cli_name="pydantic-v1",
-            user_view="Use older version of pydantic",
-            description="Use pydantic version ^1 instead of ^2",
-        ),
         MenuEntry(
             code="enable_redis",
             cli_name="redis",
@@ -661,7 +686,7 @@ def run_command(callback: Callable[[BuilderContext], None]) -> None:
                 help="Owerrite directory if it exists",
             ),
             Option(
-                ["--quite"],
+                ["--quiet"],
                 is_flag=True,
                 help="Do not ask for features during generation",
             ),

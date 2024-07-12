@@ -10,7 +10,7 @@ TORTOISE_CONFIG = {  # noqa: WPS407
     },
     "apps": {
         "models": {
-            "models": MODELS_MODULES {%- if cookiecutter.enable_migrations == "True" %} + ["aerich.models"] {%- endif %} ,
+            "models": {%- if cookiecutter.enable_migrations == "True" %} [*MODELS_MODULES,  "aerich.models"] {%- else %} MODELS_MODULES {%- endif %} ,
             "default_connection": "default",
         },
     },

@@ -35,11 +35,11 @@ from {{cookiecutter.project_name}}.tkq import broker
 
 
 {%- if cookiecutter.orm == "ormar" %}
-from {{cookiecutter.project_name}}.db.config import database
+from {{cookiecutter.project_name}}.db.base import database
 
 {%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations != "True" %}
 from sqlalchemy.engine import create_engine
-from {{cookiecutter.project_name}}.db.meta import meta
+from {{cookiecutter.project_name}}.db.base import meta
 from {{cookiecutter.project_name}}.db.models import load_all_models
 
 {%- endif %}
@@ -86,8 +86,8 @@ async def _setup_db(app: FastAPI) -> None:
 
     :param app: current FastAPI app.
     """
-    app.state.db_pool = psycopg_pool.AsyncConnectionPool(conninfo=str(settings.db_url))
-    await app.state.db_pool.wait()
+    app.state.db_pool = psycopg_pool.AsyncConnectionPool(conninfo=str(settings.db_url), open=False)
+    await app.state.db_pool.open(wait=True)
 {%- endif %}
 
 {%- if cookiecutter.orm == "sqlalchemy" %}
@@ -118,6 +118,19 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
     )
     app.state.db_engine = engine
     app.state.db_session_factory = session_factory
+{%- endif %}
+
+{%- if cookiecutter.orm == "beanie" %}
+import beanie
+from motor.motor_asyncio import AsyncIOMotorClient
+from {{cookiecutter.project_name}}.db.models import load_all_models
+async def _setup_db(app: FastAPI) -> None:
+    client = AsyncIOMotorClient(str(settings.db_url))  # type: ignore
+    app.state.db_client = client
+    await beanie.init_beanie(
+        database=client[settings.db_base],
+        document_models=load_all_models(),  # type: ignore
+    )
 {%- endif %}
 
 {%- if cookiecutter.enable_migrations != "True" %}
@@ -276,7 +289,7 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pr
         _setup_db(app)
         {%- elif cookiecutter.orm == "ormar" %}
         await database.connect()
-        {%- elif cookiecutter.orm == "psycopg" %}
+        {%- elif cookiecutter.orm in ["beanie", "psycopg"] %}
         await _setup_db(app)
         {%- endif %}
         {%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations != "True" %}

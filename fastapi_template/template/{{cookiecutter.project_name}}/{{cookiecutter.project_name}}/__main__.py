@@ -1,5 +1,6 @@
 import os
 import shutil
+from pathlib import Path
 
 import uvicorn
 
@@ -25,8 +26,8 @@ def set_multiproc_dir() -> None:
     to avoid undefined behaviour.
     """
     shutil.rmtree(settings.prometheus_dir, ignore_errors=True)
-    os.makedirs(settings.prometheus_dir, exist_ok=True)
-    os.environ["prometheus_multiproc_dir"] = str(
+    Path(settings.prometheus_dir).mkdir(parents=True)
+    os.environ["prometheus_multiproc_dir"] = str(  # noqa: SIM112
         settings.prometheus_dir.expanduser().absolute(),
     )
     os.environ["PROMETHEUS_MULTIPROC_DIR"] = str(
@@ -57,7 +58,7 @@ def main() -> None:
     else:
         # We choose gunicorn only if reload
         # option is not used, because reload
-        # feature doen't work with Uvicorn workers.
+        # feature doesn't work with gunicorn workers.
         GunicornApplication(
             "{{cookiecutter.project_name}}.web.application:get_app",
             host=settings.host,

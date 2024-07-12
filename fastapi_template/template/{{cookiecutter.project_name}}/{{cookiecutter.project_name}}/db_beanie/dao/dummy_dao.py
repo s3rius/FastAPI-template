@@ -1,17 +1,10 @@
 from typing import List, Optional
 
-from fastapi import Depends
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-from {{cookiecutter.project_name}}.db.dependencies import get_db_session
 from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
 
 
 class DummyDAO:
     """Class for accessing dummy table."""
-
-    def __init__(self, session: AsyncSession = Depends(get_db_session)) -> None:
-        self.session = session
 
     async def create_dummy_model(self, name: str) -> None:
         """
@@ -19,7 +12,7 @@ class DummyDAO:
 
         :param name: name of a dummy.
         """
-        self.session.add(DummyModel(name=name))
+        await DummyModel.insert_one(DummyModel(name=name))
 
     async def get_all_dummies(self, limit: int, offset: int) -> List[DummyModel]:
         """
@@ -29,11 +22,7 @@ class DummyDAO:
         :param offset: offset of dummies.
         :return: stream of dummies.
         """
-        raw_dummies = await self.session.execute(
-            select(DummyModel).limit(limit).offset(offset),
-        )
-
-        return list(raw_dummies.scalars().fetchall())
+        return await DummyModel.find_all(skip=offset, limit=limit).to_list()
 
     async def filter(
         self,
@@ -45,8 +34,22 @@ class DummyDAO:
         :param name: name of dummy instance.
         :return: dummy models.
         """
-        query = select(DummyModel)
-        if name:
-            query = query.where(DummyModel.name == name)
-        rows = await self.session.execute(query)
-        return list(rows.scalars().fetchall())
+        if name is None:
+            return []
+        return await DummyModel.find(DummyModel.name == name).to_list()
+
+    async def delete_dummy_model_by_name(
+        self,
+        name: str,
+    ) -> Optional[DummyModel]:
+        """
+        Delete a dummy model by name.
+
+        :param name: name of dummy instance.
+        :return: option of a dummy model.
+        """
+        res = await DummyModel.find_one(DummyModel.name == name)
+        if res is None:
+            return res
+        await res.delete()
+        return res

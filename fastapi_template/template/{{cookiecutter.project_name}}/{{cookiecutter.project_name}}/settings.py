@@ -4,13 +4,7 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import List, Optional
 
-{%- if cookiecutter.pydanticv1 == "True" %}
-from pydantic import BaseSettings
-
-{%- else %}
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-{%- endif %}
 
 from yarl import URL
 
@@ -44,7 +38,7 @@ class Settings(BaseSettings):
 
     # Current environment
     environment: str = "dev"
-    
+
     log_level: LogLevel = LogLevel.INFO
 
     {%- if cookiecutter.add_users == "True" %}
@@ -62,7 +56,11 @@ class Settings(BaseSettings):
     db_port: int = {{cookiecutter.db_info.port}}
     db_user: str = "{{cookiecutter.project_name}}"
     db_pass: str = "{{cookiecutter.project_name}}"
+    {%- if cookiecutter.db_info.name != "sqlite" %}
+    db_base: str = "admin"
+    {%- else %}
     db_base: str = "{{cookiecutter.project_name}}"
+    {%- endif %}
     {%- endif %}
     db_echo: bool = False
 
@@ -206,19 +204,11 @@ class Settings(BaseSettings):
         )
     {%- endif %}
 
-    {%- if cookiecutter.pydanticv1 == "True" %}
-    class Config:
-        env_file = ".env"
-        env_prefix = "{{cookiecutter.project_name | upper }}_"
-        env_file_encoding = "utf-8"
-
-    {%- else %}
     model_config = SettingsConfigDict(
         env_file = ".env",
         env_prefix = "{{cookiecutter.project_name | upper }}_",
         env_file_encoding = "utf-8",
     )
-    {%- endif %}
 
 
 

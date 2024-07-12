@@ -2,7 +2,7 @@ from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy.engine import Connection, create_engine
-from {{cookiecutter.project_name}}.db.meta import meta
+from {{cookiecutter.project_name}}.db.base import meta
 from {{cookiecutter.project_name}}.db.models import load_all_models
 from {{cookiecutter.project_name}}.settings import settings
 

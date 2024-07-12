@@ -21,7 +21,7 @@
             "{{cookiecutter.project_name}}/web/api/redis",
             "{{cookiecutter.project_name}}/web/gql/redis",
             "{{cookiecutter.project_name}}/services/redis",
-            "{{cookiecutter.project_name}}/tests/test_redis.py",
+            "tests/test_redis.py",
             "deploy/kube/redis.yml"
         ]
     },
@@ -31,7 +31,7 @@
             "{{cookiecutter.project_name}}/web/api/rabbit",
             "{{cookiecutter.project_name}}/web/gql/rabbit",
             "{{cookiecutter.project_name}}/services/rabbit",
-            "{{cookiecutter.project_name}}/tests/test_rabbit.py",
+            "tests/test_rabbit.py",
             "deploy/kube/redis.yml"
         ]
     },
@@ -41,7 +41,7 @@
             "{{cookiecutter.project_name}}/web/api/kafka",
             "{{cookiecutter.project_name}}/web/gql/kafka",
             "{{cookiecutter.project_name}}/services/kafka",
-            "{{cookiecutter.project_name}}/tests/test_kafka.py"
+            "tests/test_kafka.py"
         ]
     },
     "Kubernetes": {
@@ -56,13 +56,18 @@
             "alembic.ini",
             "{{cookiecutter.project_name}}/web/api/dummy",
             "{{cookiecutter.project_name}}/web/gql/dummy",
-            "{{cookiecutter.project_name}}/db_sa",
-            "{{cookiecutter.project_name}}/tests/test_dummy.py",
+            "tests/test_dummy.py",
             "deploy/kube/db.yml"
         ]
     },
+    "Beanie support": {
+        "enabled": "{{cookiecutter.db_info.name == 'mongodb'}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/db_beanie"
+        ]
+    },
     "Postgres and MySQL support": {
-        "enabled": "{{cookiecutter.db_info.name != 'sqlite'}}",
+        "enabled": "{{cookiecutter.db_info.name not in ['sqlite', 'mongodb']}}",
         "resources": [
             "deploy/kube/db.yml"
         ]
@@ -114,10 +119,11 @@
             "{{cookiecutter.project_name}}/web/gql/kafka",
             "{{cookiecutter.project_name}}/web/api/rabbit",
             "{{cookiecutter.project_name}}/web/gql/rabbit",
-            "{{cookiecutter.project_name}}/tests/test_echo.py",
-            "{{cookiecutter.project_name}}/tests/test_dummy.py",
-            "{{cookiecutter.project_name}}/tests/test_redis.py",
-            "{{cookiecutter.project_name}}/tests/test_rabbit.py"
+            "tests/test_echo.py",
+            "tests/test_dummy.py",
+            "tests/test_redis.py",
+            "tests/test_rabbit.py",
+            "tests/test_kafka.py"
         ]
     },
     "Users model": {
@@ -140,9 +146,10 @@
             "{{cookiecutter.project_name}}/db_tortoise/models/dummy_model.py",
             "{{cookiecutter.project_name}}/db_psycopg/dao",
             "{{cookiecutter.project_name}}/db_psycopg/models/dummy_model.py",
-            "{{cookiecutter.project_name}}/tests/test_dummy.py",
+            "tests/test_dummy.py",
             "{{cookiecutter.project_name}}/db_piccolo/dao",
             "{{cookiecutter.project_name}}/db_piccolo/models/dummy_model.py",
+            "{{cookiecutter.project_name}}/db_beanie/models/dummy_model.py",
             "{{cookiecutter.project_name}}/db_sa/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
             "{{cookiecutter.project_name}}/db_ormar/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
             "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_pg.sql",
@@ -187,6 +194,12 @@
         "resources": [
             "{{cookiecutter.project_name}}/db_piccolo",
             "{{cookiecutter.project_name}}/piccolo_conf.py"
+        ]
+    },
+    "Beanie": {
+        "enabled": "{{cookiecutter.orm == 'beanie'}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/db_beanie"
         ]
     },
     "Postgresql DB": {
