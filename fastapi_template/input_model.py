@@ -1,5 +1,4 @@
 import abc
-import enum
 from collections import UserDict
 from typing import Any, Callable, List, Optional
 
