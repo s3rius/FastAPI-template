@@ -22,14 +22,14 @@ from aio_pika.abc import AbstractExchange, AbstractQueue
 from aio_pika.pool import Pool
 from {{cookiecutter.project_name}}.services.rabbit.dependencies import \
     get_rmq_channel_pool
-from {{cookiecutter.project_name}}.services.rabbit.lifetime import (init_rabbit,
+from {{cookiecutter.project_name}}.services.rabbit.lifespan import (init_rabbit,
                                                                     shutdown_rabbit)
 
 {%- endif %}
 {%- if cookiecutter.enable_kafka == "True" %}
 from aiokafka import AIOKafkaProducer
 from {{cookiecutter.project_name}}.services.kafka.dependencies import get_kafka_producer
-from {{cookiecutter.project_name}}.services.kafka.lifetime import (init_kafka,
+from {{cookiecutter.project_name}}.services.kafka.lifespan import (init_kafka,
                                                                    shutdown_kafka)
 
 {%- endif %}
