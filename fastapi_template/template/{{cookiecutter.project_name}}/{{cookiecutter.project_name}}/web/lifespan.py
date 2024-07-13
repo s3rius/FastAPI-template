@@ -1,5 +1,6 @@
 import logging
-from typing import Awaitable, Callable
+from typing import AsyncGenerator, Awaitable, Callable
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from {{cookiecutter.project_name}}.settings import settings
@@ -11,19 +12,19 @@ from prometheus_fastapi_instrumentator.instrumentation import \
 {%- endif %}
 
 {%- if cookiecutter.enable_redis == "True" %}
-from {{cookiecutter.project_name}}.services.redis.lifetime import (init_redis,
+from {{cookiecutter.project_name}}.services.redis.lifespan import (init_redis,
                                                                    shutdown_redis)
 
 {%- endif %}
 
 {%- if cookiecutter.enable_rmq == "True" %}
-from {{cookiecutter.project_name}}.services.rabbit.lifetime import (init_rabbit,
+from {{cookiecutter.project_name}}.services.rabbit.lifespan import (init_rabbit,
                                                                     shutdown_rabbit)
 
 {%- endif %}
 
 {%- if cookiecutter.enable_kafka == "True" %}
-from {{cookiecutter.project_name}}.services.kafka.lifetime import (init_kafka,
+from {{cookiecutter.project_name}}.services.kafka.lifespan import (init_kafka,
                                                                    shutdown_kafka)
 
 {%- endif %}
@@ -267,7 +268,8 @@ def setup_prometheus(app: FastAPI) -> None:  # pragma: no cover
 {%- endif %}
 
 
-def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pragma: no cover
+@asynccontextmanager
+async def lifespan_setup(app: FastAPI) -> AsyncGenerator[None, None]:  # pragma: no cover
     """
     Actions to run on application startup.
 
@@ -278,79 +280,62 @@ def register_startup_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pr
     :return: function that actually performs actions.
     """
 
-    @app.on_event("startup")
-    async def _startup() -> None:  # noqa: WPS430
-        app.middleware_stack = None
-        {%- if cookiecutter.enable_taskiq == "True" %}
-        if not broker.is_worker_process:
-            await broker.startup()
-        {%- endif %}
-        {%- if cookiecutter.orm == "sqlalchemy" %}
-        _setup_db(app)
-        {%- elif cookiecutter.orm == "ormar" %}
-        await database.connect()
-        {%- elif cookiecutter.orm in ["beanie", "psycopg"] %}
-        await _setup_db(app)
-        {%- endif %}
-        {%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations != "True" %}
-        {%- if cookiecutter.orm in ["ormar", "sqlalchemy"] %}
-        await _create_tables()
-        {%- endif %}
-        {%- endif %}
-        {%- if cookiecutter.otlp_enabled == "True" %}
-        setup_opentelemetry(app)
-        {%- endif %}
-        {%- if cookiecutter.enable_redis == "True" %}
-        init_redis(app)
-        {%- endif %}
-        {%- if cookiecutter.enable_rmq == "True" %}
-        init_rabbit(app)
-        {%- endif %}
-        {%- if cookiecutter.enable_kafka == "True" %}
-        await init_kafka(app)
-        {%- endif %}
-        {%- if cookiecutter.prometheus_enabled == "True" %}
-        setup_prometheus(app)
-        {%- endif %}
-        app.middleware_stack = app.build_middleware_stack()
-        pass  # noqa: WPS420
+    app.middleware_stack = None
+    {%- if cookiecutter.enable_taskiq == "True" %}
+    if not broker.is_worker_process:
+        await broker.startup()
+    {%- endif %}
+    {%- if cookiecutter.orm == "sqlalchemy" %}
+    _setup_db(app)
+    {%- elif cookiecutter.orm == "ormar" %}
+    await database.connect()
+    {%- elif cookiecutter.orm in ["beanie", "psycopg"] %}
+    await _setup_db(app)
+    {%- endif %}
+    {%- if cookiecutter.db_info.name != "none" and cookiecutter.enable_migrations != "True" %}
+    {%- if cookiecutter.orm in ["ormar", "sqlalchemy"] %}
+    await _create_tables()
+    {%- endif %}
+    {%- endif %}
+    {%- if cookiecutter.otlp_enabled == "True" %}
+    setup_opentelemetry(app)
+    {%- endif %}
+    {%- if cookiecutter.enable_redis == "True" %}
+    init_redis(app)
+    {%- endif %}
+    {%- if cookiecutter.enable_rmq == "True" %}
+    init_rabbit(app)
+    {%- endif %}
+    {%- if cookiecutter.enable_kafka == "True" %}
+    await init_kafka(app)
+    {%- endif %}
+    {%- if cookiecutter.prometheus_enabled == "True" %}
+    setup_prometheus(app)
+    {%- endif %}
+    app.middleware_stack = app.build_middleware_stack()
 
-    return _startup
+    yield
 
-
-def register_shutdown_event(app: FastAPI) -> Callable[[], Awaitable[None]]:  # pragma: no cover
-    """
-    Actions to run on application's shutdown.
-
-    :param app: fastAPI application.
-    :return: function that actually performs actions.
-    """
-
-    @app.on_event("shutdown")
-    async def _shutdown() -> None:  # noqa: WPS430
-        {%- if cookiecutter.enable_taskiq == "True" %}
-        if not broker.is_worker_process:
-            await broker.shutdown()
-        {%- endif %}
-        {%- if cookiecutter.orm == "sqlalchemy" %}
-        await app.state.db_engine.dispose()
-        {% elif cookiecutter.orm == "ormar" %}
-        await database.disconnect()
-        {%- elif cookiecutter.orm == "psycopg" %}
-        await app.state.db_pool.close()
-        {%- endif %}
-        {%- if cookiecutter.enable_redis == "True" %}
-        await shutdown_redis(app)
-        {%- endif %}
-        {%- if cookiecutter.enable_rmq == "True" %}
-        await shutdown_rabbit(app)
-        {%- endif %}
-        {%- if cookiecutter.enable_kafka == "True" %}
-        await shutdown_kafka(app)
-        {%- endif %}
-        {%- if cookiecutter.otlp_enabled == "True" %}
-        stop_opentelemetry(app)
-        {%- endif %}
-        pass  # noqa: WPS420
-
-    return _shutdown
+    {%- if cookiecutter.enable_taskiq == "True" %}
+    if not broker.is_worker_process:
+        await broker.shutdown()
+    {%- endif %}
+    {%- if cookiecutter.orm == "sqlalchemy" %}
+    await app.state.db_engine.dispose()
+    {% elif cookiecutter.orm == "ormar" %}
+    await database.disconnect()
+    {%- elif cookiecutter.orm == "psycopg" %}
+    await app.state.db_pool.close()
+    {%- endif %}
+    {%- if cookiecutter.enable_redis == "True" %}
+    await shutdown_redis(app)
+    {%- endif %}
+    {%- if cookiecutter.enable_rmq == "True" %}
+    await shutdown_rabbit(app)
+    {%- endif %}
+    {%- if cookiecutter.enable_kafka == "True" %}
+    await shutdown_kafka(app)
+    {%- endif %}
+    {%- if cookiecutter.otlp_enabled == "True" %}
+    stop_opentelemetry(app)
+    {%- endif %}

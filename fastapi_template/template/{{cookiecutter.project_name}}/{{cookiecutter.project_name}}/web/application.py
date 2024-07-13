@@ -11,8 +11,7 @@ from {{cookiecutter.project_name}}.web.gql.router import gql_router
 {%- endif %}
 from importlib import metadata
 
-from {{cookiecutter.project_name}}.web.lifetime import (register_shutdown_event,
-                                                        register_startup_event)
+from {{cookiecutter.project_name}}.web.lifespan import lifespan_setup
 
 {%- if cookiecutter.orm == 'tortoise' %}
 from tortoise.contrib.fastapi import register_tortoise
@@ -80,6 +79,7 @@ def get_app() -> FastAPI:
     app = FastAPI(
         title="{{cookiecutter.project_name}}",
         version=metadata.version("{{cookiecutter.project_name}}"),
+        lifespan=lifespan_setup,
         {%- if cookiecutter.self_hosted_swagger == 'True' %}
         docs_url=None,
         redoc_url=None,
@@ -90,10 +90,6 @@ def get_app() -> FastAPI:
         openapi_url="/api/openapi.json",
         default_response_class=UJSONResponse,
     )
-
-    # Adds startup and shutdown events.
-    register_startup_event(app)
-    register_shutdown_event(app)
 
     # Main router for the API.
     app.include_router(router=api_router, prefix="/api")

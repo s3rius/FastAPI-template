@@ -63,7 +63,7 @@ $ tree "{{cookiecutter.project_name}}"
     ├── api  # Package with all handlers.
     │   └── router.py  # Main router.
     ├── application.py  # FastAPI application configuration.
-    └── lifetime.py  # Contains actions to perform on startup and shutdown.
+    └── lifespan.py  # Contains actions to perform on startup and shutdown.
 ```
 
 ## Configuration
