@@ -22,31 +22,20 @@ def run_pre_commit() -> int:
 def run_docker_compose_command(
     command: Optional[str] = None,
 ) -> subprocess.CompletedProcess:
-    docker_command = [
-        "docker-compose",
-        "-f",
-        "deploy/docker-compose.yml",
-        "--project-directory",
-        ".",
-    ]
+    docker_command = ["docker-compose"]
     if command:
         docker_command.extend(shlex.split(command))
     else:
-        docker_command.extend(
-            [
-                "build",
-            ]
-        )
+        docker_command.extend(["build"])
     return subprocess.run(docker_command)
 
 
 def run_default_check(context: BuilderContext, worker_id: str, without_pytest=False):
     generate_project_and_chdir(context)
-    compose = Path("./deploy/docker-compose.yml")
+    compose = Path("./docker-compose.yml")
     with compose.open("r") as compose_file:
         data = yaml.safe_load(compose_file)
-    data['services']['api']['build'].pop('target', None)
-    data['services']['api']['image'] = f"test_image:v{worker_id}"
+    data["services"]["api"]["image"] = f"test_image:v{worker_id}"
     with compose.open("w") as compose_file:
         yaml.safe_dump(data, compose_file)
 

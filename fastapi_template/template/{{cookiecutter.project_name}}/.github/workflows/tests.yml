@@ -13,128 +13,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install poetry
+        run: pipx install poetry
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'poetry'
       - name: Install deps
         run: poetry install
       - name: Run lint check
         run: poetry run pre-commit run -a {{ '${{' }} matrix.cmd {{ '}}' }}
   pytest:
     runs-on: ubuntu-latest
-    {%- if ((cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite") or
-          (cookiecutter.enable_rmq == "True") or
-          (cookiecutter.enable_kafka == "True")) %}
-    services:
-      {%- if cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite" %}
-
-      {{cookiecutter.project_name}}-db:
-        image: {{ cookiecutter.db_info.image }}
-        env:
-          {%- if cookiecutter.db_info.name == "postgresql" %}
-          POSTGRES_PASSWORD: {{ cookiecutter.project_name }}
-          POSTGRES_USER: {{ cookiecutter.project_name }}
-          POSTGRES_DB: {{ cookiecutter.project_name }}
-          {%- endif %}
-          {%- if cookiecutter.db_info.name == "mysql" %}
-          MYSQL_ROOT_PASSWORD: "{{ cookiecutter.project_name }}"
-          MYSQL_USER: "{{ cookiecutter.project_name }}"
-          MYSQL_DATABASE: "{{ cookiecutter.project_name }}"
-          {%- endif %}
-          {%- if cookiecutter.db_info.name == "mongodb" %}
-          MONGO_INITDB_ROOT_USERNAME: "{{ cookiecutter.project_name }}"
-          MONGO_INITDB_ROOT_PASSWORD: "{{ cookiecutter.project_name }}"
-          {%- endif %}
-         {%- if cookiecutter.db_info.name == "mysql" %}
-        options: >-
-          --health-cmd="mysqladmin ping --user={{ cookiecutter.project_name }} --password={{ cookiecutter.project_name }}"
-          --health-interval=15s
-          --health-timeout=5s
-          --health-retries=6
-        {%- endif %}
-        {%- if cookiecutter.db_info.name == "postgresql" %}
-        options: >-
-          --health-cmd="pg_isready"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-        {%- endif %}
-        ports:
-          - {{ cookiecutter.db_info.port }}:{{ cookiecutter.db_info.port }}
-        {%- endif %}
-      {%- if cookiecutter.enable_rmq == "True" %}
-
-      {{cookiecutter.project_name}}-rmq:
-        image: rabbitmq:3.9.16-alpine
-        env:
-          RABBITMQ_DEFAULT_USER: "guest"
-          RABBITMQ_DEFAULT_PASS: "guest"
-          RABBITMQ_DEFAULT_VHOST: "/"
-        options: >-
-          --health-cmd="rabbitmq-diagnostics check_running -q"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=8
-        ports:
-          - 5672:5672
-      {%- endif %}
-      {%- if cookiecutter.enable_kafka == "True" %}
-
-      {{cookiecutter.project_name}}-zookeeper:
-        image: "bitnami/zookeeper:3.7.1"
-        env:
-          ALLOW_ANONYMOUS_LOGIN: "yes"
-          ZOO_LOG_LEVEL: "ERROR"
-        options: >-
-          --health-cmd="zkServer.sh status"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=8
-
-      {{cookiecutter.project_name}}-kafka:
-        image: bitnami/kafka:3.2.0
-        env:
-          KAFKA_BROKER_ID: "1"
-          ALLOW_PLAINTEXT_LISTENER: "yes"
-          KAFKA_CFG_LISTENERS: "PLAINTEXT://0.0.0.0:9092"
-          KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092"
-          KAFKA_CFG_ZOOKEEPER_CONNECT: "{{cookiecutter.project_name}}-zookeeper:2181"
-        options: >-
-          --health-cmd="kafka-topics.sh --list --bootstrap-server localhost:9092"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=8
-        ports:
-          - 9092:9092
-      {%- endif %}
-    {%- endif %}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - name: Create .env
+        run: touch .env
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
-      - name: Install deps
-        uses: knowsuchagency/poetry-install@v1
-        env:
-          POETRY_VIRTUALENVS_CREATE: false
-      - name: Run pytest check
-        run: poetry run pytest -vv --cov="{{cookiecutter.project_name}}" .
-        env:
-          {{ cookiecutter.project_name | upper }}_HOST: "0.0.0.0"
-        {%- if cookiecutter.db_info.name != "none" %}
-        {%- if cookiecutter.db_info.name != "sqlite" %}
-          {{ cookiecutter.project_name | upper }}_DB_HOST: localhost
-        {%- endif %}
-        {%- if cookiecutter.db_info.name == "mongodb" %}
-          {{ cookiecutter.project_name | upper }}_DB_BASE: admin
-        {%- endif %}
-        {%- endif %}
-        {%- if cookiecutter.enable_rmq == "True" %}
-          {{ cookiecutter.project_name | upper }}_RABBIT_HOST: localhost
-        {%- endif %}
-        {%- if cookiecutter.enable_kafka == "True" %}
-          {{ cookiecutter.project_name | upper }}_KAFKA_BOOTSTRAP_SERVERS: '["localhost:9092"]'
-        {%- endif %}
+          python-version: '3.11'
+      - name: Update docker-compose
+        uses: KengoTODA/actions-setup-docker-compose@v1
+        with:
+          version: "2.28.0"
+      - name: run tests
+        run: docker-compose run --rm api pytest -vv
 

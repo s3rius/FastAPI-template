@@ -597,7 +597,7 @@ users_backend_menu = MultiselectMenuModel(
     entries=[
         MenuEntry(
             code="cookie_auth",
-            cli_name="cookie auth",
+            cli_name="cookie-auth",
             user_view="Add authentication via cookie support",
             description=(
                 "Adds {cookie} authentication support.".format(
@@ -610,7 +610,7 @@ users_backend_menu = MultiselectMenuModel(
         ),
         MenuEntry(
             code="jwt_auth",
-            cli_name="jwt auth",
+            cli_name="jwt-auth",
             user_view="Add JWT auth support",
             description=(
                 "Adds {name} authentication support.".format(
