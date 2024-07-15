@@ -24,8 +24,7 @@ python3 -m fastapi_template
 # Answer all the questions
 # 🍪 Enjoy your new project 🍪
 cd new_project
-docker-compose -f deploy/docker-compose.yml --project-directory . build
-docker-compose -f deploy/docker-compose.yml --project-directory . up --build
+docker-compose up --build
 ```
 
 If you want to install it from sources, try this:
@@ -90,6 +89,7 @@ Options:
                                   Choose Object–Relational Mapper lib
   --ci [none|gitlab_ci|github]    Select a CI for your app
   --redis                         Add redis support
+  --add_users                     Add fastapi-users support
   --rabbit                        Add RabbitMQ support
   --taskiq                        Add Taskiq support
   --migrations                    Add Migrations
@@ -104,5 +104,7 @@ Options:
   --traefik                       Adds traefik labels to docker container
   --kafka                         Add Kafka support
   --gunicorn                      Add gunicorn server
+  --cookie-auth                   Add authentication via cookie support
+  --jwt-auth                      Add JWT auth support
   --help                          Show this message and exit.
 ```

@@ -3,14 +3,15 @@ stages:
 
 .test-template:
   stage: test
-  image: python:3.9.6-slim-buster
+  image: python:3.11.4-slim-bullseye
   tags:
     - kubernetes-runner
     - docker-runner
   except:
     - tags
   before_script:
-    - pip install poetry==1.4.2
+    - apt update && apt install -y git
+    - pip install poetry==1.8.2
     - poetry config virtualenvs.create false
     - poetry install
 
@@ -18,104 +19,17 @@ black:
   extends:
     - .test-template
   script:
-    - black --check .
+    - pre-commit run black -a
 
-flake8:
+ruff:
   extends:
     - .test-template
   script:
-    - flake8 --count .
+    - pre-commit run ruff -a
 
 mypy:
   extends:
     - .test-template
   script:
-    - mypy .
-
-pytest:
-  extends:
-    - .test-template
-  {%- if ((cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite") or
-          (cookiecutter.enable_rmq == "True") or
-          (cookiecutter.enable_kafka == "True")) %}
-  services:
-    {%- if cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite" %}
-    - name: {{ cookiecutter.db_info.image }}
-      alias: database
-    {%- endif %}
-    {%- if cookiecutter.enable_rmq == "True" %}
-    - name: rabbitmq:3.9.16-alpine
-      alias: rmq
-    {%- endif %}
-    {%- if cookiecutter.enable_kafka == "True" %}
-    - name: bitnami/kafka:3.2.0
-      alias: kafka
-    {%- endif %}
-  variables:
-    {%- if cookiecutter.db_info.name == "postgresql" %}
-
-    # Postgresql variables
-    {{ cookiecutter.project_name | upper }}_DB_HOST: database
-    POSTGRES_PASSWORD: {{ cookiecutter.project_name }}
-    POSTGRES_USER: {{ cookiecutter.project_name }}
-    POSTGRES_DB: {{ cookiecutter.project_name }}
-    {%- endif %}
-    {%- if cookiecutter.db_info.name == "mysql" %}
-
-    # MySQL variables
-    {{ cookiecutter.project_name | upper }}_DB_HOST: database
-    MYSQL_PASSWORD: {{ cookiecutter.project_name }}
-    MYSQL_USER: {{ cookiecutter.project_name }}
-    MYSQL_DATABASE: {{ cookiecutter.project_name }}
-    ALLOW_EMPTY_PASSWORD: yes
-    {%- endif %}
-
-    {%- if cookiecutter.db_info.name == "mongodb" %}
-
-    # MongoDB variables
-    {{ cookiecutter.project_name | upper }}_DB_HOST: database
-    {{ cookiecutter.project_name | upper }}_DB_BASE: admin
-    MONGO_INITDB_ROOT_USERNAME: {{ cookiecutter.project_name }}
-    MONGO_INITDB_ROOT_PASSWORD: {{ cookiecutter.project_name }}
-    {%- endif %}
- 
-    {%- if cookiecutter.enable_rmq == "True" %}
-
-    # Rabbitmq variables
-    RABBITMQ_DEFAULT_USER: "guest"
-    RABBITMQ_DEFAULT_PASS: "guest"
-    RABBITMQ_DEFAULT_VHOST: "/"
-    {{ cookiecutter.project_name | upper }}_RABBIT_HOST: rmq
-    {%- endif %}
-    {%- if cookiecutter.enable_kafka == "True" %}
-
-    # Kafka variables
-    KAFKA_BROKER_ID: "1"
-    KAFKA_ENABLE_KRAFT: "yes"
-    ALLOW_PLAINTEXT_LISTENER: "yes"
-    KAFKA_CFG_PROCESS_ROLES: "broker,controller"
-    KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
-    KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
-    KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
-    KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "1@127.0.0.1:9093"
-    {{ cookiecutter.project_name | upper }}_KAFKA_BOOTSTRAP_SERVERS: '["kafka:9092"]'
-    {%- endif %}
-  {%- endif %}
-  script:
-    {%- if cookiecutter.db_info.name != "none" %}
-    {%- if cookiecutter.db_info.name != "sqlite" %}
-    - apt update
-    - apt install -y wait-for-it
-    - wait-for-it -t 180 ${{ cookiecutter.project_name | upper }}_DB_HOST:{{cookiecutter.db_info.port}}
-    {%- endif %}
-    {%- endif %}
-    - pytest -vv --junitxml=report.xml --cov="{{cookiecutter.project_name}}" .
-    - coverage xml
-  artifacts:
-    when: always
-    reports:
-      junit: report.xml
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage.xml
+    - pre-commit run ruff -a
 
