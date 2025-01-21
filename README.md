@@ -36,7 +36,7 @@ python3 -m fastapi_template
 
 Also, you can use it with docker.
 ```bash
-docker run --rm -it -v "$(pwd):/projects" s3rius/fastapi_template
+docker run --rm -it -v "$(pwd):/projects" ghcr.io/s3rius/fastapi_template
 ```
 
 ## Features
