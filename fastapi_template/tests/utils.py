@@ -22,7 +22,7 @@ def run_pre_commit() -> int:
 def run_docker_compose_command(
     command: Optional[str] = None,
 ) -> subprocess.CompletedProcess:
-    docker_command = ["docker-compose"]
+    docker_command = ["docker", "compose"]
     if command:
         docker_command.extend(shlex.split(command))
     else:
