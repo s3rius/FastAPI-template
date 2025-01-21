@@ -27,7 +27,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Install deps
         run: |
           pip install -U pip
@@ -40,4 +40,4 @@ jobs:
           git config --global user.name "fastapi_template"
           git config --global user.email "fastapi_template@pytest.python"
       - name: Run tests
-        run: pytest -vv
+        run: pytest -vv -x
