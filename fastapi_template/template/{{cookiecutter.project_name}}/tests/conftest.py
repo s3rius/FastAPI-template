@@ -161,7 +161,7 @@ async def initialize_db() -> AsyncGenerator[None, None]:
 
 {%- elif cookiecutter.orm == "ormar" %}
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(autouse=True, scope="function")
 async def initialize_db() -> AsyncGenerator[None, None]:
     """
     Create models and databases.
@@ -186,6 +186,11 @@ async def initialize_db() -> AsyncGenerator[None, None]:
     yield
 
     await database.disconnect()
+
+    engine = create_engine(str(settings.db_url))
+    with engine.begin() as conn:
+        meta.drop_all(conn)
+    engine.dispose()
     drop_database()
 
 {%- elif cookiecutter.orm == "psycopg" %}

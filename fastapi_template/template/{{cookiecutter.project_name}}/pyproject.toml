@@ -11,144 +11,148 @@ maintainers = [
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
-fastapi = "^0.115"
-uvicorn = { version = "^0.30.1", extras = ["standard"] }
+python = ">3.9.1,<4"
+fastapi = "^0.115.6"
+uvicorn = { version = "^0.34.0", extras = ["standard"] }
 {%- if cookiecutter.gunicorn == "True" %}
-gunicorn = "^22.0.0"
+gunicorn = "^23.0.0"
 {%- endif %}
 {%- if cookiecutter.add_users == "True" %}
 {%- if cookiecutter.orm == "sqlalchemy" %}
-fastapi-users = "^13.0.0"
-httpx-oauth = "^0.14.1"
+fastapi-users = "^14.0.0"
+httpx-oauth = "^0.16.1"
 fastapi-users-db-sqlalchemy = "^6.0.1"
 {%- endif %}
 {%- endif %}
-pydantic = "^2"
-pydantic-settings = "^2"
-yarl = "^1"
+{%- if cookiecutter.orm == "ormar" %}
+pydantic = ">=2.5.3,<2.9.0"
+{%- else %}
+pydantic = "^2.10.4"
+{%- endif %}
+pydantic-settings = "^2.7.0"
+yarl = "^1.18.3"
 ujson = "^5.10.0"
 {%- if cookiecutter.orm == "piccolo" %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
-piccolo = {version = "^1.13.0", extras = ["postgres"]}
+piccolo = {version = "^1.22.0", extras = ["postgres"]}
 {%- elif cookiecutter.db_info.name == "sqlite" %}
-piccolo = {version = "^1.13.0", extras = ["sqlite"]}
+piccolo = {version = "^1.22.0", extras = ["sqlite"]}
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.orm == "sqlalchemy" %}
-SQLAlchemy = {version = "^2.0.31", extras = ["asyncio"]}
+SQLAlchemy = {version = "^2.0.36", extras = ["asyncio"]}
 {%- if cookiecutter.enable_migrations == "True" %}
-alembic = "^1.13.2"
+alembic = "^1.14.0"
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
-asyncpg = {version = "^0.29.0", extras = ["sa"]}
+asyncpg = {version = "^0.30.0", extras = ["sa"]}
 {%- elif cookiecutter.db_info.name == "sqlite" %}
 aiosqlite = "^0.20.0"
 {%- elif cookiecutter.db_info.name == "mysql" %}
 aiomysql = "^0.2.0"
-mysqlclient = "^2.2.4"
+mysqlclient = "^2.2.6"
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.orm == "tortoise" %}
-tortoise-orm = "^0.21.3"
+tortoise-orm = "^0.23.0"
 {%- if cookiecutter.enable_migrations == "True" %}
-aerich = "^0.7.2"
+aerich = "^0.8.0"
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
-asyncpg = "^0.29.0"
+asyncpg = "^0.30.0"
 {%- elif cookiecutter.db_info.name == "sqlite" %}
 aiosqlite = "<0.20.0"
 {%- elif cookiecutter.db_info.name == "mysql" %}
 aiomysql = "^0.2.0"
-mysqlclient = "^2.2.4"
-cryptography = "^42.0.8"
+mysqlclient = "^2.2.6"
+cryptography = "^44.0.0"
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.orm == "ormar" %}
-ormar = "^0.20.1"
+ormar = "^0.20.2"
 {%- if cookiecutter.enable_migrations == "True" %}
-alembic = "^1.13.2"
+alembic = "^1.14.0"
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
-asyncpg = "^0.29.0"
-psycopg2-binary = "^2.9.9"
+asyncpg = "^0.30.0"
+psycopg2-binary = "^2.9.10"
 {%- elif cookiecutter.db_info.name == "sqlite" %}
 aiosqlite = "^0.20.0"
 {%- elif cookiecutter.db_info.name == "mysql" %}
 aiomysql = "^0.2.0"
-mysqlclient = "^2.2.4"
+mysqlclient = "^2.2.6"
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
-redis = {version = "^5.0.7", extras = ["hiredis"]}
+redis = {version = "^5.2.1", extras = ["hiredis"]}
 {%- endif %}
 {%- if cookiecutter.self_hosted_swagger == 'True' %}
 aiofiles = "^24.1.0"
 {%- endif %}
 {%- if cookiecutter.orm == "psycopg" %}
-psycopg = { version = "^3.1.19", extras = ["binary", "pool"] }
+psycopg = { version = "^3.2.3", extras = ["binary", "pool"] }
 {%- endif %}
-httptools = "^0.6.1"
+httptools = "^0.6.4"
 {%- if cookiecutter.orm == "beanie" %}
-beanie = "^1.26.0"
+beanie = "^1.28.0"
 {%- else %}
-pymongo = "^4.8.0"
+pymongo = "^4.10.1"
 {%- endif %}
 {%- if cookiecutter.api_type == "graphql" %}
-strawberry-graphql = { version = "^0.235.1", extras = ["fastapi"] }
+strawberry-graphql = { version = "^0.256.1", extras = ["fastapi"] }
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
-aio-pika = "^9.4.1"
+aio-pika = "^9.5.4"
 {%- endif %}
 {%- if cookiecutter.prometheus_enabled == "True" %}
-prometheus-client = "^0.20.0"
+prometheus-client = "^0.21.1"
 prometheus-fastapi-instrumentator = "7.0.0"
 {%- endif %}
 {%- if cookiecutter.sentry_enabled == "True" %}
-sentry-sdk = "^2.7.1"
+sentry-sdk = "^2.19.2"
 {%- endif %}
 {%- if cookiecutter.otlp_enabled == "True" %}
-opentelemetry-api = "^1.25.0"
-opentelemetry-sdk = "^1.25.0"
-opentelemetry-exporter-otlp = "^1.25.0"
-opentelemetry-instrumentation = "^0.46b0"
-opentelemetry-instrumentation-fastapi = "^0.46b0"
+opentelemetry-api = "^1.29.0"
+opentelemetry-sdk = "^1.29.0"
+opentelemetry-exporter-otlp = "^1.29.0"
+opentelemetry-instrumentation = "^0.50b0"
+opentelemetry-instrumentation-fastapi = "^0.50b0"
 {%- if cookiecutter.enable_loguru != "True" %}
-opentelemetry-instrumentation-logging = "^0.46b0"
+opentelemetry-instrumentation-logging = "^0.50b0"
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
-opentelemetry-instrumentation-redis = "^0.46b0"
+opentelemetry-instrumentation-redis = "^0.50b0"
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" and cookiecutter.orm in ["ormar", "tortoise"] %}
-opentelemetry-instrumentation-asyncpg = "^0.46b0"
+opentelemetry-instrumentation-asyncpg = "^0.50b0"
 {%- endif %}
 {%- if cookiecutter.orm == "sqlalchemy" %}
-opentelemetry-instrumentation-sqlalchemy = "^0.46b0"
+opentelemetry-instrumentation-sqlalchemy = "^0.50b0"
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
-opentelemetry-instrumentation-aio-pika = "^0.46b0"
+opentelemetry-instrumentation-aio-pika = "^0.50b0"
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.enable_loguru == "True" %}
-loguru = "^0"
+loguru = "^0.7.3"
 {%- endif %}
 {%- if cookiecutter.enable_kafka == "True" %}
-aiokafka = "^0"
+aiokafka = "^0.12.0"
 {%- endif %}
 {%- if cookiecutter.enable_taskiq == "True" %}
-taskiq = "^0"
-taskiq-fastapi = "^0"
+taskiq = "^0.11.10"
+taskiq-fastapi = "^0.3.3"
 
     {%- if cookiecutter.enable_redis == "True" %}
-    taskiq-redis = "^1"
+    taskiq-redis = "^1.0.2"
     {%- endif %}
 
     {%- if cookiecutter.enable_rmq == "True" %}
-    taskiq-aio-pika = "^0"
+    taskiq-aio-pika = "^0.4.1"
     {%- endif %}
 
     {%- if (cookiecutter.enable_rmq or cookiecutter.enable_rmq) != "True" %}
-    pyzmq = "^26"
+    pyzmq = "^26.2.0"
     {%- endif %}
 
 {%- endif %}

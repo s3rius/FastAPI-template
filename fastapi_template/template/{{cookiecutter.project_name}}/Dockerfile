@@ -1,4 +1,4 @@
-FROM python:3.11.4-slim-bullseye as prod
+FROM python:3.11.4-slim-bullseye AS prod
 
 {%- if cookiecutter.db_info.name == "mysql" %}
 RUN apt-get update && apt-get install -y \
@@ -42,6 +42,6 @@ RUN --mount=type=cache,target=/tmp/poetry_cache poetry install --only main
 
 CMD ["/usr/local/bin/python", "-m", "{{cookiecutter.project_name}}"]
 
-FROM prod as dev
+FROM prod AS dev
 
 RUN --mount=type=cache,target=/tmp/poetry_cache poetry install
