@@ -65,7 +65,6 @@ async def test_creation(
     await dao.delete_dummy_model_by_name(name=test_name)
     {%- endif %}
 
-
 @pytest.mark.anyio
 async def test_getting(
     fastapi_app: FastAPI,
@@ -85,6 +84,9 @@ async def test_getting(
     dao = DummyDAO()
     {%- endif %}
     test_name = uuid.uuid4().hex
+
+    assert not await dao.filter()
+
     await dao.create_dummy_model(name=test_name)
 
     {%- if cookiecutter.api_type == 'rest' %}

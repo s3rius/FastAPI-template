@@ -11,6 +11,24 @@ try:
 except Exception:
     TerminalMenu = None
 
+class BuilderContext(UserDict):
+    """Options for project generation."""
+
+    def __init__(self, **kwargs: Any) -> None:
+        self.__dict__["data"] = kwargs
+
+    def __getattr__(self, name: str) -> Any:
+        try:
+            return self.__dict__["data"][name]
+        except KeyError:
+            cls_name = self.__class__.__name__
+            raise AttributeError(f"'{cls_name}' object has no attribute '{name}'")
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        self[name] = value
+
+    def dict(self) -> dict[str, Any]:
+        return self.__dict__["data"]
 
 class Database(BaseModel):
     name: str
@@ -42,7 +60,6 @@ class MenuEntry(BaseModel):
         if self.cli_name:
             return self.cli_name
         return self.code
-
 
 SKIP_ENTRY = MenuEntry(
     code="skip",
@@ -239,21 +256,3 @@ class MultiselectMenuModel(BaseMenuModel):
         return context
 
 
-class BuilderContext(UserDict):
-    """Options for project generation."""
-
-    def __init__(self, **kwargs: Any) -> None:
-        self.__dict__["data"] = kwargs
-
-    def __getattr__(self, name: str) -> Any:
-        try:
-            return self.__dict__["data"][name]
-        except KeyError:
-            cls_name = self.__class__.__name__
-            raise AttributeError(f"'{cls_name}' object has no attribute '{name}'")
-
-    def __setattr__(self, name: str, value: Any) -> None:
-        self[name] = value
-
-    def dict(self) -> dict[str, Any]:
-        return self.__dict__["data"]

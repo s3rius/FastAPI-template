@@ -78,10 +78,11 @@ def drop_database() -> None:
 {%- if cookiecutter.db_info.name == "sqlite" %}
 def create_database() -> None:
     """Create a database."""
+    drop_database()
+    Path(settings.db_file).touch()
 
 def drop_database() -> None:
     """Drop current database."""
-    if settings.db_file.exists():
-        Path(settings.db_file).unlink()
+    Path(settings.db_file).unlink(missing_ok=True)
 
 {%- endif %}
