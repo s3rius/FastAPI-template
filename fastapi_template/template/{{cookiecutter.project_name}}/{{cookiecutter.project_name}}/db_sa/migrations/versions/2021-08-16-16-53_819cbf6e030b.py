@@ -15,8 +15,10 @@ depends_on = None
 
 
 def upgrade() -> None:
+    """Run the upgrade migrations."""
     pass
 
 
 def downgrade() -> None:
+    """Run the downgrade migrations."""
     pass

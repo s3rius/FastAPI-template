@@ -1,4 +1,4 @@
-"""${message}
+"""${message}${"." if not message.endswith(".") else ""}
 
 Revision ID: ${up_revision}
 Revises: ${down_revision | comma,n}
@@ -17,8 +17,10 @@ depends_on = ${repr(depends_on)}
 
 
 def upgrade() -> None:
-    ${upgrades if upgrades else "pass"}
+    """Run the migration."""
+    ${upgrades if upgrades else ""}
 
 
 def downgrade() -> None:
-    ${downgrades if downgrades else "pass"}
+    """Undo the migration."""
+    ${downgrades if downgrades else ""}
