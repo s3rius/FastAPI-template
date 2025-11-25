@@ -1,162 +1,156 @@
-[tool.poetry]
+[project]
 name = "{{cookiecutter.project_name}}"
 version = "0.1.0"
+requires-python = ">=3.12,<4.0"
 description = ""
-authors = [
-
-]
-maintainers = [
-
-]
+authors = []
+maintainers = []
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = ">3.9.1,<4"
-fastapi = "^0.115.6"
-uvicorn = { version = "^0.34.0", extras = ["standard"] }
-{%- if cookiecutter.gunicorn == "True" %}
-gunicorn = "^23.0.0"
-{%- endif %}
-{%- if cookiecutter.add_users == "True" %}
-{%- if cookiecutter.orm == "sqlalchemy" %}
-fastapi-users = "^14.0.0"
-httpx-oauth = "^0.16.1"
-fastapi-users-db-sqlalchemy = "^6.0.1"
-{%- endif %}
-{%- endif %}
-{%- if cookiecutter.orm == "ormar" %}
-pydantic = ">=2.5.3,<2.9.0"
-{%- else %}
-pydantic = "^2.10.4"
-{%- endif %}
-pydantic-settings = "^2.7.0"
-yarl = "^1.18.3"
-ujson = "^5.10.0"
+dependencies = [
+  "fastapi>=0.115.6,<1",
+  "uvicorn[standard]>=0.34.0,<1",
+  {%- if cookiecutter.gunicorn == "True" %}
+  "gunicorn>=23.0.0,<24",
+  {%- endif %}
+  {%- if cookiecutter.add_users == "True" %}
+  {%- if cookiecutter.orm == "sqlalchemy" %}
+  "fastapi-users>=14.0.0,<15",
+  "httpx-oauth>=0.16.1,<1",
+  "fastapi-users-db-sqlalchemy>=6.0.1,<1",
+  {%- endif %}
+  {%- endif %}
+  {%- if cookiecutter.orm == "ormar" %}
+  "pydantic>=2.5.3,<2.9.0",
+  {%- else %}
+  "pydantic>=2.10.4,<3",
+  {%- endif %}
+  "pydantic-settings>=2.7.0,<3",
+  "yarl>=1.18.3,<2",
+  "ujson>=5.10.0,6",
 {%- if cookiecutter.orm == "piccolo" %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
-piccolo = {version = "^1.22.0", extras = ["postgres"]}
+  "piccolo[postgres]>=1.22.0,<2",
 {%- elif cookiecutter.db_info.name == "sqlite" %}
-piccolo = {version = "^1.22.0", extras = ["sqlite"]}
+  "piccolo[sqlite]>=1.22.0,<2",
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.orm == "sqlalchemy" %}
-SQLAlchemy = {version = "^2.0.36", extras = ["asyncio"]}
+  "SQLAlchemy[asyncio]>=2.0.36,<3",
 {%- if cookiecutter.enable_migrations == "True" %}
-alembic = "^1.14.0"
+  "alembic>=1.14.0,<2",
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
 asyncpg = {version = "^0.30.0", extras = ["sa"]}
+	"asyncpg>=0.31.0,<1",
 {%- elif cookiecutter.db_info.name == "sqlite" %}
-aiosqlite = "^0.20.0"
+  "aiosqlite>=0.20.0,<1",
 {%- elif cookiecutter.db_info.name == "mysql" %}
-aiomysql = "^0.2.0"
-mysqlclient = "^2.2.6"
+  "aiomysql>=0.2.0,<1",
+  "mysqlclient>=2.2.6,<3",
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.orm == "tortoise" %}
-tortoise-orm = "^0.23.0"
+  "tortoise-orm>=0.23.0,<1",
 {%- if cookiecutter.enable_migrations == "True" %}
-aerich = "^0.8.0"
+  "aerich>=0.8.0,<1",
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
-asyncpg = "^0.30.0"
+  "asyncpg>=0.30.0,<1",
 {%- elif cookiecutter.db_info.name == "sqlite" %}
-aiosqlite = "<0.20.0"
+  "aiosqlite>=0.20.0,<1",
 {%- elif cookiecutter.db_info.name == "mysql" %}
-aiomysql = "^0.2.0"
-mysqlclient = "^2.2.6"
-cryptography = "^44.0.0"
+  "aiomysql>=0.2.0,<1",
+  "mysqlclient>=2.2.6,<3",
+  "cryptography>=44.0.0,<45",
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.orm == "ormar" %}
-ormar = "^0.20.2"
+  "ormar>=0.20.2,<1",
 {%- if cookiecutter.enable_migrations == "True" %}
-alembic = "^1.14.0"
+  "alembic>=1.14.0,<2",
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
-asyncpg = "^0.30.0"
-psycopg2-binary = "^2.9.10"
+  "asyncpg>=0.30.0,<1",
+  "psycopg2-binary>=2.9.10,<3",
 {%- elif cookiecutter.db_info.name == "sqlite" %}
-aiosqlite = "^0.20.0"
+  "aiosqlite>=0.20.0,<1",
 {%- elif cookiecutter.db_info.name == "mysql" %}
-aiomysql = "^0.2.0"
-mysqlclient = "^2.2.6"
+  "aiomysql>=0.2.0,<1",
+  "mysqlclient>=2.2.6,<3",
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
-redis = {version = "^5.2.1", extras = ["hiredis"]}
+  "redis[hiredis]>=5.2.1,<6",
 {%- endif %}
 {%- if cookiecutter.self_hosted_swagger == 'True' %}
-aiofiles = "^24.1.0"
+  "aiofiles>=24.1.0,<25",
 {%- endif %}
 {%- if cookiecutter.orm == "psycopg" %}
-psycopg = { version = "^3.2.3", extras = ["binary", "pool"] }
+  "psycopg[binary,pool]>=3.2.3,<4",
 {%- endif %}
-httptools = "^0.6.4"
+  "httptools>=0.6.4,<1",
 {%- if cookiecutter.orm == "beanie" %}
-beanie = "^1.28.0"
+  "beanie>=1.28.0,<2",
 {%- else %}
-pymongo = "^4.10.1"
+  "pymongo>=4.10.1,<5",
 {%- endif %}
 {%- if cookiecutter.api_type == "graphql" %}
-strawberry-graphql = { version = "^0.256.1", extras = ["fastapi"] }
+  "strawberry-graphql[fastapi]>=0.256.1,<1",
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
-aio-pika = "^9.5.4"
+  "aio-pika>=9.5.4,<10",
 {%- endif %}
 {%- if cookiecutter.prometheus_enabled == "True" %}
-prometheus-client = "^0.21.1"
-prometheus-fastapi-instrumentator = "7.0.0"
+  "prometheus-client>=0.21.1,<1",
+  "prometheus-fastapi-instrumentator>=.0.0,<.1",
 {%- endif %}
 {%- if cookiecutter.sentry_enabled == "True" %}
-sentry-sdk = "^2.19.2"
+  "sentry-sdk>=2.19.2,<3",
 {%- endif %}
 {%- if cookiecutter.otlp_enabled == "True" %}
-opentelemetry-api = "^1.29.0"
-opentelemetry-sdk = "^1.29.0"
-opentelemetry-exporter-otlp = "^1.29.0"
-opentelemetry-instrumentation = "^0.50b0"
-opentelemetry-instrumentation-fastapi = "^0.50b0"
+  "opentelemetry-api>=1.29.0,<2",
+  "opentelemetry-sdk>=1.29.0,<2",
+  "opentelemetry-exporter-otlp>=1.29.0,<2",
+  "opentelemetry-instrumentation>=0.50b0,<1",
+  "opentelemetry-instrumentation-fastapi>=0.50b0,<1",
 {%- if cookiecutter.enable_loguru != "True" %}
-opentelemetry-instrumentation-logging = "^0.50b0"
+  "opentelemetry-instrumentation-logging>=0.50b0,<1",
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
-opentelemetry-instrumentation-redis = "^0.50b0"
+  "opentelemetry-instrumentation-redis>=0.50b0,<1",
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" and cookiecutter.orm in ["ormar", "tortoise"] %}
-opentelemetry-instrumentation-asyncpg = "^0.50b0"
+  "opentelemetry-instrumentation-asyncpg>=0.50b0,<1",
 {%- endif %}
 {%- if cookiecutter.orm == "sqlalchemy" %}
-opentelemetry-instrumentation-sqlalchemy = "^0.50b0"
+  "opentelemetry-instrumentation-sqlalchemy>=0.50b0,<1",
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
-opentelemetry-instrumentation-aio-pika = "^0.50b0"
+  "opentelemetry-instrumentation-aio-pika>=0.50b0,<1",
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.enable_loguru == "True" %}
-loguru = "^0.7.3"
+  "loguru>=0.7.3,<1",
 {%- endif %}
 {%- if cookiecutter.enable_kafka == "True" %}
-aiokafka = "^0.12.0"
+  "aiokafka>=0.12.0,<1",
 {%- endif %}
 {%- if cookiecutter.enable_taskiq == "True" %}
-taskiq = "^0.11.10"
-taskiq-fastapi = "^0.3.3"
-
-    {%- if cookiecutter.enable_redis == "True" %}
-    taskiq-redis = "^1.0.2"
-    {%- endif %}
-
-    {%- if cookiecutter.enable_rmq == "True" %}
-    taskiq-aio-pika = "^0.4.1"
-    {%- endif %}
-
-    {%- if (cookiecutter.enable_rmq or cookiecutter.enable_rmq) != "True" %}
-    pyzmq = "^26.2.0"
-    {%- endif %}
-
+  "taskiq>=0.11.10,<1",
+  "taskiq-fastapi>=0.3.3,<1",
+{%- if cookiecutter.enable_redis == "True" %}
+  "taskiq-redis>=1.0.2,<2",
 {%- endif %}
 
+{%- if cookiecutter.enable_rmq == "True" %}
+  "taskiq-aio-pika>=0.4.1,<1",
+{%- endif %}
+
+{%- if (cookiecutter.enable_rmq or cookiecutter.enable_rmq) != "True" %}
+  "pyzmq>=26.2.0,<27",
+{%- endif %}
+{%- endif %}
+]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8"
