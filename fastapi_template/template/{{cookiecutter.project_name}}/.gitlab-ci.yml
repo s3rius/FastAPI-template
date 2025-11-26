@@ -3,7 +3,7 @@ stages:
 
 .test-template:
   stage: test
-  image: python:3.11.4-slim-bullseye
+  image: ghcr.io/astral-sh/uv:0.9.12-python3.13-bookworm-slim
   tags:
     - kubernetes-runner
     - docker-runner
@@ -11,15 +11,13 @@ stages:
     - tags
   before_script:
     - apt update && apt install -y git
-    - pip install poetry==1.8.2
-    - poetry config virtualenvs.create false
-    - poetry install
+    - uv sync
 
 black:
   extends:
     - .test-template
   script:
-    - pre-commit run black -a
+    - pre-commit run ruff-format -a
 
 ruff:
   extends:
@@ -31,5 +29,5 @@ mypy:
   extends:
     - .test-template
   script:
-    - pre-commit run ruff -a
+    - pre-commit run mypy -a
 

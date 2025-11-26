@@ -699,7 +699,7 @@ def run_command(callback: Callable[[BuilderContext], None]) -> None:
     for menu in menus:
         cmd.params.extend(menu.get_cli_options())
     required_commands = {
-        "poetry": "https://python-poetry.org/docs/#installation",
+        "uv": "https://docs.astral.sh/uv/",
         "git": "https://git-scm.com/",
     }
     for prog, link in required_commands.items():

@@ -7,9 +7,7 @@
 
 ## Usage
 
-⚠️ [Git](https://git-scm.com/downloads), [Python](https://www.python.org/) and [Poetry](https://python-poetry.org/) must be installed and accessible ⚠️
-
-Poetry version must be greater or equal than 1.1.8. Otherwise it won't be able to install SQLAlchemy.
+⚠️ [Git](https://git-scm.com/downloads), [Python](https://www.python.org/) and [UV](https://docs.astral.sh/uv/) must be installed and accessible ⚠️
 
 <div align="center">
  <a href="https://asciinema.org/a/ig0oi0fOq1hxqnW5X49XaaHIT" target="_blank"><img src="https://asciinema.org/a/ig0oi0fOq1hxqnW5X49XaaHIT.svg" /></a>
@@ -29,7 +27,7 @@ docker-compose up --build
 
 If you want to install it from sources, try this:
 ```shell
-python3 -m pip install poetry
+python3 -m pip install uv 
 python3 -m pip install .
 python3 -m fastapi_template
 ```

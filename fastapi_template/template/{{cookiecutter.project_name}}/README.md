@@ -2,23 +2,23 @@
 
 This project was generated using fastapi_template.
 
-## Poetry
+## UV
 
-This project uses poetry. It's a modern dependency management
+This project uses uv. It's a modern dependency management
 tool.
 
 To run the project use this set of commands:
 
 ```bash
-poetry install
-poetry run python -m {{cookiecutter.project_name}}
+uv sync --locked
+uv run -m {{cookiecutter.project_name}}
 ```
 
 This will start the server on the configured host.
 
 You can find swagger documentation at `/api/docs`.
 
-You can read more about poetry here: https://python-poetry.org/
+You can read more about uv here: https://docs.astral.sh/ruff/
 
 ## Docker
 
@@ -37,7 +37,7 @@ docker-compose -f docker-compose.yml -f deploy/docker-compose.dev.yml --project-
 
 This command exposes the web application on port 8000, mounts current directory and enables autoreload.
 
-But you have to rebuild image every time you modify `poetry.lock` or `pyproject.toml` with this command:
+But you have to rebuild image every time you modify `uv.lock` or `pyproject.toml` with this command:
 
 ```bash
 docker-compose build
@@ -122,7 +122,6 @@ pre-commit is very useful to check your code before publishing it.
 It's configured using .pre-commit-config.yaml file.
 
 By default it runs:
-* black (formats your code);
 * mypy (validates types);
 * ruff (spots possible bugs);
 

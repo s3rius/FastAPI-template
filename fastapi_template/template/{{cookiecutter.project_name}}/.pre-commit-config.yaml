@@ -5,15 +5,16 @@ repos:
     - repo: local
       hooks:
 
-          - id: black
-            name: Format with Black
-            entry: poetry run black
+          - id: ruff-format
+            name: Format with Ruff
+            entry: uv run ruff format
             language: system
-            types: [python]
+            pass_filenames: false
+            always_run: true
 
           - id: ruff
             name: Check with Ruff
-            entry: poetry run ruff
+            entry: uv run ruff
             language: system
             pass_filenames: false
             always_run: true
@@ -21,9 +22,10 @@ repos:
 
           - id: mypy
             name: Validate types with MyPy
-            entry: poetry run mypy
+            entry: uv run mypy
             language: system
             types: [python]
             pass_filenames: false
             args:
               - "{{cookiecutter.project_name}}"
+              - "tests"

@@ -103,6 +103,6 @@ def docker_module_shutdown(
     if not project_dir.exists():
         return
     os.chdir(project_dir)
-    Path("poetry.lock").unlink(missing_ok=True)
+    Path("uv.lock").unlink(missing_ok=True)
     run_docker_compose_command("down -v")
     os.chdir(cwd)

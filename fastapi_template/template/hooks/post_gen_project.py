@@ -61,10 +61,10 @@ def init_repo():
     cprint("Git repository initialized.", "green")
     subprocess.run(["git", "add", "."], stdout=subprocess.PIPE)
     cprint("Added files to index.", "green")
-    subprocess.run(["poetry", "install", "-n"])
-    subprocess.run(["poetry", "run", "pre-commit", "install"])
+    subprocess.run(["uv", "sync"])
+    subprocess.run(["uv", "run", "pre-commit", "install"])
     cprint("pre-commit installed.", "green")
-    subprocess.run(["poetry", "run", "pre-commit", "run", "-a"])
+    subprocess.run(["uv", "run", "pre-commit", "run", "-a"])
     subprocess.run(["git", "add", "."], stdout=subprocess.PIPE)
     subprocess.run(["git", "commit", "-m", "Initial commit"], stdout=subprocess.PIPE)
 
