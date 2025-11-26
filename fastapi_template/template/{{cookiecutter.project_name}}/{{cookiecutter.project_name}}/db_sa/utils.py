@@ -24,7 +24,7 @@ async def create_database() -> None:
     if database_exists:
         await drop_database()
 
-    async with engine.connect() as conn:  # noqa: WPS440
+    async with engine.connect() as conn:
         await conn.execute(
             text(
                 f'CREATE DATABASE "{settings.db_base}" ENCODING "utf8" TEMPLATE template1',  # noqa: E501
@@ -64,7 +64,7 @@ async def create_database() -> None:
     if database_exists:
         await drop_database()
 
-    async with engine.connect() as conn:  # noqa: WPS440
+    async with engine.connect() as conn:
         await conn.execute(
             text(
                 f'CREATE DATABASE {settings.db_base};'

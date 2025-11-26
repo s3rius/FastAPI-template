@@ -67,7 +67,7 @@ def main() -> None:
             factory=True,
             accesslog="-",
             loglevel=settings.log_level.value.lower(),
-            access_log_format='%r "-" %s "-" %Tf',  # noqa: WPS323
+            access_log_format='%r "-" %s "-" %Tf',
         ).run()
     {%- else %}
     uvicorn.run(

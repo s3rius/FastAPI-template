@@ -129,9 +129,7 @@ services:
     hostname: {{cookiecutter.project_name}}-db
     restart: always
     environment:
-      MYSQL_ROOT_USER: "root"
-      MYSQL_ROOT_PASSWORD: "{{cookiecutter.project_name}}"
-      MYSQL_USER: "{{cookiecutter.project_name}}"
+      MYSQL_USER: "root"
       MYSQL_PASSWORD: "{{cookiecutter.project_name}}"
       MYSQL_DATABASE: "{{cookiecutter.project_name}}"
       MYSQL_HOST: "0.0.0.0"
@@ -190,7 +188,7 @@ services:
   {%- if cookiecutter.enable_redis == "True" %}
 
   redis:
-    image: bitnami/redis:6.2.5
+    image: redis:8.4.0
     hostname: "{{cookiecutter.project_name}}-redis"
     restart: always
     environment:

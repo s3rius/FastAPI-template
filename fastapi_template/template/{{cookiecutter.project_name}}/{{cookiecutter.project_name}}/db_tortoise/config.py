@@ -2,9 +2,9 @@ from typing import List
 
 from {{cookiecutter.project_name}}.settings import settings
 
-MODELS_MODULES: List[str] = [{%- if cookiecutter.add_dummy == 'True' %}"{{cookiecutter.project_name}}.db.models.dummy_model"{%- endif %}]  # noqa: WPS407
+MODELS_MODULES: List[str] = [{%- if cookiecutter.add_dummy == 'True' %}"{{cookiecutter.project_name}}.db.models.dummy_model"{%- endif %}]
 
-TORTOISE_CONFIG = {  # noqa: WPS407
+TORTOISE_CONFIG = {
     "connections": {
         "default": str(settings.db_url),
     },

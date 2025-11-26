@@ -5,10 +5,9 @@ from gunicorn.util import import_app
 from uvicorn.workers import UvicornWorker as BaseUvicornWorker
 
 try:
-    import uvloop  # noqa: WPS433 (Found nested import)
+    import uvloop
 except ImportError:
-    uvloop = None  # type: ignore  # noqa: WPS440 (variables overlap)
-
+    uvloop = None  # type: ignore
 
 
 class UvicornWorker(BaseUvicornWorker):
@@ -37,7 +36,7 @@ class GunicornApplication(BaseApplication):
     with custom uvicorn workers.
     """
 
-    def __init__(  # noqa: WPS211 (Too many args)
+    def __init__(
         self,
         app: str,
         host: str,
@@ -49,7 +48,7 @@ class GunicornApplication(BaseApplication):
             "bind": f"{host}:{port}",
             "workers": workers,
             "worker_class": "{{cookiecutter.project_name}}.gunicorn_runner.UvicornWorker",
-            **kwargs
+            **kwargs,
         }
         self.app = app
         super().__init__()

@@ -92,8 +92,8 @@ async def _engine() -> AsyncGenerator[AsyncEngine, None]:
 
     :yield: new engine.
     """
-    from {{cookiecutter.project_name}}.db.meta import meta  # noqa: WPS433
-    from {{cookiecutter.project_name}}.db.models import load_all_models  # noqa: WPS433
+    from {{cookiecutter.project_name}}.db.meta import meta
+    from {{cookiecutter.project_name}}.db.models import load_all_models
 
     load_all_models()
 
@@ -168,8 +168,8 @@ async def initialize_db() -> AsyncGenerator[None, None]:
 
     :yield: new engine.
     """
-    from {{cookiecutter.project_name}}.db.base import meta  # noqa: WPS433
-    from {{cookiecutter.project_name}}.db.models import load_all_models  # noqa: WPS433
+    from {{cookiecutter.project_name}}.db.base import meta
+    from {{cookiecutter.project_name}}.db.models import load_all_models
 
     load_all_models()
 
@@ -216,7 +216,7 @@ async def drop_db() -> None:
     await pool.close()
 
 
-async def create_db() -> None:  # noqa: WPS217
+async def create_db() -> None:
     """Creates database for tests."""
     pool = AsyncConnectionPool(conninfo=str(settings.db_url.with_path("/postgres")), open=False)
     await pool.open(wait=True)
@@ -260,7 +260,7 @@ async def create_tables(connection: AsyncConnection[Any]) -> None:
         ");"
     )
     {%- endif %}
-    pass  # noqa: WPS420
+    pass
 
 
 @pytest.fixture
@@ -350,7 +350,7 @@ async def setup_db() -> AsyncGenerator[None, None]:
     :yield: nothing.
     """
     client = AsyncIOMotorClient(settings.db_url.human_repr())  # type: ignore
-    from {{cookiecutter.project_name}}.db.models import load_all_models  # noqa: WPS433
+    from {{cookiecutter.project_name}}.db.models import load_all_models
     await beanie.init_beanie(
         database=client[settings.db_base],
         document_models=load_all_models(),  # type: ignore

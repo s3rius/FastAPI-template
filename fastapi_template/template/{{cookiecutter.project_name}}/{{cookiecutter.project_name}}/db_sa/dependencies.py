@@ -18,7 +18,7 @@ async def get_db_session(request: Request {%- if cookiecutter.enable_taskiq == "
     """
     session: AsyncSession = request.app.state.db_session_factory()
 
-    try:  # noqa: WPS501
+    try:
         yield session
     finally:
         await session.commit()

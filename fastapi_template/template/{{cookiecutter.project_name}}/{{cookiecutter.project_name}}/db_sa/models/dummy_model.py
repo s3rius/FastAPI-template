@@ -9,4 +9,4 @@ class DummyModel(Base):
     __tablename__ = "dummy_model"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String(length=200))  # noqa: WPS432
+    name: Mapped[str] = mapped_column(String(length=200))

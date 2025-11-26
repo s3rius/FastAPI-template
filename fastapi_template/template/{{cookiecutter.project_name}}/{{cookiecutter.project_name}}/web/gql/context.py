@@ -69,7 +69,7 @@ class Context(BaseContext):
         {%- if cookiecutter.enable_kafka == "True" %}
         self.kafka_producer = kafka_producer
         {%- endif %}
-        pass  # noqa: WPS420
+        pass
 
 
 def get_context(context: Context = Depends(Context)) -> Context:

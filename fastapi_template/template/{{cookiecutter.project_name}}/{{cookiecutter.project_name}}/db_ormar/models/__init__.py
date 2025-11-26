@@ -11,4 +11,4 @@ def load_all_models() -> None:
         prefix="{{cookiecutter.project_name}}.db.models.",
     )
     for module in modules:
-        __import__(module.name)  # noqa: WPS421
+        __import__(module.name)

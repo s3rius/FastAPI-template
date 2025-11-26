@@ -7,4 +7,4 @@ class RedisValueDTO(BaseModel):
     """DTO for redis values."""
 
     key: str
-    value: Optional[str]  # noqa: WPS110
+    value: Optional[str]

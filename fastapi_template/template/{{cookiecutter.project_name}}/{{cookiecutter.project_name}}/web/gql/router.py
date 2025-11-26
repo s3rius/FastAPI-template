@@ -25,7 +25,7 @@ from {{cookiecutter.project_name}}.web.gql import kafka
 {%- endif %}
 
 @strawberry.type
-class Query(  # noqa: WPS215
+class Query(
     {%- if cookiecutter.enable_routers == "True" %}
     echo.Query,
     {%- if cookiecutter.add_dummy == 'True' %}
@@ -40,7 +40,7 @@ class Query(  # noqa: WPS215
 
 
 @strawberry.type
-class Mutation(  # noqa: WPS215
+class Mutation(
     {%- if cookiecutter.enable_routers == "True" %}
     echo.Mutation,
     {%- if cookiecutter.add_dummy == 'True' %}

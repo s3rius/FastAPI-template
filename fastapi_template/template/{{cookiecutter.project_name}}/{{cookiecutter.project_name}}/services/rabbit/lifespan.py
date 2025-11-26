@@ -12,7 +12,7 @@ def init_rabbit(app: FastAPI) -> None:  # pragma: no cover
     :param app: current FastAPI application.
     """
 
-    async def get_connection() -> AbstractRobustConnection:  # noqa: WPS430
+    async def get_connection() -> AbstractRobustConnection:
         """
         Creates connection to RabbitMQ using url from settings.
 
@@ -26,7 +26,7 @@ def init_rabbit(app: FastAPI) -> None:  # pragma: no cover
         max_size=settings.rabbit_pool_size,
     )
 
-    async def get_channel() -> AbstractChannel:  # noqa: WPS430
+    async def get_channel() -> AbstractChannel:
         """
         Open channel on connection.
 

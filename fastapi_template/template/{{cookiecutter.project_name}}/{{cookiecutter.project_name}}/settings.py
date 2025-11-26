@@ -10,7 +10,7 @@ from yarl import URL
 
 TEMP_DIR = Path(gettempdir())
 
-class LogLevel(str, enum.Enum):  # noqa: WPS600
+class LogLevel(enum.StrEnum):
     """Possible log levels."""
 
     NOTSET = "NOTSET"

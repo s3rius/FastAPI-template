@@ -9,7 +9,6 @@ from {{cookiecutter.project_name}}.web.api.router import api_router
 from {{cookiecutter.project_name}}.web.gql.router import gql_router
 
 {%- endif %}
-from importlib import metadata
 
 from {{cookiecutter.project_name}}.web.lifespan import lifespan_setup
 
@@ -78,7 +77,6 @@ def get_app() -> FastAPI:
     {%- endif %}
     app = FastAPI(
         title="{{cookiecutter.project_name}}",
-        version=metadata.version("{{cookiecutter.project_name}}"),
         lifespan=lifespan_setup,
         {%- if cookiecutter.self_hosted_swagger == 'True' %}
         docs_url=None,
