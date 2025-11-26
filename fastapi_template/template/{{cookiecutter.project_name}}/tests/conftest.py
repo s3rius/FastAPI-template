@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 import pytest
 from fastapi import FastAPI
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 
 {%- if cookiecutter.enable_redis == "True" %}
 from fakeredis import FakeServer
@@ -528,5 +528,5 @@ async def client(
     :param fastapi_app: the application.
     :yield: client for the app.
     """
-    async with AsyncClient(app=fastapi_app, base_url="http://test", timeout=2.0) as ac:
+    async with AsyncClient(transport=ASGITransport(fastapi_app), base_url="http://test", timeout=2.0) as ac:
             yield ac

@@ -260,7 +260,6 @@ lint.select = [ "E",     # Error
     "ANN",   # Pytype annotations
     "S",     # Bandit
     "B",     # Bugbear
-    "COM",   # Commas
     "C4",    # Comprehensions
     "ISC",   # Implicit string concat
     "PIE",   # Unnecessary code
@@ -288,8 +287,6 @@ lint.ignore = [
     "D104",    # Missing docstring in public package
     "D100",    # Missing docstring in public module
     "D202",    # No blank lines allowed after function docstring
-    "ANN102",  # Missing type annotation for self in method
-    "ANN101",  # Missing type annotation for argument
     "ANN401",  # typing.Any are disallowed in `**kwargs
     "PLR0913", # Too many arguments for function call
     "D106",    # Missing docstring in public nested class
@@ -305,7 +302,8 @@ line-length = 88
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = [
-    "S101", # Use of assert detected
+    "S101",    # Use of assert detected
+	"PLC0415", # Import outside toplevel
 ]
 
 [tool.ruff.lint.pydocstyle]

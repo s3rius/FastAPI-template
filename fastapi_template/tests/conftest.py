@@ -53,7 +53,6 @@ def default_context(project_name: str) -> BuilderContext:
     """
     return BuilderContext(
         project_name=project_name,
-        kube_name=project_name.replace("_", "-"),
         api_type="rest",
         ci_type="none",
         db="none",
@@ -62,7 +61,6 @@ def default_context(project_name: str) -> BuilderContext:
         enable_taskiq=False,
         add_users=False,
         enable_migrations=False,
-        enable_kube=False,
         enable_routers=True,
         add_dummy=False,
         self_hosted_swagger=False,

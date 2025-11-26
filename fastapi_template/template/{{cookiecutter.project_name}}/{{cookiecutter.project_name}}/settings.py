@@ -55,7 +55,7 @@ class Settings(BaseSettings):
     db_host: str = "localhost"
     db_port: int = {{cookiecutter.db_info.port}}
     db_user: str = "{{cookiecutter.project_name}}"
-    db_pass: str = "{{cookiecutter.project_name}}"
+    db_pass: str = "{{cookiecutter.project_name}}"  # noqa: S105
     {%- if cookiecutter.db_info.name != "sqlite" %}
     db_base: str = "admin"
     {%- else %}

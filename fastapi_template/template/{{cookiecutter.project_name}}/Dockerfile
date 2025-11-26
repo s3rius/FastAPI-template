@@ -29,7 +29,7 @@ ENV UV_NO_MANAGED_PYTHON=1
 
 WORKDIR /app/src
 
-RUN --mount=from=uv,source=/uv,target=/bin/uv \
+RUN --mount=from=uv,source=/usr/local/bin/uv,target=/bin/uv \
     --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
@@ -37,9 +37,9 @@ RUN --mount=from=uv,source=/uv,target=/bin/uv \
 
 COPY . .
 
-RUN --mount=from=uv,source=/uv,target=/bin/uv \
+RUN --mount=from=uv,source=/usr/local/bin/uv,target=/bin/uv \
     --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-dev --managed-python
+    uv sync --locked --no-dev
 
 CMD ["/usr/local/bin/python", "-m", "{{cookiecutter.project_name}}"]
 
@@ -49,6 +49,6 @@ CMD ["/usr/local/bin/python", "-m", "{{cookiecutter.project_name}}"]
 # -----------------------------------
 FROM prod AS dev
 
-RUN --mount=from=uv,source=/uv,target=/bin/uv \
+RUN --mount=from=uv,source=/usr/local/bin/uv,target=/bin/uv \
     --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --managed-python --all-groups
+    uv sync --locked --all-groups

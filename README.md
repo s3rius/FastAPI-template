@@ -56,7 +56,6 @@ Generator features:
 - Optional redis support;
 - Optional rabbitmq support;
 - different CI\CD;
-- Optional Kubernetes config generation;
 - Optional Demo routers and models (This helps you to see how project is structured);
 - Pre-commit integration;
 - Generated tests with almost 90% coverage;
@@ -91,7 +90,6 @@ Options:
   --rabbit                        Add RabbitMQ support
   --taskiq                        Add Taskiq support
   --migrations                    Add Migrations
-  --kube                          Add kubernetes configs
   --dummy                         Add dummy model
   --routers                       Add example routers
   --swagger                       Add self hosted swagger

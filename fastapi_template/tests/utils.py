@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import shlex
 import subprocess
-from typing import Any, Optional
+from typing import Any
 
 import yaml
 from fastapi_template.input_model import BuilderContext
@@ -15,19 +15,15 @@ def generate_project_and_chdir(context: BuilderContext):
 
 
 def run_pre_commit() -> int:
-    results = subprocess.run(["pre-commit", "run", "-a"])
-    return results.returncode
+    return os.system("pre-commit run -a")
 
 
 def run_docker_compose_command(
-    command: Optional[str] = None,
-) -> subprocess.CompletedProcess:
+    command: str,
+) -> int:
     docker_command = ["docker", "compose"]
-    if command:
-        docker_command.extend(shlex.split(command))
-    else:
-        docker_command.extend(["build"])
-    return subprocess.run(docker_command)
+    docker_command.extend(shlex.split(command))
+    return os.system(shlex.join(docker_command))
 
 
 def run_default_check(context: BuilderContext, worker_id: str, without_pytest=False):
@@ -44,10 +40,10 @@ def run_default_check(context: BuilderContext, worker_id: str, without_pytest=Fa
     if without_pytest:
         return
 
-    build = run_docker_compose_command("build")
-    assert build.returncode == 0
-    tests = run_docker_compose_command("run --rm api pytest -vv .")
-    assert tests.returncode == 0
+    build = run_docker_compose_command("--progress=plain build")
+    assert build == 0
+    tests = run_docker_compose_command("--progress=plain run --rm api pytest -vv .")
+    assert tests == 0
 
 
 def model_dump_compat(model: Any):

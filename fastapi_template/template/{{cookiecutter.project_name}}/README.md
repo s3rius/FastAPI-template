@@ -128,26 +128,6 @@ By default it runs:
 
 You can read more about pre-commit here: https://pre-commit.com/
 
-
-{%- if cookiecutter.enable_kube == 'True' %}
-
-## Kubernetes
-To run your app in kubernetes
-just run:
-```bash
-kubectl apply -f deploy/kube
-```
-
-It will create needed components.
-
-If you haven't pushed to docker registry yet, you can build image locally.
-
-```bash
-docker-compose build
-docker save --output {{cookiecutter.project_name}}.tar {{cookiecutter.project_name}}:latest
-```
-
-{%- endif %}
 {%- if cookiecutter.enable_migrations == 'True' %}
 
 ## Migrations

@@ -22,7 +22,6 @@
             "{{cookiecutter.project_name}}/web/gql/redis",
             "{{cookiecutter.project_name}}/services/redis",
             "tests/test_redis.py",
-            "deploy/kube/redis.yml"
         ]
     },
     "RabbitMQ support": {
@@ -32,7 +31,6 @@
             "{{cookiecutter.project_name}}/web/gql/rabbit",
             "{{cookiecutter.project_name}}/services/rabbit",
             "tests/test_rabbit.py",
-            "deploy/kube/redis.yml"
         ]
     },
     "Kafka support": {
@@ -44,12 +42,6 @@
             "tests/test_kafka.py"
         ]
     },
-    "Kubernetes": {
-        "enabled": "{{cookiecutter.enable_kube}}",
-        "resources": [
-            "deploy/kube"
-        ]
-    },
     "Database support": {
         "enabled": "{{cookiecutter.db_info.name != 'none'}}",
         "resources": [
@@ -57,19 +49,12 @@
             "{{cookiecutter.project_name}}/web/api/dummy",
             "{{cookiecutter.project_name}}/web/gql/dummy",
             "tests/test_dummy.py",
-            "deploy/kube/db.yml"
         ]
     },
     "Beanie support": {
         "enabled": "{{cookiecutter.db_info.name == 'mongodb'}}",
         "resources": [
             "{{cookiecutter.project_name}}/db_beanie"
-        ]
-    },
-    "Postgres and MySQL support": {
-        "enabled": "{{cookiecutter.db_info.name not in ['sqlite', 'mongodb']}}",
-        "resources": [
-            "deploy/kube/db.yml"
         ]
     },
     "Migrations": {

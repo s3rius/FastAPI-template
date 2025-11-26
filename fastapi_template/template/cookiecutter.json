@@ -23,12 +23,6 @@
     "enable_taskiq": {
         "type": "bool"
     },
-    "enable_kube": {
-        "type": "bool"
-    },
-    "kube_name": {
-        "type": "string"
-    },
     "enable_routers": {
         "type": "bool"
     },

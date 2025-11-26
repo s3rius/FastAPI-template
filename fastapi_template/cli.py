@@ -429,19 +429,6 @@ features_menu = MultiselectMenuModel(
             ),
         ),
         MenuEntry(
-            code="enable_kube",
-            cli_name="kube",
-            user_view="Add kubernetes configs",
-            description=(
-                "This option will add {what} manifests to your project.\n"
-                "But this option is {warn}, since if you want to use k8s, please create helm.".format(
-                    what=colored("kubernetes", color="green"),
-                    warn=colored("deprecated", color="red",
-                                 attrs=["underline"]),
-                )
-            ),
-        ),
-        MenuEntry(
             code="add_dummy",
             cli_name="dummy",
             user_view="Add dummy model",
@@ -641,7 +628,6 @@ def handle_cli(
                 "Project name: ",
                 validator=SnakeCaseValidator(),
             )
-        context.kube_name = context.project_name.replace("_", "-")
 
         for menu in menus:
             if menu.need_ask(context):
