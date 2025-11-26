@@ -25,19 +25,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - name: Install deps
-        run: |
-          pip install -U pip
-          pip install poetry==1.8.2
-          poetry install
         env:
           POETRY_VIRTUALENVS_CREATE: "False"
+      - name: Set up UV
+        uses: astral-sh/setup-uv@v6
       - name: Setup GIT
         run: |
           git config --global user.name "fastapi_template"
           git config --global user.email "fastapi_template@pytest.python"
       - name: Run tests
-        run: pytest -vv -n auto
+        run: uv run pytest -vv -n auto

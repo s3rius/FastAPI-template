@@ -9,21 +9,20 @@ jobs:
   pypi:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install poetry
-        run: pipx install poetry
+      - uses: actions/checkout@v5
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
-      - name: Install deps
-        run: poetry install
-      - name: Set version
-        run: poetry version "${{ github.ref_name }}"
+          python-version: "3.12"
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v7
       - name: Release package
         env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
-        run: poetry publish --build
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          uv version "${{ github.ref_name }}"
+          uv build
+          uv publish
   docker:
     runs-on: ubuntu-latest
     permissions:
@@ -31,7 +30,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Set up Docker
       uses: docker/setup-qemu-action@v3
     - name: Set up Docker Buildx

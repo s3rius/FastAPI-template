@@ -16,7 +16,7 @@ dependencies = [
   {%- if cookiecutter.orm == "sqlalchemy" %}
   "fastapi-users>=14.0.0,<15",
   "httpx-oauth>=0.16.1,<1",
-  "fastapi-users-db-sqlalchemy>=6.0.1,<1",
+  "fastapi-users-db-sqlalchemy>=7,<8",
   {%- endif %}
   {%- endif %}
   {%- if cookiecutter.orm == "ormar" %}
@@ -26,7 +26,7 @@ dependencies = [
   {%- endif %}
   "pydantic-settings>=2.7.0,<3",
   "yarl>=1.18.3,<2",
-  "ujson>=5.10.0,6",
+  "ujson>=5.10.0,<6",
 {%- if cookiecutter.orm == "piccolo" %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
   "piccolo[postgres]>=1.22.0,<2",
@@ -40,7 +40,6 @@ dependencies = [
   "alembic>=1.14.0,<2",
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" %}
-asyncpg = {version = "^0.30.0", extras = ["sa"]}
 	"asyncpg>=0.31.0,<1",
 {%- elif cookiecutter.db_info.name == "sqlite" %}
   "aiosqlite>=0.20.0,<1",
@@ -102,7 +101,7 @@ asyncpg = {version = "^0.30.0", extras = ["sa"]}
 {%- endif %}
 {%- if cookiecutter.prometheus_enabled == "True" %}
   "prometheus-client>=0.21.1,<1",
-  "prometheus-fastapi-instrumentator>=.0.0,<.1",
+  "prometheus-fastapi-instrumentator>=7,<8",
 {%- endif %}
 {%- if cookiecutter.sentry_enabled == "True" %}
   "sentry-sdk>=2.19.2,<3",

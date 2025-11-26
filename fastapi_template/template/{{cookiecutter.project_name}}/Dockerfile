@@ -24,6 +24,8 @@ RUN apt-get update && apt-get install -y \
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
 ENV UV_PROJECT_ENVIRONMENT=/usr/local
+ENV UV_PYTHON_DOWNLOADS=never
+ENV UV_NO_MANAGED_PYTHON=1
 
 WORKDIR /app/src
 
@@ -31,7 +33,7 @@ RUN --mount=from=uv,source=/uv,target=/bin/uv \
     --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project --no-dev --managed-python
+    uv sync --locked --no-install-project --no-dev
 
 COPY . .
 
