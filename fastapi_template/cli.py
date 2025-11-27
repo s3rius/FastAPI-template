@@ -178,7 +178,7 @@ db_menu = SingularMenuModel(
             ),
             additional_info=Database(
                 name="postgresql",
-                image="postgres:16.3-bullseye",
+                image="postgres:18.1-bookworm",
                 async_driver="postgresql+asyncpg",
                 driver_short="postgres",
                 driver="postgresql",

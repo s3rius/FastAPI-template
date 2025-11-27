@@ -31,6 +31,7 @@ from {{cookiecutter.project_name}}.services.kafka.lifespan import (init_kafka,
 
 {%- if cookiecutter.enable_taskiq == "True" %}
 from {{cookiecutter.project_name}}.tkq import broker
+from taskiq.instrumentation import TaskiqInstrumentor
 
 {%- endif %}
 
@@ -224,6 +225,12 @@ def setup_opentelemetry(app: FastAPI) -> None:  # pragma: no cover
         tracer_provider=tracer_provider,
         set_logging_format=True,
         log_level=logging.getLevelName(settings.log_level.value),
+    )
+    {%- endif %}
+    {%- if cookiecutter.enable_taskiq == "True" %}
+    TaskiqInstrumentor.instrument_broker(
+        broker,
+        tracer_provider=tracer_provider,
     )
     {%- endif %}
 
