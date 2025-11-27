@@ -100,7 +100,7 @@ services:
       POSTGRES_USER: "{{cookiecutter.project_name}}"
       POSTGRES_DB: "{{cookiecutter.project_name}}"
     volumes:
-      - {{cookiecutter.project_name}}-db-data:/var/lib/postgresql/data
+      - {{cookiecutter.project_name}}-db-data:/var/lib/postgresql
     restart: always
     healthcheck:
       test: pg_isready -U {{cookiecutter.project_name}}
