@@ -64,7 +64,8 @@
             "{{cookiecutter.project_name}}/db_sa/migrations",
             "{{cookiecutter.project_name}}/db_ormar/migrations",
             "{{cookiecutter.project_name}}/db_tortoise/migrations",
-            "{{cookiecutter.project_name}}/db_piccolo/migrations"
+            "{{cookiecutter.project_name}}/db_piccolo/migrations",
+            "{{cookiecutter.project_name}}/db_beanie/migrations"
         ]
     },
     "Alembic migrations": {

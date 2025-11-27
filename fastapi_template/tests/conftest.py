@@ -102,5 +102,6 @@ def docker_module_shutdown(
         return
     os.chdir(project_dir)
     Path("uv.lock").unlink(missing_ok=True)
+    shutil.rmtree(".venv", ignore_errors=True)
     run_docker_compose_command("down -v")
     os.chdir(cwd)

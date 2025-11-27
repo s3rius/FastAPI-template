@@ -164,6 +164,8 @@ services:
     command: aerich upgrade
     {%- elif cookiecutter.orm == 'piccolo' %}
     command: piccolo migrations forwards all
+    {%- elif cookiecutter.orm == 'beanie' %}
+    command: beanie migrate -db admin -uri mongodb://{{cookiecutter.project_name}}:{{cookiecutter.project_name}}@{{cookiecutter.project_name}}-db:27017/ -p {{cookiecutter.project_name}}/db/migrations/
     {%- endif %}
     {%- if cookiecutter.db_info.name != "sqlite" %}
     depends_on:
