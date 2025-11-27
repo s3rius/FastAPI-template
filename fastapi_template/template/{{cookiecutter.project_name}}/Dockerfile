@@ -26,6 +26,9 @@ ENV UV_LINK_MODE=copy
 ENV UV_PROJECT_ENVIRONMENT=/usr/local
 ENV UV_PYTHON_DOWNLOADS=never
 ENV UV_NO_MANAGED_PYTHON=1
+{%- if cookiecutter.orm == 'piccolo' %}
+ENV PICCOLO_CONF="{{cookiecutter.project_name}}.piccolo_conf"
+{%- endif %}
 
 WORKDIR /app/src
 
