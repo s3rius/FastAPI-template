@@ -5,9 +5,9 @@ from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
 {%- endif %}
 
 from beanie import Document
-from typing import Type, Sequence
+from collections.abc import Sequence
 
-def load_all_models() -> Sequence[Type[Document]]:
+def load_all_models() -> Sequence[type[Document]]:
     """Load all models from this folder.""" # noqa: DAR201
     return [
 {%- if cookiecutter.add_dummy == "True" %}
