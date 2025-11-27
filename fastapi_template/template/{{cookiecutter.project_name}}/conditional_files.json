@@ -21,7 +21,7 @@
             "{{cookiecutter.project_name}}/web/api/redis",
             "{{cookiecutter.project_name}}/web/gql/redis",
             "{{cookiecutter.project_name}}/services/redis",
-            "tests/test_redis.py",
+            "tests/test_redis.py"
         ]
     },
     "RabbitMQ support": {
@@ -30,7 +30,7 @@
             "{{cookiecutter.project_name}}/web/api/rabbit",
             "{{cookiecutter.project_name}}/web/gql/rabbit",
             "{{cookiecutter.project_name}}/services/rabbit",
-            "tests/test_rabbit.py",
+            "tests/test_rabbit.py"
         ]
     },
     "Kafka support": {
@@ -48,7 +48,7 @@
             "alembic.ini",
             "{{cookiecutter.project_name}}/web/api/dummy",
             "{{cookiecutter.project_name}}/web/gql/dummy",
-            "tests/test_dummy.py",
+            "tests/test_dummy.py"
         ]
     },
     "Beanie support": {

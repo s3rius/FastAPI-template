@@ -1,8 +1,6 @@
 import asyncio
-import sys
 import uuid
-from asyncio.events import AbstractEventLoop
-from typing import Any, AsyncGenerator, Generator
+from typing import Any, AsyncGenerator
 from unittest.mock import Mock
 
 import pytest
@@ -86,7 +84,7 @@ def anyio_backend() -> str:
 
 {%- if cookiecutter.orm == "sqlalchemy" %}
 @pytest.fixture(scope="session")
-async def _engine() -> AsyncGenerator[AsyncEngine, None]:
+async def _engine(anyio_backend: Any) -> AsyncGenerator[AsyncEngine, None]:
     """
     Create engine and databases.
 

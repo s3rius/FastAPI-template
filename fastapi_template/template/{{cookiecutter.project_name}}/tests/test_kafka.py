@@ -1,7 +1,6 @@
 import asyncio
 import uuid
 
-import pytest
 from aiokafka import AIOKafkaConsumer
 from fastapi import FastAPI
 from httpx import AsyncClient
@@ -9,7 +8,6 @@ from starlette import status
 from {{cookiecutter.project_name}}.settings import settings
 
 
-@pytest.mark.anyio
 async def test_message_publishing(
     fastapi_app: FastAPI,
     client: AsyncClient,

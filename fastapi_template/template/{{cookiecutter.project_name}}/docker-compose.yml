@@ -129,9 +129,10 @@ services:
     hostname: {{cookiecutter.project_name}}-db
     restart: always
     environment:
-      MYSQL_USER: "root"
+      MYSQL_USER: "{{cookiecutter.project_name}}"
       MYSQL_PASSWORD: "{{cookiecutter.project_name}}"
       MYSQL_DATABASE: "{{cookiecutter.project_name}}"
+      MYSQL_ROOT_PASSWORD: "{{cookiecutter.project_name}}"
       MYSQL_HOST: "0.0.0.0"
     healthcheck:
       test:
@@ -144,7 +145,7 @@ services:
       timeout: 5s
       retries: 40
     volumes:
-      - "{{cookiecutter.project_name}}-db-data:/bitnami/mysql/data"
+      - "{{cookiecutter.project_name}}-db-data:/var/lib/mysql"
   {%- endif %}
 
   {%- if cookiecutter.enable_migrations == 'True' %}

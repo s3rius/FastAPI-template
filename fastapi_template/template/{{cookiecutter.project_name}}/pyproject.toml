@@ -46,6 +46,7 @@ dependencies = [
 {%- elif cookiecutter.db_info.name == "mysql" %}
   "aiomysql>=0.2.0,<1",
   "mysqlclient>=2.2.6,<3",
+  "cryptography>=44.0.0,<45",
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.orm == "tortoise" %}
@@ -153,7 +154,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "pytest>=8,<9",
+  "pytest>=9,<10",
   "ruff>=0.5.0,<1",
   "mypy>=1.10.1,<2",
   "pre-commit>=3.7.1,<4",
@@ -183,7 +184,7 @@ multi_line_output = 3
 src_paths = ["{{cookiecutter.project_name}}",]
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.13"
 strict = true
 ignore_missing_imports = true
 allow_subclassing_any = true
@@ -212,11 +213,13 @@ ignore_missing_imports = true
 {%- endif %}
 
 [tool.pytest.ini_options]
+addopts = "-p no:unraisableexception"
 filterwarnings = [
     "error",
     "ignore::DeprecationWarning",
     "ignore:.*unclosed.*:ResourceWarning",
 ]
+anyio_mode = "auto"
 env = [
     "{{cookiecutter.project_name | upper}}_ENVIRONMENT=pytest",
     {%- if cookiecutter.db_info.name == "sqlite" %}
@@ -247,7 +250,7 @@ src_folder = "./{{cookiecutter.project_name}}"
 {%- endif %}
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py313"
 # List of enabled rulsets.
 # See https://docs.astral.sh/ruff/rules/ for more information.
 lint.select = [ "E",     # Error

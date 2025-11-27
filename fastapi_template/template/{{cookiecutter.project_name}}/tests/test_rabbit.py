@@ -9,7 +9,6 @@ from fastapi import FastAPI
 from httpx import AsyncClient
 
 
-@pytest.mark.anyio
 async def test_message_publishing(
     fastapi_app: FastAPI,
     client: AsyncClient,
@@ -57,7 +56,6 @@ async def test_message_publishing(
     assert message.body.decode("utf-8") == message_text
 
 
-@pytest.mark.anyio
 async def test_message_wrong_exchange(
     fastapi_app: FastAPI,
     client: AsyncClient,

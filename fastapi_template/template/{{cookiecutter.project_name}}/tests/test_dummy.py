@@ -1,7 +1,6 @@
 import uuid
 from typing import Any
 
-import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 
@@ -18,7 +17,6 @@ from {{cookiecutter.project_name}}.db.dao.dummy_dao import DummyDAO
 from {{cookiecutter.project_name}}.db.models.dummy_model import DummyModel
 
 
-@pytest.mark.anyio
 async def test_creation(
     fastapi_app: FastAPI,
     client: AsyncClient,
@@ -65,7 +63,6 @@ async def test_creation(
     await dao.delete_dummy_model_by_name(name=test_name)
     {%- endif %}
 
-@pytest.mark.anyio
 async def test_getting(
     fastapi_app: FastAPI,
     client: AsyncClient,
