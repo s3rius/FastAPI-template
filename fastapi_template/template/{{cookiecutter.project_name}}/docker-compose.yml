@@ -43,7 +43,7 @@ services:
       kafka:
         condition: service_healthy
       {%- endif %}
-      {%- if cookiecutter.enable_migrations == 'True' %}
+      {%- if cookiecutter.enable_migrations == 'True' and cookiecutter.orm != 'psycopg' %}
       migrator:
         condition: service_completed_successfully
       {%- endif %}
