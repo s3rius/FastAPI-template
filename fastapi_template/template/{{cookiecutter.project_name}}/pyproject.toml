@@ -80,7 +80,7 @@ dependencies = [
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.enable_redis == "True" %}
-  "redis[hiredis] >=7.1.0,<8",
+  "redis[hiredis] >=6,<7",
 {%- endif %}
 {%- if cookiecutter.self_hosted_swagger == 'True' %}
   "aiofiles >=25.1.0,<26",

@@ -68,7 +68,7 @@ from piccolo.table import create_tables, drop_tables
 
 {%- elif cookiecutter.orm == "beanie" %}
 import beanie
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 
 {%- endif %}
 
@@ -347,7 +347,7 @@ async def setup_db() -> AsyncGenerator[None, None]:
 
     :yield: nothing.
     """
-    client = AsyncIOMotorClient(settings.db_url.human_repr())  # type: ignore
+    client = AsyncMongoClient(settings.db_url.human_repr())  # type: ignore
     from {{cookiecutter.project_name}}.db.models import load_all_models
     await beanie.init_beanie(
         database=client[settings.db_base],

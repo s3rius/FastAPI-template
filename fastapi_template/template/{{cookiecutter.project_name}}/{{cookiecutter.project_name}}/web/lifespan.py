@@ -130,10 +130,10 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
 
 {%- if cookiecutter.orm == "beanie" %}
 import beanie
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from {{cookiecutter.project_name}}.db.models import load_all_models
 async def _setup_db(app: FastAPI) -> None:
-    client = AsyncIOMotorClient(str(settings.db_url))  # type: ignore
+    client = AsyncMongoClient(str(settings.db_url))  # type: ignore
     app.state.db_client = client
     await beanie.init_beanie(
         database=client[settings.db_base],
