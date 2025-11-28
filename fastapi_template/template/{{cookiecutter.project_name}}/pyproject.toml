@@ -194,7 +194,7 @@ warn_unused_ignores = false
 warn_return_any = false
 namespace_packages = true
 {%- if cookiecutter.api_type == "graphql" %}
-plugins = ["strawberry.ext.mypy_plugin"]
+plugins = []
 {%- endif %}
 
 {%- if cookiecutter.enable_redis == "True" %}
