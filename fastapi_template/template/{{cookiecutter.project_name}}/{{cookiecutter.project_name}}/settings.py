@@ -85,7 +85,7 @@ class Settings(BaseSettings):
     rabbit_host: str = "{{cookiecutter.project_name}}-rmq"
     rabbit_port: int = 5672
     rabbit_user: str = "guest"
-    rabbit_pass: str = "guest"
+    rabbit_pass: str = "guest"  # noqa: S105
     rabbit_vhost: str = "/"
 
     rabbit_pool_size: int = 2
