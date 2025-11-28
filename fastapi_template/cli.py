@@ -80,8 +80,7 @@ api_menu = SingularMenuModel(
                 "Choose this option if you want to create a service with {name}.\n"
                 "It's more suitable for {generic} web-services or services without databases.".format(
                     name=colored("REST API", color="green"),
-                    generic=colored("generic", color="cyan",
-                                    attrs=["underline"]),
+                    generic=colored("generic", color="cyan", attrs=["underline"]),
                 )
             ),
         ),
@@ -152,8 +151,7 @@ db_menu = SingularMenuModel(
                 "{name} is the most popular database made by oracle.\n"
                 "It's a good fit for {prod} application.".format(
                     name=colored("MySQL", color="green"),
-                    prod=colored("production-grade", color="cyan",
-                                 attrs=["underline"]),
+                    prod=colored("production-grade", color="cyan", attrs=["underline"]),
                 )
             ),
             additional_info=Database(
@@ -172,8 +170,7 @@ db_menu = SingularMenuModel(
                 "{name} is second most popular open-source relational database.\n"
                 "It's a good fit for {prod} application.".format(
                     name=colored("PostgreSQL", color="green"),
-                    prod=colored("production-grade", color="cyan",
-                                 attrs=["underline"]),
+                    prod=colored("production-grade", color="cyan", attrs=["underline"]),
                 )
             ),
             additional_info=Database(
@@ -199,9 +196,9 @@ db_menu = SingularMenuModel(
                 async_driver="beanie",
                 driver_short="mongodb",
                 driver="mongodb",
-                port=27017
+                port=27017,
             ),
-        )
+        ),
     ],
 )
 
@@ -265,8 +262,7 @@ orm_menu = SingularMenuModel(
                 "If you select this option, you will get only {what}.\n"
                 "The rest {warn}.".format(
                     what=colored("raw database", color="green"),
-                    warn=colored("is up to you", color="red",
-                                 attrs=["underline"]),
+                    warn=colored("is up to you", color="red", attrs=["underline"]),
                 )
             ),
         ),
@@ -342,7 +338,6 @@ orm_menu = SingularMenuModel(
                 )
             ),
         ),
-
     ],
 )
 
@@ -365,8 +360,7 @@ features_menu = MultiselectMenuModel(
                         color="green",
                     ),
                     purpose1=colored("caching", color="cyan"),
-                    purpose2=colored(
-                        "storing temporary variables", color="cyan"),
+                    purpose2=colored("storing temporary variables", color="cyan"),
                 )
             ),
         ),
@@ -419,7 +413,7 @@ features_menu = MultiselectMenuModel(
             code="enable_migrations",
             cli_name="migrations",
             user_view="Add Migrations",
-            is_hidden=lambda ctx: ctx.db == "none",
+            is_hidden=lambda ctx: ctx.db == "none" or ctx.orm == "psycopg",
             description=(
                 "Add database {what} config.\n"
                 "This options adds ability to {why} database schema.".format(

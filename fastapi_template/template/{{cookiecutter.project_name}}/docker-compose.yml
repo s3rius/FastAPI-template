@@ -153,7 +153,7 @@ services:
       - "{{cookiecutter.project_name}}-db-data:/var/lib/mysql"
   {%- endif %}
 
-  {%- if cookiecutter.enable_migrations == 'True' %}
+  {%- if cookiecutter.enable_migrations == 'True' and cookiecutter.orm != 'psycopg' %}
 
   migrator:
     <<: *main_app
