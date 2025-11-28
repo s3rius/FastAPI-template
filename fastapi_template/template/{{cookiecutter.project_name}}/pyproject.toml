@@ -108,25 +108,22 @@ dependencies = [
   "sentry-sdk>=2.19.2,<3",
 {%- endif %}
 {%- if cookiecutter.otlp_enabled == "True" %}
-  "opentelemetry-api>=1.29.0,<2",
-  "opentelemetry-sdk>=1.29.0,<2",
-  "opentelemetry-exporter-otlp>=1.29.0,<2",
-  "opentelemetry-instrumentation>=0.50b0,<1",
-  "opentelemetry-instrumentation-fastapi>=0.50b0,<1",
-{%- if cookiecutter.enable_loguru != "True" %}
-  "opentelemetry-instrumentation-logging>=0.50b0,<1",
-{%- endif %}
+  "opentelemetry-api>=1.38.0,<2",
+  "opentelemetry-sdk>=1.38.0,<2",
+  "opentelemetry-exporter-otlp>=1.38.0,<2",
+  "opentelemetry-instrumentation>=0.59b0,<1",
+  "opentelemetry-instrumentation-fastapi>=0.59b0,<1",
 {%- if cookiecutter.enable_redis == "True" %}
-  "opentelemetry-instrumentation-redis>=0.50b0,<1",
+  "opentelemetry-instrumentation-redis>=0.59b0,<1",
 {%- endif %}
 {%- if cookiecutter.db_info.name == "postgresql" and cookiecutter.orm in ["ormar", "tortoise"] %}
-  "opentelemetry-instrumentation-asyncpg>=0.50b0,<1",
+  "opentelemetry-instrumentation-asyncpg>=0.59b0,<1",
 {%- endif %}
 {%- if cookiecutter.orm == "sqlalchemy" %}
-  "opentelemetry-instrumentation-sqlalchemy>=0.50b0,<1",
+  "opentelemetry-instrumentation-sqlalchemy>=0.59b0,<1",
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
-  "opentelemetry-instrumentation-aio-pika>=0.50b0,<1",
+  "opentelemetry-instrumentation-aio-pika>=0.59b0,<1",
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.enable_loguru == "True" %}

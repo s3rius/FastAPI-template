@@ -4,20 +4,20 @@ services:
       # Adds opentelemetry endpoint.
       {{cookiecutter.project_name | upper}}_OPENTELEMETRY_ENDPOINT: "http://otel-collector:4317"
 
-  otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.53.0
-    volumes:
-      # Adds config for opentelemetry.
-      - ./deploy/otel-collector-config.yml:/config.yml
-    command: --config config.yml
+  {%- if cookiecutter.enable_taskiq == "True" %}
+  taskiq-worker:
+    environment:
+      # Adds opentelemetry endpoint.
+      {{cookiecutter.project_name | upper}}_OPENTELEMETRY_ENDPOINT: "http://otel-collector:4317"
+  {%- endif %}
+
+  otel-stack:
+    image: grafana/otel-lgtm
+    hostname: "otel-collector"
     ports:
-      # Collector's endpoint
+      # Collector's GRPC endpoint
       - "4317:4317"
-
-  jaeger:
-    image: jaegertracing/all-in-one:1.35
-    hostname: jaeger
-    ports:
-      # Jaeger UI
-      - 16686:16686
-
+      # Collector's HTTP endpoint
+      - "4318:4318"
+      # Grafana UI
+      - "3000:3000"

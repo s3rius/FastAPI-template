@@ -48,13 +48,19 @@ from {{cookiecutter.project_name}}.db.models import load_all_models
 {%- endif %}
 
 {%- if cookiecutter.otlp_enabled == "True" %}
+from opentelemetry import metrics, trace
+from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
+from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.sdk.resources import (DEPLOYMENT_ENVIRONMENT, SERVICE_NAME,
                                          TELEMETRY_SDK_LANGUAGE, Resource)
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.trace import set_tracer_provider
+from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+from opentelemetry.sdk.metrics import MeterProvider
+from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
+from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 
 {%- if cookiecutter.enable_redis == "True" %}
 from opentelemetry.instrumentation.redis import RedisInstrumentor
@@ -144,7 +150,7 @@ async def _create_tables() -> None:  # pragma: no cover
     engine = create_engine(str(settings.db_url))
     with engine.connect() as connection:
         meta.create_all(connection)
-    engine.dispose()
+%    engine.dispose()
     {%- elif cookiecutter.orm == "sqlalchemy" %}
     engine = create_async_engine(str(settings.db_url))
     async with engine.begin() as connection:
@@ -164,23 +170,43 @@ def setup_opentelemetry(app: FastAPI) -> None:  # pragma: no cover
     if not settings.opentelemetry_endpoint:
         return
 
-    tracer_provider = TracerProvider(
-        resource=Resource(
-            attributes={
-                SERVICE_NAME: "{{cookiecutter.project_name}}",
-                TELEMETRY_SDK_LANGUAGE: "python",
-                DEPLOYMENT_ENVIRONMENT: settings.environment,
-            }
-        )
+    otlp_resource = Resource(
+        attributes={
+            SERVICE_NAME: "{{cookiecutter.project_name}}",
+            TELEMETRY_SDK_LANGUAGE: "python",
+            DEPLOYMENT_ENVIRONMENT: settings.environment,
+        }
     )
+
+
+    tracer_provider = TracerProvider(resource=otlp_resource)
 
     tracer_provider.add_span_processor(
         BatchSpanProcessor(
             OTLPSpanExporter(
                 endpoint=settings.opentelemetry_endpoint,
-                insecure=True,
             )
         )
+    )
+    trace.set_tracer_provider(tracer_provider=tracer_provider)
+
+    meter_provider = MeterProvider(
+        resource=otlp_resource,
+        metric_readers=[
+            (PeriodicExportingMetricReader(OTLPMetricExporter(endpoint=settings.opentelemetry_endpoint))),
+        ],
+    )
+    metrics.set_meter_provider(meter_provider)
+
+    logger_provider = LoggerProvider(resource=otlp_resource)
+    logger_provider.add_log_record_processor(
+        BatchLogRecordProcessor(OTLPLogExporter(endpoint=settings.opentelemetry_endpoint)),
+    )
+    logging.getLogger().addHandler(
+        LoggingHandler(
+            level=logging.NOTSET,
+            logger_provider=logger_provider,
+        ),
     )
 
     excluded_endpoints = [
@@ -220,21 +246,12 @@ def setup_opentelemetry(app: FastAPI) -> None:  # pragma: no cover
         tracer_provider=tracer_provider,
     )
     {%- endif %}
-    {%- if cookiecutter.enable_loguru != "True" %}
-    LoggingInstrumentor().instrument(
-        tracer_provider=tracer_provider,
-        set_logging_format=True,
-        log_level=logging.getLevelName(settings.log_level.value),
-    )
-    {%- endif %}
     {%- if cookiecutter.enable_taskiq == "True" %}
     TaskiqInstrumentor().instrument_broker(
         broker,
         tracer_provider=tracer_provider,
     )
     {%- endif %}
-
-    set_tracer_provider(tracer_provider=tracer_provider)
 
 
 def stop_opentelemetry(app: FastAPI) -> None:  # pragma: no cover
@@ -258,6 +275,9 @@ def stop_opentelemetry(app: FastAPI) -> None:  # pragma: no cover
     {%- endif %}
     {%- if cookiecutter.enable_rmq == "True" %}
     AioPikaInstrumentor().uninstrument()
+    {%- endif %}
+    {%- if cookiecutter.enable_taskiq == "True" %}
+    TaskiqInstrumentor().uninstrument_broker(broker)
     {%- endif %}
 
 {%- endif %}
