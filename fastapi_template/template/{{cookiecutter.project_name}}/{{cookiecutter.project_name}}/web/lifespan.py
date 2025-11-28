@@ -228,7 +228,7 @@ def setup_opentelemetry(app: FastAPI) -> None:  # pragma: no cover
     )
     {%- endif %}
     {%- if cookiecutter.enable_taskiq == "True" %}
-    TaskiqInstrumentor.instrument_broker(
+    TaskiqInstrumentor().instrument_broker(
         broker,
         tracer_provider=tracer_provider,
     )
