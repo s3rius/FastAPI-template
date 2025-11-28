@@ -20,7 +20,7 @@ dependencies = [
   {%- endif %}
   {%- endif %}
   {%- if cookiecutter.orm == "ormar" %}
-  "pydantic >=2.12.5,<3",
+  "pydantic >=2.5.3,<2.9.0",
   {%- else %}
   "pydantic >=2.12.5,<3",
   {%- endif %}
