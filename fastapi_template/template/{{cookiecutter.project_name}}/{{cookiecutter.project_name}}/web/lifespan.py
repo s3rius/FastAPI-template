@@ -150,7 +150,7 @@ async def _create_tables() -> None:  # pragma: no cover
     engine = create_engine(str(settings.db_url))
     with engine.connect() as connection:
         meta.create_all(connection)
-%    engine.dispose()
+    engine.dispose()
     {%- elif cookiecutter.orm == "sqlalchemy" %}
     engine = create_async_engine(str(settings.db_url))
     async with engine.begin() as connection:
