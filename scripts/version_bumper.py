@@ -2,7 +2,6 @@ import argparse
 from pathlib import Path
 import re
 import requests
-import random
 from packaging.version import Version
 
 DEP_RE = re.compile(r"\s*\"(?P<package>.+)\s*(?P<constraints>\>\=.+,\<.+)\s*\"")
@@ -53,7 +52,7 @@ def main():
             new_constraints = f">={version},<{upper_version}"
             if markers:
                 new_constraints += f"; {markers}"
-            lines.append('  "' + full_package + " " + new_constraints + '"\n')
+            lines.append('  "' + full_package + " " + new_constraints + '",\n')
     with file.open("w") as f:
         f.writelines(lines)
 
