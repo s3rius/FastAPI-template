@@ -1,33 +1,56 @@
 stages:
   - "test"
 
+variables:
+  UV_VERSION: "0.9.17"
+  PYTHON_VERSION: "3.13"
+  BASE_LAYER: bookworm-slim
+  UV_LINK_MODE: copy
+
 .test-template:
   stage: test
-  image: ghcr.io/astral-sh/uv:0.9.12-python3.13-bookworm-slim
+  image: ghcr.io/astral-sh/uv:$UV_VERSION-python$PYTHON_VERSION-$BASE_LAYER
   tags:
     - kubernetes-runner
     - docker-runner
   except:
     - tags
+  variables:
+    UV_CACHE_DIR: .uv-cache
+  cache:
+    - key:
+        files:
+          - uv.lock
+      paths:
+        - $UV_CACHE_DIR
   before_script:
-    - apt update && apt install -y git
-    - uv sync
+    - cd $CI_PROJECT_DIR
+    - uv sync --locked --all-extras --dev
+  after_script:
+    - uv cache prune --ci
 
-black:
+formatter:
   extends:
     - .test-template
   script:
-    - pre-commit run ruff-format -a
+    - uv run ruff format --diff
 
 ruff:
   extends:
     - .test-template
   script:
-    - pre-commit run ruff -a
+    - uv run ruff check {{cookiecutter.project_name}} tests --output-format=gitlab --output-file=code-quality-report.json
+  artifacts:
+    reports:
+      codequality: $CI_PROJECT_DIR/code-quality-report.json
 
 mypy:
   extends:
     - .test-template
   script:
-    - pre-commit run mypy -a
-
+    - uv run mypy {{cookiecutter.project_name}} tests --output=json > mypy-out.json || true
+    - uv run mypy-gitlab-code-quality < mypy-out.json > codequality.json
+  artifacts:
+    when: always
+    reports:
+      codequality: $CI_PROJECT_DIR/codequality.json

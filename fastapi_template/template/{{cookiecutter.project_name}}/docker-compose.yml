@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+      target: prod
     image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
     restart: always
     env_file:
@@ -78,6 +79,10 @@ services:
     volumes:
       - {{cookiecutter.project_name}}-db-data:/db_data/
     {%- endif %}
+    command:
+      - python
+      - -m
+      - {{cookiecutter.project_name}}
 
   {%- if cookiecutter.enable_taskiq == "True" %}
 
