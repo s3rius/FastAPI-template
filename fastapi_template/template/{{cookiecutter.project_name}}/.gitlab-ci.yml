@@ -1,33 +1,38 @@
 stages:
   - "test"
 
+variables:
+  UV_VERSION: "0.9.17"
+  PYTHON_VERSION: "3.13"
+  BASE_LAYER: bookworm-slim
+  UV_LINK_MODE: copy
+
 .test-template:
   stage: test
-  image: ghcr.io/astral-sh/uv:0.9.12-python3.13-bookworm-slim
+  image: ghcr.io/astral-sh/uv:$UV_VERSION-python$PYTHON_VERSION-$BASE_LAYER
   tags:
     - kubernetes-runner
     - docker-runner
   except:
     - tags
   before_script:
-    - apt update && apt install -y git
-    - uv sync
+    - uv sync --locked --all-extras --dev
 
-black:
+formatter:
   extends:
     - .test-template
   script:
-    - pre-commit run ruff-format -a
+    - uv run ruff-format -a
 
 ruff:
   extends:
     - .test-template
   script:
-    - pre-commit run ruff -a
+    - uv run ruff {{cookiecutter.project_name}} tests
 
 mypy:
   extends:
     - .test-template
   script:
-    - pre-commit run mypy -a
+    - uv run mypy {{cookiecutter.project_name}} tests
 

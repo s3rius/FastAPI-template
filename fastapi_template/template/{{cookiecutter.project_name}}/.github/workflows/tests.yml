@@ -6,38 +6,41 @@ jobs:
   lint:
     strategy:
       matrix:
-        cmd:
-          - black
-          - ruff
-          - mypy
+        include:
+          - name: Ruff format
+            cmd: ruff format
+          - name: Ruff check
+            cmd: ruff check {{cookiecutter.project_name}} tests
+          - name: Mypy
+            cmd: mypy {{cookiecutter.project_name}} tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Install poetry
-        run: pipx install poetry
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v7
         with:
-          python-version: '3.11'
-          cache: 'poetry'
+          version: '0.9.17'
+          python-version: '3.13'
+          enable-cache: "auto"
+
       - name: Install deps
-        run: poetry install
+        run: uv sync --locked --all-groups
+
       - name: Run lint check
-        run: poetry run pre-commit run -a {{ '${{' }} matrix.cmd {{ '}}' }}
+        run: uv run {{ '${{' }} matrix.cmd {{ '}}' }}
+
   pytest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+
       - name: Create .env
         run: touch .env
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+
       - name: Update docker-compose
-        uses: KengoTODA/actions-setup-docker-compose@v1
-        with:
-          version: "2.28.0"
+        uses: docker/setup-compose-action@v1
+
       - name: run tests
-        run: docker-compose run --rm api pytest -vv
+        run: docker compose run --rm api pytest -vv
 

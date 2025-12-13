@@ -133,7 +133,7 @@ dependencies = [
   "aiokafka >=0.12.0,<1",
 {%- endif %}
 {%- if cookiecutter.enable_taskiq == "True" %}
-  "taskiq >=0.12.0,<1",
+  "taskiq[reload] >=0.12.0,<1",
   "taskiq-fastapi >=0.3.6,<1",
 {%- if cookiecutter.enable_redis == "True" %}
   "taskiq-redis >=1.1.2,<2",
@@ -166,9 +166,6 @@ dev = [
   "nest-asyncio >=1.6.0,<2",
 {%- endif %}
   "httpx >=0.28.1,<1",
-{%- if cookiecutter.enable_taskiq == "True" %}
-  "taskiq[reload] >=0.12.0,<1",
-{%- endif %}
 ]
 
 
