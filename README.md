@@ -14,13 +14,12 @@
   <p>Templator in action</p>
 </div>
 
-You can install it directly from pypi with pip.
-```bash
-python3 -m pip install fastapi_template
-python3 -m fastapi_template
-# or fastapi_template
-# Answer all the questions
-# 🍪 Enjoy your new project 🍪
+You can install and run it directly from pypi with uvx.
+```shell
+uvx fastapi_template
+```
+### 🍪 Enjoy your new project 🍪
+```shell
 cd new_project
 docker compose up --build
 ```
@@ -70,7 +69,7 @@ Generator features:
 This project can handle arguments passed through command line.
 
 ```shell
-$ python -m fastapi_template --help
+$ uvx fastapi_template --help
 
 Usage: fastapi_template [OPTIONS]
 
