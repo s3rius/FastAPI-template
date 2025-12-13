@@ -40,9 +40,15 @@ def run_default_check(context: BuilderContext, worker_id: str, without_pytest=Fa
     if without_pytest:
         return
 
-    build = run_docker_compose_command("--progress=plain build")
+    build = run_docker_compose_command(
+        "-f docker-compose.yml -f deploy/docker-compose.dev.yml "
+        "--project-directory . --progress=plain build"
+    )
     assert build == 0
-    tests = run_docker_compose_command("--progress=plain run --rm api pytest -vv .")
+    tests = run_docker_compose_command(
+        "-f docker-compose.yml -f deploy/docker-compose.dev.yml "
+        "--project-directory . --progress=plain run --rm api pytest -vv ."
+    )
     assert tests == 0
 
 

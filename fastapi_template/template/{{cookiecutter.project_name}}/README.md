@@ -183,7 +183,7 @@ aerich migrate
 If you want to run it in docker, simply run:
 
 ```bash
-docker compose run --build --rm api pytest -vv .
+docker compose run -f docker-compose.yml -f deploy/docker-compose.dev.yml --build --rm api pytest -vv .
 docker compose down
 ```
 

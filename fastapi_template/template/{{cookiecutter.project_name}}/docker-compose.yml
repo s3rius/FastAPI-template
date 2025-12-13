@@ -82,7 +82,7 @@ services:
     command:
       - python
       - -m
-      - music_backend
+      - {{cookiecutter.project_name}}
 
   {%- if cookiecutter.enable_taskiq == "True" %}
 
