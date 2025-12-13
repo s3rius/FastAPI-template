@@ -55,7 +55,7 @@ ENV VIRTUAL_ENV="/opt/.venv" \
     {%- if cookiecutter.orm == 'piccolo' %}
     PICCOLO_CONF="{{cookiecutter.project_name}}.piccolo_conf" \
     {%- endif %}
-    PATH="/opt/.venv/bin:$PATH" \
+    PATH="/opt/.venv/bin:$PATH"
 
 COPY --from=builder --chown=nonroot:nonroot /app/src /app/src
 COPY --from=builder --chown=nonroot:nonroot /opt/.venv /opt/.venv
