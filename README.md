@@ -22,7 +22,7 @@ python3 -m fastapi_template
 # Answer all the questions
 # 🍪 Enjoy your new project 🍪
 cd new_project
-docker-compose up --build
+docker compose up --build
 ```
 
 If you want to install it from sources, try this:

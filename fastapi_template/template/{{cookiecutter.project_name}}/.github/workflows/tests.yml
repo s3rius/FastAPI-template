@@ -41,6 +41,18 @@ jobs:
       - name: Update docker-compose
         uses: docker/setup-compose-action@v1
 
-      - name: run tests
-        run: docker compose run --rm api pytest -vv
+      - name: Build api image (dev target)
+        run: |
+          docker compose \
+            -f docker-compose.yml \
+            -f deploy/docker-compose.dev.yml \
+            --project-directory . \
+            build api
 
+      - name: Run pytest
+        run: |
+          docker compose \
+            -f docker-compose.yml \
+            -f deploy/docker-compose.dev.yml \
+            --project-directory . \
+            run --rm api pytest -vv .

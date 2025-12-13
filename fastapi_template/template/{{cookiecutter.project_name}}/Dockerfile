@@ -25,10 +25,10 @@ ENV UV_COMPILE_BYTECODE=1 \
     UV_PROJECT_ENVIRONMENT=/opt/.venv \
     VIRTUAL_ENV="/opt/.venv" \
     PATH="/opt/.venv/bin:$PATH" \
-    UV_NO_DEV=1 \
     {%- if cookiecutter.orm == 'piccolo' %}
     PICCOLO_CONF="{{cookiecutter.project_name}}.piccolo_conf" \
     {%- endif %}
+    UV_NO_DEV=1
 
 WORKDIR /app/src
 
@@ -52,10 +52,10 @@ RUN groupadd --system --gid 999 nonroot \
     && useradd --system --gid 999 --uid 999 --create-home nonroot
 
 ENV VIRTUAL_ENV="/opt/.venv" \
-    PATH="/opt/.venv/bin:$PATH" \
     {%- if cookiecutter.orm == 'piccolo' %}
     PICCOLO_CONF="{{cookiecutter.project_name}}.piccolo_conf" \
     {%- endif %}
+    PATH="/opt/.venv/bin:$PATH" \
 
 COPY --from=builder --chown=nonroot:nonroot /app/src /app/src
 COPY --from=builder --chown=nonroot:nonroot /opt/.venv /opt/.venv
@@ -70,5 +70,7 @@ WORKDIR /app/src
 # -----------------------------------
 FROM builder AS dev
 
+ENV UV_NO_DEV=0
+
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --all-groups --dev
+    uv sync --locked --all-groups

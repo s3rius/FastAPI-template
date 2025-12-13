@@ -52,6 +52,7 @@ def main() -> None:
             host=settings.host,
             port=settings.port,
             reload=settings.reload,
+            reload_excludes=[".venv/*"],
             log_level=settings.log_level.value.lower(),
             factory=True,
         )

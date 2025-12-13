@@ -3,8 +3,9 @@ services:
     ports:
       # Exposes application port.
     - "8000:8000"
-    build:
+    build: &build
       context: .
+      dockerfile: ./Dockerfile
       target: dev
     volumes:
       # Adds current directory as volume.
@@ -12,10 +13,16 @@ services:
     environment:
       # Enables autoreload.
       {{cookiecutter.project_name | upper}}_RELOAD: "True"
+    develop:
+      watch:
+        - action: rebuild
+          path: uv.lock
 
   {%- if cookiecutter.enable_taskiq == "True" %}
 
   taskiq-worker:
+    build:
+      <<: *build
     volumes:
       # Adds current directory as volume.
       - .:/app/src/

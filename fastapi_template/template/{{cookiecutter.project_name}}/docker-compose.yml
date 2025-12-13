@@ -79,6 +79,10 @@ services:
     volumes:
       - {{cookiecutter.project_name}}-db-data:/db_data/
     {%- endif %}
+    command:
+      - python
+      - -m
+      - music_backend
 
   {%- if cookiecutter.enable_taskiq == "True" %}
 
