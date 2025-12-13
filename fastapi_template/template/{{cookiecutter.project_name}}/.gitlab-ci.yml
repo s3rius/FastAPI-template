@@ -16,23 +16,31 @@ variables:
   except:
     - tags
   before_script:
+    - cd $CI_PROJECT_DIR
     - uv sync --locked --all-extras --dev
 
 formatter:
   extends:
     - .test-template
   script:
-    - uv run ruff-format -a
+    - uv run ruff format --diff
 
 ruff:
   extends:
     - .test-template
   script:
-    - uv run ruff {{cookiecutter.project_name}} tests
+    - uv run ruff check {{cookiecutter.project_name}} tests --output-format=gitlab --output-file=code-quality-report.json
+  artifacts:
+    reports:
+      codequality: $CI_PROJECT_DIR/code-quality-report.json
 
 mypy:
   extends:
     - .test-template
   script:
-    - uv run mypy {{cookiecutter.project_name}} tests
-
+    - uv run mypy {{cookiecutter.project_name}} tests --output=json > mypy-out.json || true
+    - uv run mypy-gitlab-code-quality < mypy-out.json > codequality.json
+  artifacts:
+    when: always
+    reports:
+      codequality: $CI_PROJECT_DIR/codequality.json

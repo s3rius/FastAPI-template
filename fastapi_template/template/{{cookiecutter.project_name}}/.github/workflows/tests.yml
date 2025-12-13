@@ -8,7 +8,7 @@ jobs:
       matrix:
         include:
           - name: Ruff format
-            cmd: ruff format
+            cmd: ruff format --diff
           - name: Ruff check
             cmd: ruff check {{cookiecutter.project_name}} tests
           - name: Mypy
