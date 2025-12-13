@@ -15,9 +15,19 @@ variables:
     - docker-runner
   except:
     - tags
+  variables:
+    UV_CACHE_DIR: .uv-cache
+  cache:
+    - key:
+        files:
+          - uv.lock
+      paths:
+        - $UV_CACHE_DIR
   before_script:
     - cd $CI_PROJECT_DIR
     - uv sync --locked --all-extras --dev
+  after_script:
+    - uv cache prune --ci
 
 formatter:
   extends:
