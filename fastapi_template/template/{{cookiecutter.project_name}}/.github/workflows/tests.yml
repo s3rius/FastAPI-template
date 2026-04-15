@@ -7,23 +7,22 @@ jobs:
     strategy:
       matrix:
         cmd:
-          - black
+          - ruff-format
           - ruff
           - mypy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install poetry
-        run: pipx install poetry
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
-          cache: 'poetry'
+          python-version: '3.12'
+      - name: Set up UV
+        uses: astral-sh/setup-uv@v6
       - name: Install deps
-        run: poetry install
+        run: uv sync
       - name: Run lint check
-        run: poetry run pre-commit run -a {{ '${{' }} matrix.cmd {{ '}}' }}
+        run: uv run pre-commit run -a {{ '${{' }} matrix.cmd {{ '}}' }}
   pytest:
     runs-on: ubuntu-latest
     steps:
@@ -31,13 +30,12 @@ jobs:
       - name: Create .env
         run: touch .env
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Update docker-compose
         uses: KengoTODA/actions-setup-docker-compose@v1
         with:
           version: "2.28.0"
       - name: run tests
         run: docker-compose run --rm api pytest -vv
-
