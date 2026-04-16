@@ -1,10 +1,10 @@
-FROM ghcr.io/astral-sh/uv:0.9.12-bookworm AS uv
+FROM ghcr.io/astral-sh/uv:0.11.7-python3.13-trixie AS uv
 
 # -----------------------------------
 # STAGE 1: prod stage
 # Only install main dependencies
 # -----------------------------------
-FROM python:3.13-slim-bookworm AS prod
+FROM python:3.13-slim-trixie AS prod
 
 {%- if cookiecutter.db_info.name == "mysql" %}
 RUN apt-get update && apt-get install -y \
