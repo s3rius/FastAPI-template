@@ -2,9 +2,13 @@ services:
   api: &main_app
     build:
       context: .
+      target: dev
       dockerfile: ./Dockerfile
     image: {{cookiecutter.project_name}}:{{"${" }}{{cookiecutter.project_name | upper }}_VERSION:-latest{{"}"}}
     restart: always
+    ports:
+      # Exposes application port.
+    - "8000:8000"
     env_file:
       - path: .env
         required: false
@@ -23,7 +27,9 @@ services:
     {%- if ((cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite") or
             (cookiecutter.enable_redis == "True") or
             (cookiecutter.enable_rmq == "True") or
-            (cookiecutter.enable_kafka == "True")) %}
+            (cookiecutter.enable_kafka == "True") or
+            (cookiecutter.enable_nats == "True")
+    ) %}
     depends_on:
       {%- if cookiecutter.db_info.name != "none" %}
       {%- if cookiecutter.db_info.name != "sqlite" %}
@@ -43,6 +49,10 @@ services:
       kafka:
         condition: service_healthy
       {%- endif %}
+      {%- if cookiecutter.enable_nats == "True" %}
+      nats:
+        condition: service_healthy
+      {%- endif %}
       {%- if cookiecutter.enable_migrations == 'True' and cookiecutter.orm != 'psycopg' %}
       migrator:
         condition: service_completed_successfully
@@ -50,6 +60,7 @@ services:
     {%- endif %}
     environment:
       {{cookiecutter.project_name | upper }}_HOST: 0.0.0.0
+      {{cookiecutter.project_name | upper}}_RELOAD: "True"
       {%- if cookiecutter.db_info.name != "none" %}
       {%- if cookiecutter.db_info.name == "sqlite" %}
       {{cookiecutter.project_name | upper }}_DB_FILE: /db_data/db.sqlite3
@@ -72,12 +83,16 @@ services:
       {{cookiecutter.project_name | upper }}_REDIS_HOST: {{cookiecutter.project_name}}-redis
       {%- endif %}
       {%- if cookiecutter.enable_kafka == "True" %}
-      TESTKAFKA_KAFKA_BOOTSTRAP_SERVERS: '["{{cookiecutter.project_name}}-kafka:9092"]'
+      {{cookiecutter.project_name | upper }}_KAFKA_BOOTSTRAP_SERVERS: '["{{cookiecutter.project_name}}-kafka:9092"]'
       {%- endif %}
-    {%- if cookiecutter.db_info.name == "sqlite" %}
+      {%- if cookiecutter.enable_nats == "True" %}
+      {{cookiecutter.project_name | upper }}_NATS_HOSTS: '["nats://{{cookiecutter.project_name}}-nats:4222"]'
+      {%- endif %}
     volumes:
+      - .:/app/src/
+      {%- if cookiecutter.db_info.name == "sqlite" %}
       - {{cookiecutter.project_name}}-db-data:/db_data/
-    {%- endif %}
+      {%- endif %}
 
   {%- if cookiecutter.enable_taskiq == "True" %}
 
@@ -88,6 +103,7 @@ services:
       - taskiq
       - worker
       - {{cookiecutter.project_name}}.tkq:broker
+      - --reload
   {%- endif %}
 
   {%- if cookiecutter.db_info.name == "postgresql" %}
@@ -232,6 +248,25 @@ services:
       timeout: 3s
       retries: 30
 
+  {%- endif %}
+
+  {%- if cookiecutter.enable_nats == "True" %}
+  nats:
+    image: nats:2.12-alpine
+    hostname: "{{cookiecutter.project_name}}-nats"
+    command: -m 8222 -js
+    healthcheck:
+      test:
+        - CMD
+        - sh
+        - -c
+        - "wget http://localhost:8222/healthz -q -O - | xargs | grep ok || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 3s
+    ports:
+      - 4222:4222
   {%- endif %}
 
 {% if cookiecutter.db_info.name != 'none' %}

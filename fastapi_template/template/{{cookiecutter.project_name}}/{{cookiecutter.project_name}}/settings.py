@@ -126,6 +126,11 @@ class Settings(BaseSettings):
 
     {%- endif %}
 
+
+    {%- if cookiecutter.enable_nats == "True" %}
+    nats_hosts: list[str] = ["nats://{{cookiecutter.project_name}}-nats:4222"]
+    {%- endif %}
+
     {%- if cookiecutter.db_info.name != "none" %}
 
 

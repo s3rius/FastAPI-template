@@ -8,8 +8,6 @@ from fastapi import FastAPI
 from httpx import AsyncClient, ASGITransport
 
 {%- if cookiecutter.enable_redis == "True" %}
-from fakeredis import FakeServer
-from fakeredis.aioredis import FakeConnection
 from redis.asyncio import ConnectionPool
 from {{cookiecutter.project_name}}.services.redis.dependency import get_redis_pool
 
@@ -30,6 +28,13 @@ from {{cookiecutter.project_name}}.services.kafka.dependencies import get_kafka_
 from {{cookiecutter.project_name}}.services.kafka.lifespan import (init_kafka,
                                                                    shutdown_kafka)
 
+{%- endif %}
+
+{%- if cookiecutter.enable_nats == "True" %}
+from natsrpy import Nats
+from {{cookiecutter.project_name}}.services.nats.dependencies import get_nats
+from {{cookiecutter.project_name}}.services.nats.lifespan import (init_nats,
+                                                                   shutdown_nats)
 {%- endif %}
 
 from {{cookiecutter.project_name}}.settings import settings
@@ -457,17 +462,28 @@ async def test_kafka_producer() -> AsyncGenerator[AIOKafkaProducer, None]:
 
 {%- endif %}
 
+
+{%- if cookiecutter.enable_nats == "True" %}
+
+@pytest.fixture
+async def test_nats() -> AsyncGenerator[Nats, None]:
+    """Creat test nats client."""
+    app_mock = Mock()
+    await init_nats(app_mock)
+    yield app_mock.state.nats
+    await shutdown_nats(app_mock)
+
+{%- endif %}
+
 {% if cookiecutter.enable_redis == "True" -%}
 @pytest.fixture
-async def fake_redis_pool() -> AsyncGenerator[ConnectionPool, None]:
+async def test_redis_pool() -> AsyncGenerator[ConnectionPool, None]:
     """
     Get instance of a fake redis.
 
-    :yield: FakeRedis instance.
+    :yield: ConnectionPool instance.
     """
-    server = FakeServer()
-    server.connected = True
-    pool = ConnectionPool(connection_class=FakeConnection, server=server)
+    pool = ConnectionPool.from_url(str(settings.redis_url))
 
     yield pool
 
@@ -483,13 +499,16 @@ def fastapi_app(
     dbpool: AsyncConnectionPool[Any],
     {%- endif %}
     {% if cookiecutter.enable_redis == "True" -%}
-    fake_redis_pool: ConnectionPool,
+    test_redis_pool: ConnectionPool,
     {%- endif %}
     {%- if cookiecutter.enable_rmq == 'True' %}
     test_rmq_pool: Pool[Channel],
     {%- endif %}
     {%- if cookiecutter.enable_kafka == "True" %}
     test_kafka_producer: AIOKafkaProducer,
+    {%- endif %}
+    {%- if cookiecutter.enable_nats == "True" %}
+    test_nats: Nats,
     {%- endif %}
 ) -> FastAPI:
     """
@@ -504,13 +523,16 @@ def fastapi_app(
     application.dependency_overrides[get_db_pool] = lambda: dbpool
     {%- endif %}
     {%- if cookiecutter.enable_redis == "True" %}
-    application.dependency_overrides[get_redis_pool] = lambda: fake_redis_pool
+    application.dependency_overrides[get_redis_pool] = lambda: test_redis_pool
     {%- endif %}
     {%- if cookiecutter.enable_rmq == 'True' %}
     application.dependency_overrides[get_rmq_channel_pool] = lambda: test_rmq_pool
     {%- endif %}
     {%- if cookiecutter.enable_kafka == "True" %}
     application.dependency_overrides[get_kafka_producer] = lambda: test_kafka_producer
+    {%- endif %}
+    {%- if cookiecutter.enable_nats == "True" %}
+    application.dependency_overrides[get_nats] = lambda: test_nats
     {%- endif %}
     return application  # noqa: RET504
 

@@ -156,7 +156,7 @@ db_menu = SingularMenuModel(
             ),
             additional_info=Database(
                 name="mysql",
-                image="mysql:8.4",
+                image="mysql:9.6",
                 async_driver="mysql+aiomysql",
                 driver_short="mysql",
                 driver="mysql",
@@ -175,7 +175,7 @@ db_menu = SingularMenuModel(
             ),
             additional_info=Database(
                 name="postgresql",
-                image="postgres:18.1-bookworm",
+                image="postgres:18.3-trixie",
                 async_driver="postgresql+asyncpg",
                 driver_short="postgres",
                 driver="postgresql",
@@ -550,6 +550,20 @@ features_menu = MultiselectMenuModel(
                     what=colored("Kafka", color="green"),
                     why=colored(
                         "super fast",
+                        color="cyan",
+                    ),
+                )
+            ),
+        ),
+        MenuEntry(
+            code="enable_nats",
+            cli_name="nats",
+            user_view="Add NATS support",
+            description=(
+                "{what} is a message broker.\nThis message queue is {why} and very fast.".format(
+                    what=colored("NATS", color="green"),
+                    why=colored(
+                        "super flexible",
                         color="cyan",
                     ),
                 )

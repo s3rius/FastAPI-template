@@ -1,6 +1,5 @@
 import uuid
 
-import fakeredis
 from fastapi import FastAPI
 from httpx import AsyncClient
 from redis.asyncio import ConnectionPool, Redis
@@ -9,14 +8,14 @@ from starlette import status
 
 async def test_setting_value(
     fastapi_app: FastAPI,
-    fake_redis_pool: ConnectionPool,
+    test_redis_pool: ConnectionPool,
     client: AsyncClient,
 ) -> None:
     """
     Tests that you can set value in redis.
 
     :param fastapi_app: current application fixture.
-    :param fake_redis_pool: fake redis pool.
+    :param test_redis_pool: fake redis pool.
     :param client: client fixture.
     """
     {%- if cookiecutter.api_type == 'rest' %}
@@ -51,26 +50,26 @@ async def test_setting_value(
     {%- endif %}
 
     assert response.status_code == status.HTTP_200_OK
-    async with Redis(connection_pool=fake_redis_pool) as redis:
+    async with Redis(connection_pool=test_redis_pool) as redis:
         actual_value = await redis.get(test_key)
     assert actual_value.decode() == test_val
 
 
 async def test_getting_value(
     fastapi_app: FastAPI,
-    fake_redis_pool: ConnectionPool,
+    test_redis_pool: ConnectionPool,
     client: AsyncClient,
 ) -> None:
     """
     Tests that you can get value from redis by key.
 
     :param fastapi_app: current application fixture.
-    :param fake_redis_pool: fake redis pool.
+    :param test_redis_pool: fake redis pool.
     :param client: client fixture.
     """
     test_key = uuid.uuid4().hex
     test_val = uuid.uuid4().hex
-    async with Redis(connection_pool=fake_redis_pool) as redis:
+    async with Redis(connection_pool=test_redis_pool) as redis:
         await redis.set(test_key, test_val)
 
     {%- if cookiecutter.api_type == 'rest' %}

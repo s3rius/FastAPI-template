@@ -22,6 +22,16 @@ from {{cookiecutter.project_name}}.web.gql import kafka
 
 {%- endif %}
 
+{%- if cookiecutter.enable_nats == "True" %}
+from {{cookiecutter.project_name}}.web.gql import nats
+
+{%- endif %}
+
+{%- endif %}
+
+
+{%- if cookiecutter.otlp_enabled == "True" %}
+from strawberry.extensions.tracing import OpenTelemetryExtension
 {%- endif %}
 
 @strawberry.type
@@ -55,6 +65,9 @@ class Mutation(
     {%- if cookiecutter.enable_kafka == "True" %}
     kafka.Mutation,
     {%- endif %}
+    {%- if cookiecutter.enable_nats == "True" %}
+    nats.Mutation,
+    {%- endif %}
     {%- endif %}
 ):
     """Main mutation."""
@@ -63,10 +76,14 @@ class Mutation(
 schema = strawberry.Schema(
     Query,
     Mutation,
+    extensions=(
+        {%- if cookiecutter.otlp_enabled == "True" %}
+        OpenTelemetryExtension,
+        {%- endif %}
+    )
 )
 
 gql_router: GraphQLRouter[Context, None] = GraphQLRouter(
     schema,
-    graphiql=True,
     context_getter=get_context,
 )

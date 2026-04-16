@@ -55,7 +55,9 @@ def test_default_without_db(default_context: BuilderContext, worker_id: str):
         "piccolo",
     ],
 )
-def test_default_with_db(default_context: BuilderContext, db: str, orm: str, worker_id: str):
+def test_default_with_db(
+    default_context: BuilderContext, db: str, orm: str, worker_id: str
+):
     if orm == "piccolo" and db == "mysql":
         return
     run_default_check(init_context(default_context, db, orm), worker_id)
@@ -73,7 +75,9 @@ def test_default_with_db(default_context: BuilderContext, db: str, orm: str, wor
         "beanie",
     ],
 )
-def test_default_with_nosql_db(default_context: BuilderContext, db: str, orm: str, worker_id: str):
+def test_default_with_nosql_db(
+    default_context: BuilderContext, db: str, orm: str, worker_id: str
+):
     run_default_check(init_context(default_context, db, orm), worker_id)
 
 
@@ -87,7 +91,9 @@ def test_default_with_nosql_db(default_context: BuilderContext, db: str, orm: st
         "piccolo",
     ],
 )
-def test_default_for_apis(default_context: BuilderContext, orm: str, api: str, worker_id: str):
+def test_default_for_apis(
+    default_context: BuilderContext, orm: str, api: str, worker_id: str
+):
     run_default_check(init_context(default_context, "postgresql", orm, api), worker_id)
 
 
@@ -96,9 +102,11 @@ def test_default_for_apis(default_context: BuilderContext, orm: str, api: str, w
     "orm",
     [
         "beanie",
-    ]
+    ],
 )
-def test_default_for_apis_with_nosql_db(default_context: BuilderContext, orm: str, api: str, worker_id: str):
+def test_default_for_apis_with_nosql_db(
+    default_context: BuilderContext, orm: str, api: str, worker_id: str
+):
     run_default_check(init_context(default_context, "mongodb", orm, api), worker_id)
 
 
@@ -149,7 +157,9 @@ def test_without_migrations(default_context: BuilderContext, orm: str, worker_id
     run_default_check(context, worker_id)
 
 
-def test_without_migrations_with_nosql_db(default_context: BuilderContext, worker_id: str):
+def test_without_migrations_with_nosql_db(
+    default_context: BuilderContext, worker_id: str
+):
     context = init_context(default_context, "mongodb", "beanie")
     context.enable_migrations = False
     run_default_check(context, worker_id)
@@ -210,13 +220,17 @@ def test_rmq(default_context: BuilderContext, api: str, worker_id: str):
     run_default_check(default_context, worker_id)
 
 
-def test_telemetry_pre_commit(default_context: BuilderContext, worker_id: str):
+@pytest.mark.parametrize("api", ["rest", "graphql"])
+def test_telemetry_pre_commit(default_context: BuilderContext, api: str, worker_id: str):
+    default_context.api_type = api
     default_context.enable_rmq = True
     default_context.enable_redis = True
     default_context.prometheus_enabled = True
     default_context.otlp_enabled = True
     default_context.sentry_enabled = True
     default_context.enable_loguru = True
+    default_context.enable_taskiq = True
+    default_context.enable_nats = True
     run_default_check(default_context, worker_id, without_pytest=True)
 
 
@@ -228,5 +242,12 @@ def test_gunicorn(default_context: BuilderContext, worker_id: str):
 @pytest.mark.parametrize("api", ["rest", "graphql"])
 def test_kafka(default_context: BuilderContext, api: str, worker_id: str):
     default_context.enable_kafka = True
+    default_context.api_type = api
+    run_default_check(default_context, worker_id)
+
+
+@pytest.mark.parametrize("api", ["rest", "graphql"])
+def test_nats(default_context: BuilderContext, api: str, worker_id: str):
+    default_context.enable_nats = True
     default_context.api_type = api
     run_default_check(default_context, worker_id)

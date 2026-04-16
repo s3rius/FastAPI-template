@@ -29,6 +29,9 @@
     "enable_kafka": {
         "type": "bool"
     },
+    "enable_nats": {
+        "type": "bool"
+    },
     "enable_loguru": {
         "type": "bool"
     },

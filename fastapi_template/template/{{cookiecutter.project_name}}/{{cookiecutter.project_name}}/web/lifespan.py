@@ -29,6 +29,12 @@ from {{cookiecutter.project_name}}.services.kafka.lifespan import (init_kafka,
 
 {%- endif %}
 
+{%- if cookiecutter.enable_nats == "True" %}
+from {{cookiecutter.project_name}}.services.nats.lifespan import (init_nats,
+                                                                   shutdown_nats)
+
+{%- endif %}
+
 {%- if cookiecutter.enable_taskiq == "True" %}
 from {{cookiecutter.project_name}}.tkq import broker
 from taskiq.instrumentation import TaskiqInstrumentor
@@ -82,6 +88,11 @@ from opentelemetry.instrumentation.aio_pika import AioPikaInstrumentor
 from opentelemetry.instrumentation.logging import LoggingInstrumentor
 
 {%- endif %}
+
+{%- if cookiecutter.enable_nats == "True" %}
+from natsrpy.instrumentation import NatsrpyInstrumentor
+{%- endif %}
+
 {%- endif %}
 
 {%- if cookiecutter.orm == "psycopg" %}
@@ -252,6 +263,9 @@ def setup_opentelemetry(app: FastAPI) -> None:  # pragma: no cover
         tracer_provider=tracer_provider,
     )
     {%- endif %}
+    {%- if cookiecutter.enable_nats == "True" %}
+    NatsrpyInstrumentor().instrument(tracer_provider=tracer_provider)
+    {%- endif %}
 
 
 def stop_opentelemetry(app: FastAPI) -> None:  # pragma: no cover
@@ -278,6 +292,9 @@ def stop_opentelemetry(app: FastAPI) -> None:  # pragma: no cover
     {%- endif %}
     {%- if cookiecutter.enable_taskiq == "True" %}
     TaskiqInstrumentor().uninstrument_broker(broker)
+    {%- endif %}
+    {%- if cookiecutter.enable_nats == "True" %}
+    NatsrpyInstrumentor().uninstrument()
     {%- endif %}
 
 {%- endif %}
@@ -308,6 +325,9 @@ async def lifespan_setup(app: FastAPI) -> AsyncGenerator[None, None]:  # pragma:
     """
 
     app.middleware_stack = None
+    {%- if cookiecutter.otlp_enabled == "True" %}
+    setup_opentelemetry(app)
+    {%- endif %}
     {%- if cookiecutter.enable_taskiq == "True" %}
     if not broker.is_worker_process:
         await broker.startup()
@@ -324,9 +344,6 @@ async def lifespan_setup(app: FastAPI) -> AsyncGenerator[None, None]:  # pragma:
     await _create_tables()
     {%- endif %}
     {%- endif %}
-    {%- if cookiecutter.otlp_enabled == "True" %}
-    setup_opentelemetry(app)
-    {%- endif %}
     {%- if cookiecutter.enable_redis == "True" %}
     init_redis(app)
     {%- endif %}
@@ -335,6 +352,9 @@ async def lifespan_setup(app: FastAPI) -> AsyncGenerator[None, None]:  # pragma:
     {%- endif %}
     {%- if cookiecutter.enable_kafka == "True" %}
     await init_kafka(app)
+    {%- endif %}
+    {%- if cookiecutter.enable_nats == "True" %}
+    await init_nats(app)
     {%- endif %}
     {%- if cookiecutter.prometheus_enabled == "True" %}
     setup_prometheus(app)
@@ -362,6 +382,9 @@ async def lifespan_setup(app: FastAPI) -> AsyncGenerator[None, None]:  # pragma:
     {%- endif %}
     {%- if cookiecutter.enable_kafka == "True" %}
     await shutdown_kafka(app)
+    {%- endif %}
+    {%- if cookiecutter.enable_nats == "True" %}
+    await shutdown_nats(app)
     {%- endif %}
     {%- if cookiecutter.otlp_enabled == "True" %}
     stop_opentelemetry(app)
