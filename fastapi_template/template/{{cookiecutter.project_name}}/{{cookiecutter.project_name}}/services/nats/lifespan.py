@@ -26,5 +26,4 @@ async def shutdown_nats(app: FastAPI) -> None:  # pragma: no cover
 
     :param app: current application.
     """
-    await app.state.nats.drain()
     await app.state.nats.shutdown()
