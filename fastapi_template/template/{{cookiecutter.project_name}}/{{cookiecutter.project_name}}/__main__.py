@@ -77,6 +77,7 @@ def main() -> None:
         port=settings.port,
         reload=settings.reload,
         log_level=settings.log_level.value.lower(),
+        access_log=True,
         factory=True,
     )
     {%- endif %}

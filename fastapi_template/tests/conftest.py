@@ -69,6 +69,7 @@ def default_context(project_name: str) -> BuilderContext:
         otlp_enabled=False,
         sentry_enabled=False,
         force=True,
+        enable_nats=False,
     )
 
 

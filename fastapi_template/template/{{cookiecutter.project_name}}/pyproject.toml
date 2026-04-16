@@ -132,6 +132,9 @@ dependencies = [
 {%- if cookiecutter.enable_kafka == "True" %}
   "aiokafka >=0.12.0,<1",
 {%- endif %}
+{%- if cookiecutter.enable_nats == "True" %}
+  "natsrpy>=0.1,<1",
+{%- endif %}
 {%- if cookiecutter.enable_taskiq == "True" %}
   "taskiq >=0.12.0,<1",
   "taskiq-fastapi >=0.3.6,<1",

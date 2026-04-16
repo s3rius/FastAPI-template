@@ -6,7 +6,7 @@ from {{cookiecutter.project_name}}.web.gql.kafka.schema import KafkaMessageDTO
 
 @strawberry.type
 class Mutation:
-    """Mutation for rabbit package."""
+    """Mutation for kafka package."""
 
     @strawberry.mutation(description="Send message to Kafka")
     async def send_kafka_message(

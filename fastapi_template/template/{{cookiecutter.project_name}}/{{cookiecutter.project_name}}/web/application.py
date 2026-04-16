@@ -1,7 +1,6 @@
 import logging
 
 from fastapi import FastAPI
-from fastapi.responses import UJSONResponse
 from {{cookiecutter.project_name}}.settings import settings
 from {{cookiecutter.project_name}}.web.api.router import api_router
 
@@ -86,7 +85,6 @@ def get_app() -> FastAPI:
         redoc_url="/api/redoc",
         {%- endif %}
         openapi_url="/api/openapi.json",
-        default_response_class=UJSONResponse,
     )
 
     # Main router for the API.

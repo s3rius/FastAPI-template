@@ -22,6 +22,13 @@ from {{cookiecutter.project_name}}.services.kafka.dependencies import get_kafka_
 {%- endif %}
 
 
+{%- if cookiecutter.enable_nats == "True" %}
+from natsrpy import Nats
+from {{cookiecutter.project_name}}.services.nats.dependencies import get_nats
+
+{%- endif %}
+
+
 {%- if cookiecutter.orm == "sqlalchemy" %}
 from sqlalchemy.ext.asyncio import AsyncSession
 from {{cookiecutter.project_name}}.db.dependencies import get_db_session
@@ -53,6 +60,9 @@ class Context(BaseContext):
         {%- if cookiecutter.enable_kafka == "True" %}
         kafka_producer: AIOKafkaProducer = Depends(get_kafka_producer),
         {%- endif %}
+        {%- if cookiecutter.enable_nats == "True" %}
+        nats: Nats = Depends(get_nats),
+        {%- endif %}
     ) -> None:
         {%- if cookiecutter.enable_redis == "True" %}
         self.redis_pool = redis_pool
@@ -68,6 +78,9 @@ class Context(BaseContext):
         {%- endif %}
         {%- if cookiecutter.enable_kafka == "True" %}
         self.kafka_producer = kafka_producer
+        {%- endif %}
+        {%- if cookiecutter.enable_nats == "True" %}
+        self.nats = nats
         {%- endif %}
         pass
 

@@ -12,7 +12,8 @@
             "{{cookiecutter.project_name}}/web/api/dummy",
             "{{cookiecutter.project_name}}/web/api/echo",
             "{{cookiecutter.project_name}}/web/api/redis",
-            "{{cookiecutter.project_name}}/web/api/kafka"
+            "{{cookiecutter.project_name}}/web/api/kafka",
+            "{{cookiecutter.project_name}}/web/api/nats"
         ]
     },
     "Redis": {
@@ -40,6 +41,15 @@
             "{{cookiecutter.project_name}}/web/gql/kafka",
             "{{cookiecutter.project_name}}/services/kafka",
             "tests/test_kafka.py"
+        ]
+    },
+    "Nats support": {
+        "enabled": "{{cookiecutter.enable_nats}}",
+        "resources": [
+            "{{cookiecutter.project_name}}/web/api/nats",
+            "{{cookiecutter.project_name}}/web/gql/nats",
+            "{{cookiecutter.project_name}}/services/nats",
+            "tests/test_nats.py"
         ]
     },
     "Database support": {

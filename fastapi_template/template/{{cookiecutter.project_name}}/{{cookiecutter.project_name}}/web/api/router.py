@@ -20,6 +20,10 @@ from {{cookiecutter.project_name}}.web.api import redis
 from {{cookiecutter.project_name}}.web.api import rabbit
 
 {%- endif %}
+{%- if cookiecutter.enable_nats == "True" %}
+from {{cookiecutter.project_name}}.web.api import nats
+
+{%- endif %}
 {%- if cookiecutter.enable_kafka == "True" %}
 from {{cookiecutter.project_name}}.web.api import kafka
 
@@ -51,6 +55,9 @@ api_router.include_router(redis.router, prefix="/redis", tags=["redis"])
 {%- endif %}
 {%- if cookiecutter.enable_rmq == "True" %}
 api_router.include_router(rabbit.router, prefix="/rabbit", tags=["rabbit"])
+{%- endif %}
+{%- if cookiecutter.enable_nats == "True" %}
+api_router.include_router(nats.router, prefix="/nats", tags=["nats"])
 {%- endif %}
 {%- if cookiecutter.enable_kafka == "True" %}
 api_router.include_router(kafka.router, prefix="/kafka", tags=["kafka"])

@@ -556,6 +556,20 @@ features_menu = MultiselectMenuModel(
             ),
         ),
         MenuEntry(
+            code="enable_nats",
+            cli_name="nats",
+            user_view="Add NATS support",
+            description=(
+                "{what} is a message broker.\nThis message queue is {why} and very fast.".format(
+                    what=colored("NATS", color="green"),
+                    why=colored(
+                        "super flexible",
+                        color="cyan",
+                    ),
+                )
+            ),
+        ),
+        MenuEntry(
             code="gunicorn",
             cli_name="gunicorn",
             user_view="Add gunicorn server",

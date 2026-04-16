@@ -32,6 +32,13 @@ from {{cookiecutter.project_name}}.services.kafka.lifespan import (init_kafka,
 
 {%- endif %}
 
+{%- if cookiecutter.enable_nats == "True" %}
+from natsrpy import Nats
+from {{cookiecutter.project_name}}.services.nats.dependencies import get_nats
+from {{cookiecutter.project_name}}.services.nats.lifespan import (init_nats,
+                                                                   shutdown_nats)
+{%- endif %}
+
 from {{cookiecutter.project_name}}.settings import settings
 from {{cookiecutter.project_name}}.web.application import get_app
 
@@ -457,6 +464,19 @@ async def test_kafka_producer() -> AsyncGenerator[AIOKafkaProducer, None]:
 
 {%- endif %}
 
+
+{%- if cookiecutter.enable_nats == "True" %}
+
+@pytest.fixture
+async def test_nats() -> AsyncGenerator[Nats, None]:
+    """Creat test nats client."""
+    app_mock = Mock()
+    await init_nats(app_mock)
+    yield app_mock.state.nats
+    await shutdown_nats(app_mock)
+
+{%- endif %}
+
 {% if cookiecutter.enable_redis == "True" -%}
 @pytest.fixture
 async def fake_redis_pool() -> AsyncGenerator[ConnectionPool, None]:
@@ -491,6 +511,9 @@ def fastapi_app(
     {%- if cookiecutter.enable_kafka == "True" %}
     test_kafka_producer: AIOKafkaProducer,
     {%- endif %}
+    {%- if cookiecutter.enable_nats == "True" %}
+    test_nats: Nats,
+    {%- endif %}
 ) -> FastAPI:
     """
     Fixture for creating FastAPI app.
@@ -511,6 +534,9 @@ def fastapi_app(
     {%- endif %}
     {%- if cookiecutter.enable_kafka == "True" %}
     application.dependency_overrides[get_kafka_producer] = lambda: test_kafka_producer
+    {%- endif %}
+    {%- if cookiecutter.enable_nats == "True" %}
+    application.dependency_overrides[get_nats] = lambda: test_nats
     {%- endif %}
     return application  # noqa: RET504
 
