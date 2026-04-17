@@ -1,0 +1,10 @@
+[[sub]]
+target = "{{cookiecutter.project_name}}/db"
+replaces = [
+  "{{cookiecutter.project_name}}/db_sa",
+  "{{cookiecutter.project_name}}/db_ormar",
+  "{{cookiecutter.project_name}}/db_tortoise",
+  "{{cookiecutter.project_name}}/db_psycopg",
+  "{{cookiecutter.project_name}}/db_piccolo",
+  "{{cookiecutter.project_name}}/db_beanie"
+]

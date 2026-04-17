@@ -1,7 +1,6 @@
 from pathlib import Path
 
-from cookiecutter.exceptions import (FailedHookException,
-                                     OutputDirExistsException)
+from cookiecutter.exceptions import FailedHookException, OutputDirExistsException
 from cookiecutter.main import cookiecutter
 from termcolor import cprint
 
@@ -21,7 +20,7 @@ def generate_project(context: BuilderContext) -> None:
         cookiecutter(
             template=f"{script_dir}/template",
             extra_context=context.dict(),
-            default_config=BuilderContext().dict(),
+            default_config=True,
             no_input=True,
             overwrite_if_exists=context.force,
         )
