@@ -56,11 +56,7 @@ class Settings(BaseSettings):
     db_port: int = {{cookiecutter.db_info.port}}
     db_user: str = "{{cookiecutter.project_name}}"
     db_pass: str = "{{cookiecutter.project_name}}"  # noqa: S105
-    {%- if cookiecutter.db_info.name != "sqlite" %}
-    db_base: str = "admin"
-    {%- else %}
     db_base: str = "{{cookiecutter.project_name}}"
-    {%- endif %}
     {%- endif %}
     db_echo: bool = False
 
@@ -70,7 +66,7 @@ class Settings(BaseSettings):
     {%- if cookiecutter.enable_redis == "True" %}
 
     # Variables for Redis
-    redis_host: str = "{{cookiecutter.project_name}}-redis"
+    redis_host: str = "localhost"
     redis_port: int = 6379
     redis_user: Optional[str] = None
     redis_pass: Optional[str] = None
@@ -82,7 +78,7 @@ class Settings(BaseSettings):
     {%- if cookiecutter.enable_rmq == "True" %}
 
     # Variables for RabbitMQ
-    rabbit_host: str = "{{cookiecutter.project_name}}-rmq"
+    rabbit_host: str = "localhost"
     rabbit_port: int = 5672
     rabbit_user: str = "guest"
     rabbit_pass: str = "guest"  # noqa: S105
@@ -122,35 +118,36 @@ class Settings(BaseSettings):
 
     {%- if cookiecutter.enable_kafka == "True" %}
 
-    kafka_bootstrap_servers: List[str] = ["{{cookiecutter.project_name}}-kafka:9092"]
+    kafka_bootstrap_servers: List[str] = ["localhost:9092"]
 
     {%- endif %}
 
 
     {%- if cookiecutter.enable_nats == "True" %}
-    nats_hosts: list[str] = ["nats://{{cookiecutter.project_name}}-nats:4222"]
+    nats_hosts: list[str] = ["nats://localhost:4222"]
     {%- endif %}
 
     {%- if cookiecutter.db_info.name != "none" %}
 
 
     @property
-    def db_url(self) -> URL:
+    def db_url(self) -> {%- if cookiecutter.db_info.name == "sqlite"
+        %}str{%- else %}URL{%- endif %}:
         """
         Assemble database URL from settings.
 
         :return: database URL.
         """
         {%- if cookiecutter.db_info.name == "sqlite" %}
-        return URL.build(
+        return (
             {%- if cookiecutter.orm == "sqlalchemy" %}
-            scheme="{{cookiecutter.db_info.async_driver}}",
+            "{{cookiecutter.db_info.async_driver}}:"
             {%- elif cookiecutter.orm == "tortoise" %}
-            scheme="{{cookiecutter.db_info.driver_short}}",
+            "{{cookiecutter.db_info.driver_short}}:"
             {%- else %}
-            scheme="{{cookiecutter.db_info.driver}}",
+            "{{cookiecutter.db_info.driver}}:"
             {%- endif %}
-            path=f"///{self.db_file}"
+            f"///{self.db_file}"
         )
         {%- else %}
         return URL.build(

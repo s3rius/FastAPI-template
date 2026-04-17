@@ -1,0 +1,233 @@
+[[features]]
+name = "GraphQL API"
+enabled = "{{cookiecutter.api_type == 'graphql'}}"
+resources = ["{{cookiecutter.project_name}}/web/gql"]
+
+[[features]]
+name = "REST API"
+enabled = "{{cookiecutter.api_type == 'rest'}}"
+resources = [
+  "{{cookiecutter.project_name}}/web/api/rabbit",
+  "{{cookiecutter.project_name}}/web/api/dummy",
+  "{{cookiecutter.project_name}}/web/api/echo",
+  "{{cookiecutter.project_name}}/web/api/redis",
+  "{{cookiecutter.project_name}}/web/api/kafka",
+  "{{cookiecutter.project_name}}/web/api/nats"
+]
+
+[[features]]
+name = "Redis support"
+enabled = "{{cookiecutter.enable_redis}}"
+resources = [
+  "{{cookiecutter.project_name}}/web/api/redis",
+  "{{cookiecutter.project_name}}/web/gql/redis",
+  "{{cookiecutter.project_name}}/services/redis",
+  "tests/test_redis.py"
+]
+
+[[features]]
+name = "RabbitMQ support"
+enabled = "{{cookiecutter.enable_rmq}}"
+resources = [
+  "{{cookiecutter.project_name}}/web/api/rabbit",
+  "{{cookiecutter.project_name}}/web/gql/rabbit",
+  "{{cookiecutter.project_name}}/services/rabbit",
+  "tests/test_rabbit.py"
+]
+
+[[features]]
+name = "Kafka support"
+enabled = "{{cookiecutter.enable_kafka}}"
+resources = [
+  "{{cookiecutter.project_name}}/web/api/kafka",
+  "{{cookiecutter.project_name}}/web/gql/kafka",
+  "{{cookiecutter.project_name}}/services/kafka",
+  "tests/test_kafka.py"
+]
+
+[[features]]
+name = "NATS support"
+enabled = "{{cookiecutter.enable_nats}}"
+resources = [
+  "{{cookiecutter.project_name}}/web/api/nats",
+  "{{cookiecutter.project_name}}/web/gql/nats",
+  "{{cookiecutter.project_name}}/services/nats",
+  "tests/test_nats.py"
+]
+
+[[features]]
+name = "Database support"
+enabled = "{{cookiecutter.db_info.name != 'none'}}"
+resources = [
+  "alembic.ini",
+  "{{cookiecutter.project_name}}/web/api/dummy",
+  "{{cookiecutter.project_name}}/web/gql/dummy",
+  "tests/test_dummy.py"
+]
+
+[[features]]
+name = "Migrations support"
+enabled = "{{cookiecutter.enable_migrations}}"
+resources = [
+  "alembic.ini",
+  "{{cookiecutter.project_name}}/db_sa/migrations",
+  "{{cookiecutter.project_name}}/db_ormar/migrations",
+  "{{cookiecutter.project_name}}/db_tortoise/migrations",
+  "{{cookiecutter.project_name}}/db_piccolo/migrations",
+  "{{cookiecutter.project_name}}/db_beanie/migrations"
+]
+
+[[features]]
+name = "Alembic migrations"
+enabled = "{{cookiecutter.orm in ['ormar', 'sqlalchemy']}}"
+resources = ["alembic.ini"]
+
+[[features]]
+name = "Gitlab CI"
+enabled = "{{cookiecutter.ci_type == 'gitlab_ci'}}"
+resources = [".gitlab-ci.yml"]
+
+[[features]]
+name = "GitHub actions"
+enabled = "{{cookiecutter.ci_type == 'github'}}"
+resources = [".github"]
+
+[[features]]
+name = "Loguru support"
+enabled = "{{cookiecutter.enable_loguru}}"
+resources = ["{{cookiecutter.project_name}}/logging.py"]
+
+[[features]]
+name = "Example routes"
+enabled = "{{cookiecutter.enable_routers}}"
+resources = [
+  "{{cookiecutter.project_name}}/web/api/echo",
+  "{{cookiecutter.project_name}}/web/gql/echo",
+  "{{cookiecutter.project_name}}/web/api/dummy",
+  "{{cookiecutter.project_name}}/web/gql/dummy",
+  "{{cookiecutter.project_name}}/web/api/redis",
+  "{{cookiecutter.project_name}}/web/gql/redis",
+  "{{cookiecutter.project_name}}/web/api/kafka",
+  "{{cookiecutter.project_name}}/web/gql/kafka",
+  "{{cookiecutter.project_name}}/web/api/rabbit",
+  "{{cookiecutter.project_name}}/web/gql/rabbit",
+  "tests/test_echo.py",
+  "tests/test_dummy.py",
+  "tests/test_redis.py",
+  "tests/test_rabbit.py",
+  "tests/test_kafka.py"
+]
+
+[[features]]
+name = "User models"
+enabled = "{{cookiecutter.add_users}}"
+resources = [
+  "{{cookiecutter.project_name}}/web/api/users",
+  "{{cookiecutter.project_name}}/db_sa/models/users.py"
+]
+
+[[features]]
+name = "Dummy models"
+enabled = "{{cookiecutter.add_dummy}}"
+resources = [
+  "{{cookiecutter.project_name}}/web/api/dummy",
+  "{{cookiecutter.project_name}}/web/gql/dummy",
+  "{{cookiecutter.project_name}}/db_sa/dao",
+  "{{cookiecutter.project_name}}/db_sa/models/dummy_model.py",
+  "{{cookiecutter.project_name}}/db_ormar/dao",
+  "{{cookiecutter.project_name}}/db_ormar/models/dummy_model.py",
+  "{{cookiecutter.project_name}}/db_tortoise/dao",
+  "{{cookiecutter.project_name}}/db_tortoise/models/dummy_model.py",
+  "{{cookiecutter.project_name}}/db_psycopg/dao",
+  "{{cookiecutter.project_name}}/db_psycopg/models/dummy_model.py",
+  "tests/test_dummy.py",
+  "{{cookiecutter.project_name}}/db_piccolo/dao",
+  "{{cookiecutter.project_name}}/db_piccolo/models/dummy_model.py",
+  "{{cookiecutter.project_name}}/db_beanie/models/dummy_model.py",
+  "{{cookiecutter.project_name}}/db_sa/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
+  "{{cookiecutter.project_name}}/db_ormar/migrations/versions/2021-08-16-16-55_2b7380507a71.py",
+  "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_pg.sql",
+  "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_mysql.sql",
+  "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_sqlite.sql",
+  "{{cookiecutter.project_name}}/db_piccolo/migrations/2022-04-16T17-38-51-672827.py"
+]
+
+[[features]]
+name = "Self-Hosted Swagger UI"
+enabled = "{{cookiecutter.self_hosted_swagger}}"
+resources = [
+  "{{cookiecutter.project_name}}/static/docs",
+  "{{cookiecutter.project_name}}/web/api/docs"
+]
+
+[[features]]
+name = "SQLAlchemy ORM"
+enabled = "{{cookiecutter.orm == 'sqlalchemy'}}"
+resources = ["{{cookiecutter.project_name}}/db_sa"]
+
+[[features]]
+name = "Tortoise ORM"
+enabled = "{{cookiecutter.orm == 'tortoise'}}"
+resources = ["{{cookiecutter.project_name}}/db_tortoise"]
+
+[[features]]
+name = "Ormar ORM"
+enabled = "{{cookiecutter.orm == 'ormar'}}"
+resources = ["{{cookiecutter.project_name}}/db_ormar"]
+
+[[features]]
+name = "PsycoPG"
+enabled = "{{cookiecutter.orm == 'psycopg'}}"
+resources = ["{{cookiecutter.project_name}}/db_psycopg"]
+
+[[features]]
+name = "Piccolo"
+enabled = "{{cookiecutter.orm == 'piccolo'}}"
+resources = [
+  "{{cookiecutter.project_name}}/db_piccolo",
+  "{{cookiecutter.project_name}}/piccolo_conf.py"
+]
+
+[[features]]
+name = "Beanie"
+enabled = "{{cookiecutter.orm == 'beanie'}}"
+resources = ["{{cookiecutter.project_name}}/db_beanie"]
+
+[[features]]
+name = "PostgreSQL support"
+enabled = "{{cookiecutter.db_info.name == 'postgresql'}}"
+resources = [
+  "{{cookiecutter.project_name}}/db_tortoise/migrations/models/0_20210928165300_init_pg.sql",
+  "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_pg.sql"
+]
+
+[[features]]
+name = "MySQL DB"
+enabled = "{{cookiecutter.db_info.name == 'mysql'}}"
+resources = [
+  "{{cookiecutter.project_name}}/db_tortoise/migrations/models/0_20210928165300_init_mysql.sql",
+  "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_mysql.sql"
+]
+
+[[features]]
+name = "SQLite DB"
+enabled = "{{cookiecutter.db_info.name == 'sqlite'}}"
+resources = [
+  "{{cookiecutter.project_name}}/db_tortoise/migrations/models/0_20210928165300_init_sqlite.sql",
+  "{{cookiecutter.project_name}}/db_tortoise/migrations/models/1_20210928165300_init_dummy_sqlite.sql"
+]
+
+[[features]]
+name = "Opentelemetry support"
+enabled = "{{cookiecutter.otlp_enabled}}"
+resources = ["deploy/docker-compose.otlp.yml"]
+
+[[features]]
+name = "Taskiq support"
+enabled = "{{cookiecutter.enable_taskiq}}"
+resources = ["{{cookiecutter.project_name}}/tkq.py"]
+
+[[features]]
+name = "Gunicorn support"
+enabled = "{{cookiecutter.gunicorn}}"
+resources = ["{{cookiecutter.project_name}}/gunicorn_runner.py"]

@@ -25,14 +25,7 @@ You can read more about uv here: https://docs.astral.sh/ruff/
 You can start the project with docker using this command:
 
 ```bash
-docker-compose up --build
-```
-
-If you want to develop in docker with autoreload and exposed ports add `-f deploy/docker-compose.dev.yml` to your docker command.
-Like this:
-
-```bash
-docker-compose -f docker-compose.yml -f deploy/docker-compose.dev.yml --project-directory . up --build
+docker compose up --build
 ```
 
 This command exposes the web application on port 8000, mounts current directory and enables autoreload.
@@ -40,7 +33,7 @@ This command exposes the web application on port 8000, mounts current directory 
 But you have to rebuild image every time you modify `uv.lock` or `pyproject.toml` with this command:
 
 ```bash
-docker-compose build
+docker compose build
 ```
 
 ## Project structure
@@ -98,12 +91,11 @@ you can add `-f ./deploy/docker-compose.otlp.yml` to your docker command.
 Like this:
 
 ```bash
-docker-compose -f docker-compose.yml -f deploy/docker-compose.otlp.yml --project-directory . up
+docker compose -f docker-compose.yml -f deploy/docker-compose.otlp.yml --project-directory . up
 ```
 
-This command will start OpenTelemetry collector and jaeger. 
-After sending a requests you can see traces in jaeger's UI
-at http://localhost:16686/.
+This command will start grafana with full opentelemetry stack at http://localhost:3000/. 
+After sending a requests you can see traces at explore tab in drilldown.
 
 This docker configuration is not supposed to be used in production. 
 It's only for demo purpose.
@@ -189,30 +181,36 @@ aerich migrate
 If you want to run it in docker, simply run:
 
 ```bash
-docker-compose run --build --rm api pytest -vv .
-docker-compose down
+docker compose run --build --rm api pytest -vv .
+docker compose down
 ```
 
 For running tests on your local machine.
 
-{%- if cookiecutter.db_info.name != "none" %}
-{%- if cookiecutter.db_info.name != "sqlite" %}
-1. you need to start a database.
+{%- if ((cookiecutter.db_info.name != "none" and cookiecutter.db_info.name != "sqlite") or
+            (cookiecutter.enable_redis == "True") or
+            (cookiecutter.enable_rmq == "True") or
+            (cookiecutter.enable_kafka == "True") or
+            (cookiecutter.enable_nats == "True")
+) %}
+1. you need to start all aux services.
 
-I prefer doing it with docker:
+We can do so by using our docker-compose configuration. It already has everything we need.
+
+This section might be empty if you didn't choose any aux services in the configuration.
+```bash
+docker compose up -d --wait{%- if cookiecutter.db_info.name != 'none' %} db{%- endif %}{%- if cookiecutter.enable_redis == "True" %} redis{%- endif %}{%- if cookiecutter.enable_rmq == "True" %} rmq{%- endif %}{%- if cookiecutter.enable_kafka == "True" %} kafka{%- endif %}{%- if cookiecutter.enable_nats == "True" %} nats{%- endif %}
 ```
-{%- if cookiecutter.db_info.name == "postgresql" %}
-docker run -p "{{cookiecutter.db_info.port}}:{{cookiecutter.db_info.port}}" -e "POSTGRES_PASSWORD={{cookiecutter.project_name}}" -e "POSTGRES_USER={{cookiecutter.project_name}}" -e "POSTGRES_DB={{cookiecutter.project_name}}" {{cookiecutter.db_info.image}}
-{%- endif %}
-{%- if cookiecutter.db_info.name == "mysql" %}
-docker run -p "{{cookiecutter.db_info.port}}:{{cookiecutter.db_info.port}}" -e "MYSQL_PASSWORD={{cookiecutter.project_name}}" -e "MYSQL_USER={{cookiecutter.project_name}}" -e "MYSQL_DATABASE={{cookiecutter.project_name}}" -e ALLOW_EMPTY_PASSWORD=yes {{cookiecutter.db_info.image}}
-{%- endif %}
-```
-{%- endif %}
-{%- endif %}
 
-
-2. Run the pytest.
+2. Run tests.
 ```bash
 pytest -vv .
 ```
+{%- else %}
+Simply run 
+
+```bash
+pytest -vv .
+```
+{%- endif %}
+

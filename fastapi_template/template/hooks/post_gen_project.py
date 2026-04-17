@@ -1,35 +1,39 @@
 #!/usr/bin/env python
-import json
-import os
 import shutil
 import subprocess
+import tomllib
+import shlex
 
 from termcolor import cprint, colored
 from pathlib import Path
 
-CONDITIONAL_MANIFEST = "conditional_files.json"
-REPLACE_MANIFEST = "replaceable_files.json"
+CONDITIONAL_MANIFEST = Path("conditional_files.toml")
+REPLACE_MANIFEST = Path("replaceable_files.toml")
 
 
-def delete_resource(resource):
-    if os.path.isfile(resource):
-        os.remove(resource)
-    elif os.path.isdir(resource):
+def delete_resource(resource: Path):
+    if resource.is_file():
+        resource.unlink()
+    elif resource.is_dir():
         shutil.rmtree(resource)
 
 
 def delete_resources_for_disabled_features():
-    with open(CONDITIONAL_MANIFEST) as manifest_file:
-        manifest = json.load(manifest_file)
-        for feature_name, feature in manifest.items():
-            if feature["enabled"].lower() != "true":
+    with CONDITIONAL_MANIFEST.open("rb") as manifest_file:
+        manifest = tomllib.load(manifest_file)
+
+        for feature in manifest["features"]:
+            enabled = feature["enabled"].lower() != "true"
+            name = feature["name"]
+            resources = feature["resources"]
+            if enabled:
                 text = "{} resources for disabled feature {}...".format(
                     colored("Removing", color="red"),
-                    colored(feature_name, color="magenta", attrs=["underline"]),
+                    colored(name, color="magenta", attrs=["underline"]),
                 )
                 print(text)
-                for resource in feature["resources"]:
-                    delete_resource(resource)
+                for resource in resources:
+                    delete_resource(Path(resource))
     delete_resource(CONDITIONAL_MANIFEST)
     cprint("cleanup complete!", color="green")
 
@@ -40,14 +44,15 @@ def replace_resources():
             colored("resources", color="green"), colored("new project", color="blue")
         )
     )
-    with open(REPLACE_MANIFEST) as replace_manifest:
-        manifest = json.load(replace_manifest)
-        for target, replaces in manifest.items():
-            target_path = Path(target)
-            delete_resource(target_path)
-            for src_file in map(Path, replaces):
+    with REPLACE_MANIFEST.open("rb") as replace_manifest:
+        manifest = tomllib.load(replace_manifest)
+        for substitution in manifest["sub"]:
+            target = Path(substitution["target"])
+            replaces = [Path(path) for path in substitution["replaces"]]
+            delete_resource(target)
+            for src_file in replaces:
                 if src_file.exists():
-                    shutil.move(src_file, target_path)
+                    shutil.move(src_file, target)
     delete_resource(REPLACE_MANIFEST)
     print(
         "Resources are happy to be where {}.".format(
@@ -56,17 +61,41 @@ def replace_resources():
     )
 
 
+def run_cmd(cmd: str, ignore_error: bool = False):
+    out = subprocess.run(
+        shlex.split(cmd),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if out.returncode != 0 and not ignore_error:
+        cprint(" WARNING ".center(50, "="))
+        cprint(
+            f"[WARN] Command `{cmd}` was not successfull. Check output below.",
+            "yellow",
+        )
+        cprint(
+            "However, the project was generated. So it could be a false-positive.",
+            "yellow",
+        )
+        cprint(out.stdout.decode(), "red")
+        cprint(out.stderr.decode(), "red")
+        exit(1)
+
+
 def init_repo():
-    subprocess.run(["git", "init"], stdout=subprocess.PIPE)
-    cprint("Git repository initialized.", "green")
-    subprocess.run(["git", "add", "."], stdout=subprocess.PIPE)
-    cprint("Added files to index.", "green")
-    subprocess.run(["uv", "sync"])
-    subprocess.run(["uv", "run", "pre-commit", "install"])
-    cprint("pre-commit installed.", "green")
-    subprocess.run(["uv", "run", "pre-commit", "run", "-a"])
-    subprocess.run(["git", "add", "."], stdout=subprocess.PIPE)
-    subprocess.run(["git", "commit", "-m", "Initial commit"], stdout=subprocess.PIPE)
+    run_cmd("git init")
+    cprint(" Git repository initialized", "green")
+    run_cmd("git add .")
+    cprint("🐍 Installing python dpendencies with UV", "green")
+    run_cmd("uv sync")
+    run_cmd("uv run pre-commit install")
+    cprint("📚🖌️📄📏 Tidying up the project", "green")
+    for _ in range(2):
+        run_cmd("uv run pre-commit run -a", ignore_error=True)
+    run_cmd("git add .")
+    cprint("🚀Creating your first commit", "green")
+    run_cmd("git commit -m 'Initial commit'")
+
 
 if __name__ == "__main__":
     delete_resources_for_disabled_features()
