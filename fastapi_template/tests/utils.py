@@ -32,6 +32,8 @@ def run_default_check(context: BuilderContext, worker_id: str, without_pytest=Fa
     with compose.open("r") as compose_file:
         data = yaml.safe_load(compose_file)
     data["services"]["api"]["image"] = f"test_image:v{worker_id}"
+    for service in data["services"]:
+        del service["ports"]
     with compose.open("w") as compose_file:
         yaml.safe_dump(data, compose_file)
 
