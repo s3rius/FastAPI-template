@@ -195,9 +195,8 @@ For running tests on your local machine.
 ) %}
 1. you need to start all aux services.
 
-We can do so by using our docker-compose configuration. It already has everything we need.
+We can do so by using our `docker-compose.yaml` configuration. It already has everything we need.
 
-This section might be empty if you didn't choose any aux services in the configuration.
 ```bash
 docker compose up -d --wait{%- if cookiecutter.db_info.name != 'none' %} db{%- endif %}{%- if cookiecutter.enable_redis == "True" %} redis{%- endif %}{%- if cookiecutter.enable_rmq == "True" %} rmq{%- endif %}{%- if cookiecutter.enable_kafka == "True" %} kafka{%- endif %}{%- if cookiecutter.enable_nats == "True" %} nats{%- endif %}
 ```
