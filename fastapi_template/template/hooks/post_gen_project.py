@@ -77,8 +77,10 @@ def run_cmd(cmd: str, ignore_error: bool = False):
             "However, the project was generated. So it could be a false-positive.",
             "yellow",
         )
-        cprint(out.stdout.decode(), "red")
-        cprint(out.stderr.decode(), "red")
+        if out.stdout:
+            cprint(out.stdout.decode(errors="replace"), "red")
+        if out.stderr:
+            cprint(out.stderr.decode(errors="replace"), "red")
         exit(1)
 
 
