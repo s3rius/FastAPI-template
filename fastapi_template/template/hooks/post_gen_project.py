@@ -81,7 +81,7 @@ def run_cmd(cmd: str, ignore_error: bool = False):
             cprint(out.stdout.decode(errors="replace"), "red")
         if out.stderr:
             cprint(out.stderr.decode(errors="replace"), "red")
-        exit(1)
+        raise ValueError()
 
 
 def init_repo():
@@ -102,4 +102,7 @@ def init_repo():
 if __name__ == "__main__":
     delete_resources_for_disabled_features()
     replace_resources()
-    init_repo()
+    try:
+        init_repo()
+    except ValueError:
+        pass

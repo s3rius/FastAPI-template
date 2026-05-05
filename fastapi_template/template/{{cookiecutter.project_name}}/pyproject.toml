@@ -290,6 +290,7 @@ lint.ignore = [
     "ANN401",  # typing.Any are disallowed in `**kwargs
     "PLR0913", # Too many arguments for function call
     "D106",    # Missing docstring in public nested class
+    "UP043",   # Unnecessary default argument specified (conflicts with mypy).
 ]
 exclude = [
     {%- if cookiecutter.orm in ["ormar", "sqlalchemy", "piccolo", "tortoise"] %}

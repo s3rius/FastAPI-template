@@ -20,7 +20,7 @@ def upgrade() -> None:
     op.create_table(
         "dummy_model",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column("name", sa.String(length=200), nullable=True),
+        sa.Column("name", sa.String(length=200), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
     # ### end Alembic commands ###

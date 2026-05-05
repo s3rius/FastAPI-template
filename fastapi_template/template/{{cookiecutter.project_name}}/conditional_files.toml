@@ -123,7 +123,8 @@ name = "User models"
 enabled = "{{cookiecutter.add_users}}"
 resources = [
   "{{cookiecutter.project_name}}/web/api/users",
-  "{{cookiecutter.project_name}}/db_sa/models/users.py"
+  "{{cookiecutter.project_name}}/db_sa/models/users.py",
+  "{{cookiecutter.project_name}}/db_sa/migrations/versions/2026-05-05-14-37_8caca4abd7b4.py",
 ]
 
 [[features]]
